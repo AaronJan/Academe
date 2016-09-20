@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\NotEqual;
 use Academe\Contracts\CastManager;
 use Academe\Traits\SQLValueWrapper;
@@ -15,7 +14,7 @@ class NotEqualPDOResolver
      * @param                                     $connectionType
      * @param NotEqual                            $notEqual
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    NotEqual $notEqual,
@@ -27,9 +26,6 @@ class NotEqualPDOResolver
             $notExpect = $castManager->castIn($name, $notExpect, $connectionType);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [(static::wrap($name) . ' != ?'), [$notExpect]]
-        );
+        return [(static::wrap($name) . ' != ?'), [$notExpect]];
     }
 }

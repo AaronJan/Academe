@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\Like;
 
 class LikeMongoDBResolver
@@ -10,7 +9,7 @@ class LikeMongoDBResolver
     /**
      * @param       $connectionType
      * @param Like  $like
-     * @return CommandUnit
+     * @return array
      */
     static public function resolve($connectionType, Like $like)
     {
@@ -26,9 +25,6 @@ class LikeMongoDBResolver
             $regexp = "^$regexp$";
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$regex' => "/{$regexp}/", '$options' => '']]
-        );
+        return [$name => ['$regex' => "/{$regexp}/", '$options' => '']];
     }
 }

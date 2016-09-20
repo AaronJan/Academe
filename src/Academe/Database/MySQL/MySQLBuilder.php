@@ -40,7 +40,6 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
      */
     public function parse($subject, Action $action, CastManager $castManager = null)
     {
-        // parse[Method], for example: $this->parseSelect()
         $method = 'parse' . ucfirst($action->getName());
 
         return $this->$method($action, $subject, $castManager);
@@ -157,7 +156,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     {
         list($field, $direction) = $order;
 
-        $fieldPart    = self::wrap($field);
+        $fieldPart     = self::wrap($field);
         $directionPart = $direction === 'desc' ? 'DESC' : 'ASC';
 
         return "{$fieldPart}, {$directionPart}";
@@ -424,8 +423,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
                 list($SQL, $parameters) = $this->resolveConditionGroup($condition, $needParentheses);
             } else {
-                $commandUnit = $condition->parse(Connection::TYPE_MYSQL, $castManager);
-                list($SQL, $parameters) = $commandUnit->getRaw();
+                list($SQL, $parameters) = $condition->parse(Connection::TYPE_MYSQL, $castManager);
             }
 
             $SQLs[]            = $SQL;

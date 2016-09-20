@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\GreaterThanOrEqual;
 use Academe\Contracts\CastManager;
 
@@ -12,7 +11,7 @@ class GreaterThanOrEqualMongoDBResolver
      * @param                                     $connectionType
      * @param GreaterThanOrEqual                  $greaterThanOrEqual
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    GreaterThanOrEqual $greaterThanOrEqual,
@@ -24,9 +23,6 @@ class GreaterThanOrEqualMongoDBResolver
             $value = $castManager->castIn($name, $value, $connectionType);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$gte' => $value]]
-        );
+        return [$name => ['$gte' => $value]];
     }
 }

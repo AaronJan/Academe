@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\NotIn;
 use Academe\Contracts\CastManager;
 
@@ -12,7 +11,7 @@ class NotInMongoDBResolver
      * @param                                     $connectionType
      * @param NotIn                               $notIn
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    NotIn $notIn,
@@ -26,9 +25,6 @@ class NotInMongoDBResolver
             }, $values);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$nin' => $values]]
-        );
+        return [$name => ['$nin' => $values]];
     }
 }

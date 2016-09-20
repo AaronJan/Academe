@@ -363,8 +363,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
                 $subQueries[] = $this->resolveConditionGroup($condition);
             } else {
-                $commandUnit  = $condition->parse(Connection::TYPE_MONGODB, $castManager);
-                $subQueries[] = $commandUnit->getRaw();
+                $subQueries[] = $condition->parse(Connection::TYPE_MONGODB, $castManager);
             }
         }
 

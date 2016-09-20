@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\In;
 use Academe\Contracts\CastManager;
 use Academe\Traits\SQLValueWrapper;
@@ -15,7 +14,7 @@ class InPDOResolver
      * @param                                     $connectionType
      * @param In                                  $in
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    In $in,
@@ -24,10 +23,7 @@ class InPDOResolver
         list($name, $values) = $in->getParameters();
 
         if (empty($values)) {
-            return new CommandUnit(
-                $connectionType,
-                ["0 = 1", []]
-            );
+            return ["0 = 1", []];
         }
 
         $valueHolder = implode(', ', array_pad([], count($values), '?'));
@@ -38,9 +34,6 @@ class InPDOResolver
             }, $values);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [(static::wrap($name) . " IN ({$valueHolder})"), $values]
-        );
+        return [(static::wrap($name) . " IN ({$valueHolder})"), $values];
     }
 }

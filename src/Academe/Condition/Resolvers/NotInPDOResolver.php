@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\NotIn;
 use Academe\Contracts\CastManager;
 use Academe\Traits\SQLValueWrapper;
@@ -15,7 +14,7 @@ class NotInPDOResolver
      * @param                                     $connectionType
      * @param NotIn                               $notIn
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    NotIn $notIn,
@@ -24,10 +23,7 @@ class NotInPDOResolver
         list($name, $values) = $notIn->getParameters();
 
         if (empty($values)) {
-            return new CommandUnit(
-                $connectionType,
-                ["1 = 1", []]
-            );
+            return ["1 = 1", []];
         }
 
         $valueHolder = implode(', ', array_pad([], count($values), '?'));
@@ -38,9 +34,6 @@ class NotInPDOResolver
             }, $values);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [(static::wrap($name) . " NOT IN ({$valueHolder})"), $values]
-        );
+        return [(static::wrap($name) . " NOT IN ({$valueHolder})"), $values];
     }
 }

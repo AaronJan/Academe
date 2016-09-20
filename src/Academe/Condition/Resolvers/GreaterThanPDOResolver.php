@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\GreaterThan;
 use Academe\Contracts\CastManager;
 use Academe\Traits\SQLValueWrapper;
@@ -15,7 +14,7 @@ class GreaterThanPDOResolver
      * @param                                     $connectionType
      * @param GreaterThan                         $greaterThan
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    GreaterThan $greaterThan,
@@ -27,9 +26,6 @@ class GreaterThanPDOResolver
             $value = $castManager->castIn($name, $value, $connectionType);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [(static::wrap($name) . ' > ?'), [$value]]
-        );
+        return [(static::wrap($name) . ' > ?'), [$value]];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\LessThanOrEqual;
 use Academe\Contracts\CastManager;
 
@@ -12,7 +11,7 @@ class LessThanOrEqualMongoDBResolver
      * @param                                     $connectionType
      * @param LessThanOrEqual                     $lessThanOrEqual
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    LessThanOrEqual $lessThanOrEqual,
@@ -24,9 +23,6 @@ class LessThanOrEqualMongoDBResolver
             $value = $castManager->castIn($name, $value, $connectionType);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$lte' => $value]]
-        );
+        return [$name => ['$lte' => $value]];
     }
 }

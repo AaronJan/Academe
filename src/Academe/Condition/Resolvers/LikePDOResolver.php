@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\Like;
 use Academe\Traits\SQLValueWrapper;
 
@@ -13,7 +12,7 @@ class LikePDOResolver
     /**
      * @param          $connectionType
      * @param Like     $like
-     * @return CommandUnit
+     * @return array
      */
     static public function resolve($connectionType, Like $like)
     {
@@ -27,9 +26,6 @@ class LikePDOResolver
             $value = "%$value%";
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [(static::wrap($name) . " LIKE ?"), $value]
-        );
+        return [(static::wrap($name) . " LIKE ?"), $value];
     }
 }

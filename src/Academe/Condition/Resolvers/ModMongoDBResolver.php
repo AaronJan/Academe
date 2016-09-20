@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\Mod;
 
 class ModMongoDBResolver
@@ -10,15 +9,12 @@ class ModMongoDBResolver
     /**
      * @param       $connectionType
      * @param Mod   $mod
-     * @return CommandUnit
+     * @return array
      */
     static public function resolve($connectionType, Mod $mod)
     {
         list($name, $divisor, $remainder) = $mod->getParameters();
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$mod' => [$divisor, $remainder]]]
-        );
+        return [$name => ['$mod' => [$divisor, $remainder]]];
     }
 }

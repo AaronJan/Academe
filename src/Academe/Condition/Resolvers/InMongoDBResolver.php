@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\In;
 use Academe\Contracts\CastManager;
 
@@ -12,7 +11,7 @@ class InMongoDBResolver
      * @param                                     $connectionType
      * @param In                                  $in
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    In $in,
@@ -26,9 +25,6 @@ class InMongoDBResolver
             }, $values);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$in' => $values]]
-        );
+        return [$name => ['$in' => $values]];
     }
 }

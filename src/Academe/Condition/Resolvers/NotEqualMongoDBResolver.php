@@ -2,7 +2,6 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\CommandUnit;
 use Academe\Condition\NotEqual;
 use Academe\Contracts\CastManager;
 
@@ -12,7 +11,7 @@ class NotEqualMongoDBResolver
      * @param                                     $connectionType
      * @param NotEqual                            $notEqual
      * @param \Academe\Contracts\CastManager|null $castManager
-     * @return \Academe\CommandUnit
+     * @return array
      */
     static public function resolve($connectionType,
                                    NotEqual $notEqual,
@@ -24,9 +23,6 @@ class NotEqualMongoDBResolver
             $notExpect = $castManager->castIn($name, $notExpect, $connectionType);
         }
 
-        return new CommandUnit(
-            $connectionType,
-            [$name => ['$ne' => $notExpect]]
-        );
+        return [$name => ['$ne' => $notExpect]];
     }
 }
