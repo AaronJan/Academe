@@ -3,6 +3,8 @@
 namespace Academe\Database;
 
 use Academe\Contracts\CastManager;
+use Academe\Contracts\Connection\ConditionGroup;
+use Academe\Exceptions\LogicException;
 
 abstract class BaseBuilder
 {
@@ -23,5 +25,17 @@ abstract class BaseBuilder
         }
 
         return $castedAttributes;
+    }
+
+    /**
+     * @param \Academe\Contracts\Connection\ConditionGroup $conditionGroup
+     */
+    protected function validateConditionGroup(ConditionGroup $conditionGroup)
+    {
+        if ($conditionGroup->getConditionCount() === 0) {
+            $message = "ConditionGroup must have at least one Condition.";
+
+            throw new LogicException($message);
+        }
     }
 }

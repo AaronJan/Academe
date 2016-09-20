@@ -352,6 +352,8 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             return [];
         }
 
+        $this->validateConditionGroup($conditionGroup);
+
         $useNested  = false;
         $subQueries = [];
 

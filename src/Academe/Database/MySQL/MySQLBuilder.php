@@ -5,12 +5,14 @@ namespace Academe\Database\MySQL;
 use Academe\Actions\Select;
 use Academe\Contracts\CastManager;
 use Academe\Contracts\Conditionable;
+use Academe\Contracts\Connection\Condition;
 use Academe\Contracts\Connection\Formation;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
 use Academe\Database\BaseBuilder;
+use Academe\Exceptions\LogicException;
 use Academe\Traits\SQLValueWrapper;
 
 class MySQLBuilder extends BaseBuilder implements BuilderContract
@@ -409,9 +411,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                                           $withParentheses = false,
                                           CastManager $castManager = null)
     {
-        if ($conditionGroup === null) {
-            return ['', []];
-        }
+        $this->validateConditionGroup($conditionGroup);
 
         $SQLs            = [];
         $paramtersArrays = [];
@@ -421,9 +421,15 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             if ($condition instanceof ConditionGroup) {
                 $needParentheses = $condition->getConditionCount() > 1;
 
-                list($SQL, $parameters) = $this->resolveConditionGroup($condition, $needParentheses);
+                list($SQL, $parameters) = $this->resolveConditionGroup(
+                    $condition,
+                    $needParentheses
+                );
             } else {
-                list($SQL, $parameters) = $condition->parse(Connection::TYPE_MYSQL, $castManager);
+                list($SQL, $parameters) = $condition->parse(
+                    Connection::TYPE_MYSQL,
+                    $castManager
+                );
             }
 
             $SQLs[]            = $SQL;
