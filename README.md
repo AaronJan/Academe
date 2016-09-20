@@ -17,3 +17,5 @@ I always thought ORM should be better (to be continued).
 [Waterline](https://github.com/balderdashy/waterline)
 
 [Laravel MongoDB](https://github.com/jenssegers/laravel-mongodb)
+
+[Ran Ding](https://github.com/randing89)
