@@ -3,14 +3,12 @@
 namespace Academe;
 
 use Academe\Contracts\Academe as AcademeContract;
-use Academe\Contracts\ActionMaker;
 use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Mapper\Blueprint;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Exceptions\ErrorException;
 use Academe\Relation\Contracts\Bond;
 use Academe\Relation\Contracts\RelationManager;
-use Academe\Statement\InstructionStatement;
 use Academe\Statement\Writer;
 
 class Academe implements AcademeContract
@@ -29,11 +27,6 @@ class Academe implements AcademeContract
      * @var ConditionMaker
      */
     protected $conditionMaker;
-
-    /**
-     * @var ActionMaker
-     */
-    protected $actionMaker;
 
     /**
      * @var Writer
@@ -69,7 +62,6 @@ class Academe implements AcademeContract
     {
         $this->initializeConnectionManager($config['connections'], $config['default_connection']);
         $this->initializeCondtionMaker();
-        $this->initializeActionMaker();
         $this->initializeWriter();
     }
 
@@ -125,14 +117,6 @@ class Academe implements AcademeContract
     /**
      *
      */
-    protected function initializeActionMaker()
-    {
-        $this->actionMaker = new \Academe\ActionMaker();
-    }
-
-    /**
-     *
-     */
     protected function initializeWriter()
     {
         $this->writer = new Writer($this->getConditionMaker());
@@ -144,14 +128,6 @@ class Academe implements AcademeContract
     public function getConditionMaker()
     {
         return $this->conditionMaker;
-    }
-
-    /**
-     * @return \Academe\Contracts\ActionMaker
-     */
-    public function getActionMaker()
-    {
-        return $this->actionMaker;
     }
 
     /**

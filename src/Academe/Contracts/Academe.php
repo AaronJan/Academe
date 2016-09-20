@@ -26,11 +26,6 @@ interface Academe
     public function getConditionMaker();
 
     /**
-     * @return \Academe\Contracts\ActionMaker
-     */
-    public function getActionMaker();
-
-    /**
      * @param $class
      * @return Bond
      */
