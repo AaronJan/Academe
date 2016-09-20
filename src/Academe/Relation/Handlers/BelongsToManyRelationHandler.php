@@ -183,7 +183,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $pivotMapper->involve($transactions);
 
         $pivotEntities = $pivotMapper->execute(
-            $academe->build()
+            $academe->getWriter()
+                ->fresh()
                 ->involve($transactions)
                 ->in($this->hostAttribute, $hostPrimaryKeyValues)
                 ->all([$this->guestAttribute])

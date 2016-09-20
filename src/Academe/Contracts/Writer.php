@@ -77,16 +77,16 @@ interface Writer
     public function mod($field, $divisor, $remainder);
 
     /**
-     * @param \Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup[] $conditions
+     * @param \Academe\Contracts\Connection\Condition|\Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup[] $conditions
      * @return \Academe\Statement\ConditionStatement
      */
-    public function any(array $conditions);
+    public function any($conditions);
 
     /**
-     * @param \Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup[] $conditions
+     * @param \Academe\Contracts\Connection\Condition|\Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup[] $conditions
      * @return \Academe\Statement\ConditionStatement
      */
-    public function must(array $conditions);
+    public function must($conditions);
 
     /**
      * @return \Academe\Statement\InstructionStatement

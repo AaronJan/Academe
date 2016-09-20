@@ -187,11 +187,15 @@ class ConditionStatement implements Statement, ConditionGroup
     }
 
     /**
-     * @param Condition[]|ConditionGroup[] $conditions
+     * @param Condition|ConditionGroup|Condition[]|ConditionGroup[] $conditions
      * @return $this
      */
-    public function any(array $conditions)
+    public function any($conditions)
     {
+        if (! is_array($conditions)) {
+            $conditions = func_get_args();
+        }
+
         $conditionGroup = $this->conditionMaker->group($conditions, false);
 
         $this->addCondition($conditionGroup);
@@ -200,11 +204,15 @@ class ConditionStatement implements Statement, ConditionGroup
     }
 
     /**
-     * @param Condition[]|ConditionGroup[] $conditions
+     * @param Condition|ConditionGroup|Condition[]|ConditionGroup[] $conditions
      * @return $this
      */
-    public function must(array $conditions)
+    public function must($conditions)
     {
+        if (! is_array($conditions)) {
+            $conditions = func_get_args();
+        }
+
         $conditionGroup = $this->conditionMaker->group($conditions);
 
         $this->addCondition($conditionGroup);

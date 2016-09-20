@@ -139,19 +139,19 @@ class Writer implements WriterContract
     }
 
     /**
-     * @param Condition[]|ConditionGroup[] $conditions
+     * @param \Academe\Contracts\Connection\Condition|\Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\ConditionGroup[] $conditions
      * @return \Academe\Statement\ConditionStatement
      */
-    public function any(array $conditions)
+    public function any($conditions)
     {
         return $this->makeConditionStatement('any', func_get_args());
     }
 
     /**
-     * @param Condition[]|ConditionGroup[] $conditions
+     * @param \Academe\Contracts\Connection\Condition|\Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\ConditionGroup[] $conditions
      * @return \Academe\Statement\ConditionStatement
      */
-    public function must(array $conditions)
+    public function must($conditions)
     {
         return $this->makeConditionStatement('must', func_get_args());
     }
