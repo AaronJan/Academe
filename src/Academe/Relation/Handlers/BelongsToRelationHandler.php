@@ -1,0 +1,161 @@
+<?php
+
+namespace Academe\Relation\Handlers;
+
+use Academe\Contracts\Academe;
+use Academe\Contracts\Connection\ConditionGroup;
+use Academe\Contracts\Mapper\Mapper;
+use Academe\Relation\BelongsTo;
+
+class BelongsToRelationHandler extends BaseRelationHandler
+{
+    /**
+     * @var BelongsTo
+     */
+    protected $relation;
+
+    /**
+     * @var null|\Closure
+     */
+    protected $tweaker = null;
+
+    /**
+     * @var ConditionGroup|null
+     */
+    protected $conditionGroup = null;
+
+    /**
+     * @var bool
+     */
+    protected $loaded = false;
+
+    /**
+     * @var array
+     */
+    protected $results = [];
+
+    /**
+     * @var array
+     */
+    protected $groupedResults = [];
+
+    /**
+     * @var string
+     */
+    protected $foreignKey;
+
+    /**
+     * @var string
+     */
+    protected $otherKey;
+
+    /**
+     * @var string
+     */
+    protected $relationName;
+
+    /**
+     * BelongsToRelationHandler constructor.
+     *
+     * @param BelongsTo                        $relation
+     * @param \Academe\Contracts\Mapper\Mapper $hostMapper
+     * @param string                           $relationName
+     */
+    public function __construct(BelongsTo $relation, Mapper $hostMapper, $relationName)
+    {
+        $this->relation     = $relation;
+        $this->hostMapper   = $hostMapper;
+        $this->relationName = $relationName;
+        $this->foreignKey   = $relation->getForeignKey();
+        $this->otherKey     = $relation->getOtherKey();
+    }
+
+    /**
+     * @return string
+     */
+    public function getHostKeyAttribute()
+    {
+        return $this->otherKey;
+    }
+
+    /**
+     * @param \Academe\Entity[]|mixed $entities
+     */
+    public function associate($entities)
+    {
+        foreach ($entities as $entity) {
+            $entity[$this->relationName] = $this->getAssociatedResult($entity[$this->foreignKey]);
+        }
+    }
+
+    /**
+     * @param $parentKeyAttribute
+     * @return array
+     */
+    protected function getAssociatedResult($parentKeyAttribute)
+    {
+        if (! isset($this->groupedResults[$parentKeyAttribute])) {
+            $matchedResult = null;
+            $otherKey      = $this->otherKey;
+
+            foreach ($this->results as $result) {
+                // Type must be exactlly matched,
+                // You may need to cast the attribute.
+                if ($result[$otherKey] === $parentKeyAttribute) {
+                    $matchedResult = $result;
+                    break;
+                }
+            }
+
+            $this->groupedResults[$parentKeyAttribute] = $matchedResult;
+        }
+
+        return $this->groupedResults[$parentKeyAttribute];
+    }
+
+    /**
+     * @param                            $entities
+     * @param \Closure                   $constrain
+     * @param \Academe\Contracts\Academe $academe
+     * @param array                      $nestedRelations
+     * @param array                      $transactions
+     * @return $this
+     */
+    public function loadResults($entities,
+                                \Closure $constrain,
+                                Academe $academe,
+                                array $nestedRelations,
+                                array $transactions = [])
+    {
+        if ($this->loaded) {
+            return $this;
+        }
+
+        $foreignKey = $this->foreignKey;
+        $otherKey   = $this->otherKey;
+
+        //拿到父级的ID
+        $parentKeyAttributes = array_map(function ($entity) use ($foreignKey) {
+            return $entity[$foreignKey];
+        }, $entities);
+
+        $parentMapper = $academe->getMapper($this->relation->getParentBlueprintClass());
+
+        $fluentStatement = $this->makeLimitedFluentStatement($academe);
+
+        $fluentStatement->in($otherKey, $parentKeyAttributes);
+
+        $constrain($fluentStatement);
+
+        $parentMapper->involve($transactions);
+
+        $executable = $fluentStatement->upgrade()
+            ->involve($transactions)->with($nestedRelations)->all();
+
+        $this->results = $parentMapper->execute($executable);
+        $this->loaded  = true;
+
+        return $this;
+    }
+
+}

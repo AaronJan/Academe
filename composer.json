@@ -1,0 +1,33 @@
+{
+  "name": "aaronjan/academe",
+  "license": "Apache-2.0",
+  "description": "Academe is an unified ORM for MySQL & MongoDB (maybe more), support Laravel & natvie PHP project.",
+  "keywords": [
+    "ORM",
+    "database",
+    "Laravel"
+  ],
+  "type": "library",
+  "require": {
+    "php": ">=5.6.0",
+    "doctrine/dbal": "^2.5",
+    "mongodb/mongodb": "^1.0.0",
+    "nesbot/carbon": "^1.21"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.0",
+    "mockery/mockery": "^0.9"
+  },
+  "authors": [
+    {
+      "name": "Aaron Jan",
+      "email": "aaronjan@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Academe\\": "src/Academe/"
+    }
+  },
+  "minimum-stability": "stable"
+}
