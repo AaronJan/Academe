@@ -244,12 +244,12 @@ class ConditionStatement implements Statement, ConditionGroup
     /**
      * @return bool
      */
-    public function isLenient()
+    public function isLoose()
     {
         return false;
     }
 
-    public function asLenient()
+    public function asLoose()
     {
         throw new BadMethodCallException("Not allowed.");
     }

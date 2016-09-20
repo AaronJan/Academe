@@ -19,8 +19,8 @@ interface ConditionGroup
     /**
      * @return bool
      */
-    public function isLenient();
+    public function isLoose();
 
-    public function asLenient();
+    public function asLoose();
 
 }

@@ -47,7 +47,7 @@ class ConditionGroup implements ConditionGroupContract
         return $this->mustSatisfyAll;
     }
 
-    public function isLenient()
+    public function isLoose()
     {
         return ! $this->mustSatisfyAll;
     }
@@ -59,7 +59,7 @@ class ConditionGroup implements ConditionGroupContract
         return $this;
     }
 
-    public function asLenient()
+    public function asLoose()
     {
         $this->mustSatisfyAll = false;
 
