@@ -5,7 +5,7 @@
 
 ## Introduction
 
-I always thought ORM should be better. (to be continued)
+I always thought ORM should be better (to be continued).
 
 
 ## Credits
