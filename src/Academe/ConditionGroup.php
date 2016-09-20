@@ -42,6 +42,14 @@ class ConditionGroup implements ConditionGroupContract
         return $this->conditions;
     }
 
+    /**
+     * @return int
+     */
+    public function getConditionCount()
+    {
+        return count($this->conditions);
+    }
+
     public function isStrict()
     {
         return $this->mustSatisfyAll;

@@ -229,6 +229,14 @@ class ConditionStatement implements Statement, ConditionGroup
     }
 
     /**
+     * @return int
+     */
+    public function getConditionCount()
+    {
+        return count($this->conditions);
+    }
+
+    /**
      * @return bool
      */
     public function isStrict()

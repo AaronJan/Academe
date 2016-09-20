@@ -420,7 +420,9 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         foreach ($conditionGroup->getConditions() as $condition) {
             if ($condition instanceof ConditionGroup) {
-                list($SQL, $parameters) = $this->resolveConditionGroup($condition, true);
+                $needParentheses = $condition->getConditionCount() > 1;
+
+                list($SQL, $parameters) = $this->resolveConditionGroup($condition, $needParentheses);
             } else {
                 $commandUnit = $condition->parse(Connection::TYPE_MYSQL, $castManager);
                 list($SQL, $parameters) = $commandUnit->getRaw();

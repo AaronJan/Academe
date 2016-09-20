@@ -10,6 +10,11 @@ interface ConditionGroup
     public function getConditions();
 
     /**
+     * @return int
+     */
+    public function getConditionCount();
+
+    /**
      * @return bool
      */
     public function isStrict();

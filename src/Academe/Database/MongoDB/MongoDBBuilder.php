@@ -357,7 +357,10 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
         foreach ($conditionGroup->getConditions() as $condition) {
             if ($condition instanceof ConditionGroup) {
-                $useNested    = true;
+                if ($condition->getConditionCount() > 1) {
+                    $useNested = true;
+                }
+
                 $subQueries[] = $this->resolveConditionGroup($condition);
             } else {
                 $commandUnit  = $condition->parse(Connection::TYPE_MONGODB, $castManager);
@@ -365,7 +368,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             }
         }
 
-        if ($conditionGroup->isStrict() === true) {
+        if ($conditionGroup->isStrict()) {
             return $useNested ?
                 ['$and' => $subQueries] :
                 static::collapse($subQueries);
