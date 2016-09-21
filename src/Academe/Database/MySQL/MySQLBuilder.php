@@ -338,6 +338,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     protected function analyseConditionClause(ConditionGroup $conditionGroup = null,
                                               CastManager $castManager = null)
     {
+        // Every query have at least one ConditionGroup parameter, it's null at
+        // default, should ignore it.
         if ($conditionGroup === null) {
             return ['', []];
         }
@@ -411,7 +413,10 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                                           $withParentheses = false,
                                           CastManager $castManager = null)
     {
-        $this->validateConditionGroup($conditionGroup);
+        // Ignore ConditionGroup that have no Condition in it.
+        if ($conditionGroup->getConditionCount() === 0) {
+            return ['', []];
+        }
 
         $SQLs            = [];
         $paramtersArrays = [];

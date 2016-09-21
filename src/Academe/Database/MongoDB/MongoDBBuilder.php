@@ -172,7 +172,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $operation      = 'aggregate';
         $collection     = $subject;
 
-        // Match State，过滤结果
+        // Match State，filter result
         $matchStage = $this->resolveConditionGroup($conditionGroup);
         if (! empty($matchStage)) {
             $pipeline[] = ['$match' => $matchStage];
@@ -348,11 +348,12 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     public function resolveConditionGroup(ConditionGroup $conditionGroup = null,
                                           CastManager $castManager = null)
     {
-        if ($conditionGroup === null) {
+        if (
+            $conditionGroup === null ||
+            $conditionGroup->getConditionCount() === 0
+        ) {
             return [];
         }
-
-        $this->validateConditionGroup($conditionGroup);
 
         $useNested  = false;
         $subQueries = [];
