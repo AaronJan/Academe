@@ -41,7 +41,7 @@ interface ConditionMaker
      * @param $value
      * @return GreaterThanOrEqual
      */
-    public function greaterThaniOrEqual($attribute, $value);
+    public function greaterThanOrEqual($attribute, $value);
 
     /**
      * @param $attribute

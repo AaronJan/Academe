@@ -249,6 +249,10 @@ class InstructionStatement extends RelationStatement
         );
     }
 
+    /**
+     * @param array $attributes
+     * @return \Academe\Statement\TerminatedStatement
+     */
     public function create(array $attributes)
     {
         if ($this->hadConditionAlready()) {
@@ -261,6 +265,9 @@ class InstructionStatement extends RelationStatement
         );
     }
 
+    /**
+     * @return \Academe\Statement\TerminatedStatement
+     */
     public function delete()
     {
         return $this->makeTerminatedStatement(
@@ -269,6 +276,9 @@ class InstructionStatement extends RelationStatement
         );
     }
 
+    /**
+     * @return \Academe\Statement\TerminatedStatement
+     */
     public function exists()
     {
         return $this->makeTerminatedStatement(
@@ -277,6 +287,10 @@ class InstructionStatement extends RelationStatement
         );
     }
 
+    /**
+     * @param array|null $fields
+     * @return \Academe\Statement\TerminatedStatement
+     */
     public function first(array $fields = null)
     {
         $fields = $this->filterFields($fields);
@@ -287,6 +301,12 @@ class InstructionStatement extends RelationStatement
         );
     }
 
+    /**
+     * @param            $page
+     * @param int        $perPage
+     * @param array|null $attributes
+     * @return \Academe\Statement\TerminatedStatement
+     */
     public function paginate($page, $perPage = 15, array $attributes = null)
     {
         $attributes = $this->filterFields($attributes);

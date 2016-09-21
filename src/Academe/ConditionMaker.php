@@ -71,7 +71,7 @@ class ConditionMaker implements ConditionMakerContract
      * @param $value
      * @return GreaterThanOrEqual
      */
-    public function greaterThaniOrEqual($attribute, $value)
+    public function greaterThanOrEqual($attribute, $value)
     {
         return new GreaterThanOrEqual($attribute, $value);
     }

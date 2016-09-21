@@ -65,6 +65,11 @@ interface Mapper
     public function relation($relationName);
 
     /**
+     * @return \Academe\Statement\MapperStatement
+     */
+    public function query();
+
+    /**
      * @param array                                        $fields
      * @param \Academe\Contracts\Connection\ConditionGroup $conditionGroup
      * @return \Academe\Contracts\Mapper\Instructions\All

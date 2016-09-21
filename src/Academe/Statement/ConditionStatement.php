@@ -105,9 +105,9 @@ class ConditionStatement implements Statement, ConditionGroup
      * @param $value
      * @return $this
      */
-    public function greaterThaniOrEqual($attribute, $value)
+    public function greaterThanOrEqual($attribute, $value)
     {
-        $this->addCondition($this->conditionMaker->greaterThaniOrEqual($attribute, $value));
+        $this->addCondition($this->conditionMaker->greaterThanOrEqual($attribute, $value));
 
         return $this;
     }
