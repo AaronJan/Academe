@@ -3,8 +3,10 @@
 namespace Academe\Casting\Casters;
 
 use Academe\Contracts\Connection\Connection;
+use Academe\Exceptions\BadMethodCallException;
+use MongoDB\BSON\ObjectID;
 
-class IntegerCaster extends BaseCaster
+class MongoDBObjectIDCaster extends BaseCaster
 {
     /**
      * @var array
@@ -23,43 +25,52 @@ class IntegerCaster extends BaseCaster
     ];
 
     /**
+     * @throws BadMethodCallException
+     */
+    protected function throwUnsupportException()
+    {
+        $message = "MongoDBObjectIDCaster can't be used with Database other than MongoDB.";
+
+        throw new BadMethodCallException($message);
+    }
+
+    /**
      * @param $connectionType
      * @param $value
-     * @return int
      */
     protected function castInPDO($connectionType, $value)
     {
-        return (int) $value;
+        $this->throwUnsupportException();
     }
 
     /**
      * @param $connectionType
      * @param $value
-     * @return int
      */
     protected function castOutPDO($connectionType, $value)
     {
-        return (int) $value;
+        $this->throwUnsupportException();
     }
 
     /**
-     * @param $connectionType
-     * @param $value
-     * @return int
+     * @param        $connectionType
+     * @param string $value
+     * @return \MongoDB\BSON\ObjectID
      */
     protected function castInMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return new ObjectID($value);
     }
 
     /**
-     * @param $connectionType
-     * @param $value
-     * @return int
+     * @param          $connectionType
+     * @param ObjectID $value
+     * @return mixed
      */
     protected function castOutMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return (string) $value;
     }
+
 }
 

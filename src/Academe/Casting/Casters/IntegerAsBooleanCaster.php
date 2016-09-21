@@ -4,7 +4,7 @@ namespace Academe\Casting\Casters;
 
 use Academe\Contracts\Connection\Connection;
 
-class IntegerCaster extends BaseCaster
+class IntegerAsBooleanCaster extends BaseCaster
 {
     /**
      * @var array
@@ -39,7 +39,7 @@ class IntegerCaster extends BaseCaster
      */
     protected function castOutPDO($connectionType, $value)
     {
-        return (int) $value;
+        return (boolean) $value;
     }
 
     /**
@@ -59,7 +59,7 @@ class IntegerCaster extends BaseCaster
      */
     protected function castOutMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return (boolean) $value;
     }
 }
 

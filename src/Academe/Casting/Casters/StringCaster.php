@@ -23,37 +23,41 @@ class StringCaster extends BaseCaster
     ];
 
     /**
-     * @param      $value
+     * @param $connectionType
+     * @param $value
      * @return int
      */
-    protected function castInPDO($value)
+    protected function castInPDO($connectionType, $value)
     {
         return (string) $value;
     }
 
     /**
-     * @param      $value
+     * @param $connectionType
+     * @param $value
      * @return int
      */
-    protected function castOutPDO($value)
+    protected function castOutPDO($connectionType, $value)
     {
         return (string) $value;
     }
 
     /**
-     * @param      $value
+     * @param $connectionType
+     * @param $value
      * @return int
      */
-    static protected function castInMongoDB($value)
+    static protected function castInMongoDB($connectionType, $value)
     {
         return (string) $value;
     }
 
     /**
-     * @param      $value
+     * @param $connectionType
+     * @param $value
      * @return int
      */
-    static protected function castOutMongoDB($value)
+    static protected function castOutMongoDB($connectionType, $value)
     {
         return (string) $value;
     }

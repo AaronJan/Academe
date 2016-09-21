@@ -17,21 +17,6 @@ abstract class BaseCaster implements CasterContract
     static protected $connectionTypeToCastOutMethodMap = [];
 
     /**
-     * @var array
-     */
-    protected $options = [];
-
-    /**
-     * StringCaster constructor.
-     *
-     * @param array $options
-     */
-    public function __construct(array $options = [])
-    {
-        $this->options = array_merge($this->options, $options);
-    }
-
-    /**
      * @param      $value
      * @param      $connectionType
      * @return mixed
@@ -40,7 +25,7 @@ abstract class BaseCaster implements CasterContract
     {
         $method = static::$connectionTypeToCastInMethodMap[$connectionType];
 
-        return call_user_func_array([$this, $method], [$value]);
+        return call_user_func_array([$this, $method], [$connectionType, $value]);
     }
 
     /**
@@ -52,6 +37,6 @@ abstract class BaseCaster implements CasterContract
     {
         $method = static::$connectionTypeToCastOutMethodMap[$connectionType];
 
-        return call_user_func_array([$this, $method], [$value]);
+        return call_user_func_array([$this, $method], [$connectionType, $value]);
     }
 }

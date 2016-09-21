@@ -4,7 +4,7 @@ namespace Academe\Casting\Casters;
 
 use Academe\Contracts\Connection\Connection;
 
-class IntegerCaster extends BaseCaster
+class JSONCaster extends BaseCaster
 {
     /**
      * @var array
@@ -25,41 +25,41 @@ class IntegerCaster extends BaseCaster
     /**
      * @param $connectionType
      * @param $value
-     * @return int
+     * @return string
      */
-    protected function castInPDO($connectionType, $value)
+    static protected function castInPDO($connectionType, $value)
     {
-        return (int) $value;
+        return json_encode($value);
     }
 
     /**
      * @param $connectionType
      * @param $value
-     * @return int
+     * @return array
      */
-    protected function castOutPDO($connectionType, $value)
+    static protected function castOutPDO($connectionType, $value)
     {
-        return (int) $value;
+        return json_decode($value, true);
     }
 
     /**
      * @param $connectionType
      * @param $value
-     * @return int
+     * @return string
      */
-    protected function castInMongoDB($connectionType, $value)
+    static protected function castInMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return $value;
     }
 
     /**
      * @param $connectionType
      * @param $value
-     * @return int
+     * @return array
      */
-    protected function castOutMongoDB($connectionType, $value)
+    static protected function castOutMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return $value;
     }
+
 }
-

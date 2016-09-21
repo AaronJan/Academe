@@ -4,7 +4,7 @@ namespace Academe\Casting\Casters;
 
 use Academe\Contracts\Connection\Connection;
 
-class IntegerCaster extends BaseCaster
+class FloatCaster extends BaseCaster
 {
     /**
      * @var array
@@ -29,7 +29,7 @@ class IntegerCaster extends BaseCaster
      */
     protected function castInPDO($connectionType, $value)
     {
-        return (int) $value;
+        return (float) $value;
     }
 
     /**
@@ -39,7 +39,7 @@ class IntegerCaster extends BaseCaster
      */
     protected function castOutPDO($connectionType, $value)
     {
-        return (int) $value;
+        return (float) $value;
     }
 
     /**
@@ -49,7 +49,7 @@ class IntegerCaster extends BaseCaster
      */
     protected function castInMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return (float) $value;
     }
 
     /**
@@ -59,7 +59,7 @@ class IntegerCaster extends BaseCaster
      */
     protected function castOutMongoDB($connectionType, $value)
     {
-        return (int) $value;
+        return (float) $value;
     }
 }
 
