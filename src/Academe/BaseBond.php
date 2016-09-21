@@ -25,14 +25,6 @@ abstract class BaseBond implements BondContract
     /**
      * @return array
      */
-    public function castRules()
-    {
-        return [];
-    }
-
-    /**
-     * @return array
-     */
     public function customs()
     {
         return [];

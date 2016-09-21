@@ -25,14 +25,6 @@ abstract class BaseBlueprint implements BlueprintContract
     /**
      * @return array
      */
-    public function castRules()
-    {
-        return [];
-    }
-
-    /**
-     * @return array
-     */
     public function customs()
     {
         return [];
