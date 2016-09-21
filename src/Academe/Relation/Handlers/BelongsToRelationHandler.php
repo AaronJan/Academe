@@ -73,7 +73,7 @@ class BelongsToRelationHandler extends BaseRelationHandler
     /**
      * @return string
      */
-    public function getHostKeyAttribute()
+    public function getHostKeyField()
     {
         return $this->otherKey;
     }
@@ -89,28 +89,28 @@ class BelongsToRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param $parentKeyAttribute
+     * @param $parentKeyField
      * @return array
      */
-    protected function getAssociatedResult($parentKeyAttribute)
+    protected function getAssociatedResult($parentKeyField)
     {
-        if (! isset($this->groupedResults[$parentKeyAttribute])) {
+        if (! isset($this->groupedResults[$parentKeyField])) {
             $matchedResult = null;
             $otherKey      = $this->otherKey;
 
             foreach ($this->results as $result) {
                 // Type must be exactlly matched,
                 // You may need to cast the attribute.
-                if ($result[$otherKey] === $parentKeyAttribute) {
+                if ($result[$otherKey] === $parentKeyField) {
                     $matchedResult = $result;
                     break;
                 }
             }
 
-            $this->groupedResults[$parentKeyAttribute] = $matchedResult;
+            $this->groupedResults[$parentKeyField] = $matchedResult;
         }
 
-        return $this->groupedResults[$parentKeyAttribute];
+        return $this->groupedResults[$parentKeyField];
     }
 
     /**

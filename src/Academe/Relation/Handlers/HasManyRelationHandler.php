@@ -11,8 +11,9 @@ class HasManyRelationHandler extends HasOneOrManyRelationHandler
     /**
      * HasManyRelationHandler constructor.
      *
-     * @param HasMany       $relation
-     * @param               $relationName
+     * @param \Academe\Relation\HasMany        $relation
+     * @param \Academe\Contracts\Mapper\Mapper $hostMapper
+     * @param                                  $relationName
      */
     public function __construct(HasMany $relation, Mapper $hostMapper, $relationName)
     {

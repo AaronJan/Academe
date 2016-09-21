@@ -13,7 +13,7 @@ interface RelationHandler
     /**
      * @return string
      */
-    public function getHostKeyAttribute();
+    public function getHostKeyField();
 
     /**
      * @param Entity[]|mixed $entities

@@ -18,6 +18,7 @@ return [
             'collation'   => 'utf8_unicode_ci',
             'pdo_options' => [
 //                \PDO::ATTR_EMULATE_PREPARES => true,
+//                \PDO::MYSQL_ATTR_INIT_COMMAND => "set session sql_mode='NO_ENGINE_SUBSTITUTION'",
             ],
         ],
 

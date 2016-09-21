@@ -58,12 +58,12 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     /**
      * @var string
      */
-    protected $hostAttribute;
+    protected $hostField;
 
     /**
      * @var string
      */
-    protected $guestAttribute;
+    protected $guestField;
 
     /**
      * BelongsToManyRelationHandler constructor.
@@ -88,13 +88,13 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $bond    = $academe->getBond($this->relation->getBondClass());
 
         if ($relation->isHost()) {
-            $this->hostAttribute  = $bond->hostKeyAttribute();
-            $this->guestAttribute = $bond->guestKeyAttribute();
+            $this->hostField      = $bond->hostKeyField();
+            $this->guestField     = $bond->guestKeyField();
             $this->hostBlueprint  = $academe->getBlueprint($bond->hostBlueprintClass());
             $this->guestBlueprint = $academe->getBlueprint($bond->guestBlueprintClass());
         } else {
-            $this->hostAttribute  = $bond->guestKeyAttribute();
-            $this->guestAttribute = $bond->hostKeyAttribute();
+            $this->hostField      = $bond->guestKeyField();
+            $this->guestField     = $bond->hostKeyField();
             $this->hostBlueprint  = $academe->getBlueprint($bond->guestBlueprintClass());
             $this->guestBlueprint = $academe->getBlueprint($bond->hostBlueprintClass());
         }
@@ -103,7 +103,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     /**
      * @return string
      */
-    public function getHostKeyAttribute()
+    public function getHostKeyField()
     {
         return $this->hostBlueprint->primaryKey();
     }
@@ -186,25 +186,26 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             $academe->getWriter()
                 ->fresh()
                 ->involve($transactions)
-                ->in($this->hostAttribute, $hostPrimaryKeyValues)
-                ->all([$this->guestAttribute])
+                ->in($this->hostField, $hostPrimaryKeyValues)
+                ->all([$this->guestField])
         );
 
         $guestPrimaryKeyValues = array_map(function ($pivotEntity) {
-            return $pivotEntity[$this->guestAttribute];
+            return $pivotEntity[$this->guestField];
         }, $pivotEntities);
 
         // Fetch guest entities
-        $fluentStatement = $this->makeLimitedFluentStatement($academe);
-
-        $fluentStatement->in($guestMapper->getPrimaryKey(), $guestPrimaryKeyValues);
+        $fluentStatement = $this->makeLimitedFluentStatement($academe)
+            ->in($guestMapper->getPrimaryKey(), $guestPrimaryKeyValues);
 
         $constrain($fluentStatement);
 
         $guestMapper->involve($transactions);
 
         $executable = $fluentStatement->upgrade()
-            ->involve($transactions)->with($nestedRelations)->all();
+            ->involve($transactions)
+            ->with($nestedRelations)
+            ->all();
 
         $this->results = $guestMapper->execute($executable);
         $this->loaded  = true;

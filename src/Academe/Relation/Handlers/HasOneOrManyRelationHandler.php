@@ -70,7 +70,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     /**
      * @return string
      */
-    public function getHostKeyAttribute()
+    public function getHostKeyField()
     {
         return $this->localKey;
     }

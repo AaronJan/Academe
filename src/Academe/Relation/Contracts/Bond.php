@@ -11,12 +11,29 @@ interface Bond extends Blueprint
      */
     public function managerClass();
 
+    /**
+     * @return string
+     */
     public function hostBlueprintClass();
 
-    public function hostKeyAttribute();
+    /**
+     * @return string
+     */
+    public function hostKeyField();
 
+    /**
+     * @return string
+     */
     public function guestBlueprintClass();
 
-    public function guestKeyAttribute();
+    /**
+     * @return string
+     */
+    public function guestKeyField();
+
+    /**
+     * @return string
+     */
+    public function pivotField();
 
 }

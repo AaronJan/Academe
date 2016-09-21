@@ -75,13 +75,13 @@ class ManyToManyRelationManager implements RelationManager
 
         $this->hostToGuestPivotHandler = new ManyToManyRelationPivot(
             $pivotMapper,
-            $bond->hostKeyAttribute(),
-            $bond->guestKeyAttribute()
+            $bond->hostKeyField(),
+            $bond->guestKeyField()
         );
         $this->guestToHostPivotHandler = new ManyToManyRelationPivot(
             $pivotMapper,
-            $bond->guestKeyAttribute(),
-            $bond->hostKeyAttribute()
+            $bond->guestKeyField(),
+            $bond->hostKeyField()
         );
     }
 
