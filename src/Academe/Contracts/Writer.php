@@ -91,5 +91,5 @@ interface Writer
     /**
      * @return \Academe\Statement\InstructionStatement
      */
-    public function fresh();
+    public function query();
 }

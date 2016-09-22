@@ -3,8 +3,6 @@
 namespace Academe\Statement;
 
 use Academe\Contracts\ConditionMaker;
-use Academe\Contracts\Connection\Condition;
-use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Writer as WriterContract;
 
 class Writer implements WriterContract
@@ -159,7 +157,7 @@ class Writer implements WriterContract
     /**
      * @return \Academe\Statement\InstructionStatement
      */
-    public function fresh()
+    public function query()
     {
         return new InstructionStatement($this->conditionMaker);
     }
