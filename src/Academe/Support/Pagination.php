@@ -25,7 +25,7 @@ class Pagination
     protected $currentPage;
 
     /**
-     * @var float
+     * @var int
      */
     protected $lastPage;
 
@@ -43,7 +43,7 @@ class Pagination
         $this->total       = $total;
         $this->perPage     = $perPage;
         $this->currentPage = $currentPage;
-        $this->lastPage    = ceil($total / $perPage);
+        $this->lastPage    = (int) ceil($total / $perPage);
     }
 
     /**
