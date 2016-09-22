@@ -59,7 +59,7 @@ class JSONCaster extends BaseCaster
      */
     static protected function castOutMongoDB($connectionType, $value)
     {
-        return $value;
+        return (array) $value;
     }
 
 }
