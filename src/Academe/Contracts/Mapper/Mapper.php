@@ -135,11 +135,11 @@ interface Mapper
                                            ConditionGroup $conditionGroup);
 
     /**
-     * @param array                                        $attributes
      * @param \Academe\Contracts\Connection\ConditionGroup $conditionGroup
+     * @param array                                        $attributes
      * @return \Academe\Contracts\Mapper\Instructions\Update
      */
-    public function makeUpdateInstruction(array $attributes,
-                                          ConditionGroup $conditionGroup);
+    public function makeUpdateInstruction(ConditionGroup $conditionGroup,
+                                          array $attributes);
 
 }

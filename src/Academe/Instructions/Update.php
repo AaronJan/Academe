@@ -37,7 +37,7 @@ class Update extends WriteType implements UpdateContract
         $action = new UpdateAction($this->conditionGroup, $attributes);
 
         return $connection->makeBuilder()
-            ->parse($mapper->getSubject(), $action, $mapper);
+            ->parse($mapper->getSubject(), $action, $mapper->getCastManager());
     }
 
 }
