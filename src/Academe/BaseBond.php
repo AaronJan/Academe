@@ -39,6 +39,14 @@ abstract class BaseBond implements BondContract
     }
 
     /**
+     * @return null|string
+     */
+    public function managerClass()
+    {
+        return null;
+    }
+
+    /**
      * @return string
      */
     public function pivotField()

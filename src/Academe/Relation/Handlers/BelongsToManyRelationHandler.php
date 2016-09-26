@@ -66,6 +66,11 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     protected $guestField;
 
     /**
+     * @var string
+     */
+    protected $pivotField;
+
+    /**
      * BelongsToManyRelationHandler constructor.
      *
      * @param \Academe\Relation\BelongsToMany $relation
@@ -86,6 +91,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     {
         $academe = $this->getAcademe();
         $bond    = $academe->getBond($this->relation->getBondClass());
+
+        $this->pivotField = $bond->pivotField();
 
         if ($relation->isHost()) {
             $this->hostField      = $bond->hostKeyField();
@@ -114,9 +121,13 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      */
     public function associate($entities)
     {
-        $dictionary = $this->buildDictionary();
-
         $hostPrimaryKey = $this->hostBlueprint->primaryKey();
+
+        $dictionary = $this->buildPivotDictionary(
+            $this->results,
+            $this->pivotField,
+            $this->hostField
+        );
 
         foreach ($entities as $entity) {
             $key                         = $entity[$hostPrimaryKey];
@@ -129,14 +140,26 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     /**
      * @return array
      */
-    protected function buildDictionary()
+    protected function buildPivotDictionary($entities, $pivotField, $key)
     {
         $dictionary = [];
 
-        $guestPrimaryKey = $this->guestBlueprint->primaryKey();
+        foreach ($entities as $entity) {
+            $dictionary[$entity[$pivotField][$key]][] = $entity;
+        }
 
-        foreach ($this->results as $result) {
-            $dictionary[$result[$guestPrimaryKey]][] = $result;
+        return $dictionary;
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildDictionary($entities, $key)
+    {
+        $dictionary = [];
+
+        foreach ($entities as $entity) {
+            $dictionary[$entity[$key]][] = $entity;
         }
 
         return $dictionary;
@@ -173,7 +196,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $pivotMapper = $academe->getMapper($this->relation->getBondClass());
         $guestMapper = $academe->getMapper(get_class($this->guestBlueprint));
 
-        $hostPrimaryKey = $this->hostBlueprint->primaryKey();
+        $hostPrimaryKey  = $this->hostBlueprint->primaryKey();
+        $guestPrimaryKey = $guestMapper->getPrimaryKey();
 
         $hostPrimaryKeyValues = array_map(function ($entity) use ($hostPrimaryKey) {
             return $entity[$hostPrimaryKey];
@@ -182,32 +206,38 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         // Fetch pivot entities
         $pivotMapper->involve($transactions);
 
-        $pivotEntities = $pivotMapper->execute(
-            $academe->getWriter()
-                ->query()
-                ->involve($transactions)
-                ->in($this->hostField, $hostPrimaryKeyValues)
-                ->all([$this->guestField])
-        );
+        $pivotEntities = $pivotMapper->query()
+            ->involve($transactions)
+            ->in($this->hostField, $hostPrimaryKeyValues)
+            ->all();
 
         $guestPrimaryKeyValues = array_map(function ($pivotEntity) {
             return $pivotEntity[$this->guestField];
         }, $pivotEntities);
 
         // Fetch guest entities
-        $fluentStatement = $this->makeLimitedFluentStatement($academe)
-            ->in($guestMapper->getPrimaryKey(), $guestPrimaryKeyValues);
+        $statement = $this->makeLimitedFluentStatement($academe)
+            ->in($guestPrimaryKey, $guestPrimaryKeyValues);
 
-        $constrain($fluentStatement);
+        $constrain($statement);
 
         $guestMapper->involve($transactions);
 
-        $executable = $fluentStatement->upgrade()
+        $guestEntities = $guestMapper->query($statement)
             ->involve($transactions)
             ->with($nestedRelations)
             ->all();
 
-        $this->results = $guestMapper->execute($executable);
+        $pivotDictionary = $this->buildDictionary($pivotEntities, $this->guestField);
+        $pivotField      = $academe->getBond($this->relation->getBondClass())->pivotField();
+
+        foreach ($guestEntities as $guestEntity) {
+            $guestEntity[$pivotField] = isset($pivotDictionary[$guestEntity[$guestPrimaryKey]]) ?
+                reset($pivotDictionary[$guestEntity[$guestPrimaryKey]]) :
+                null;
+        }
+
+        $this->results = $guestEntities;
         $this->loaded  = true;
 
         return $this;
