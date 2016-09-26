@@ -9,6 +9,7 @@ use Academe\Contracts\Mapper\Mapper;
 use Academe\Exceptions\ErrorException;
 use Academe\Relation\Contracts\Bond;
 use Academe\Relation\Contracts\RelationManager;
+use Academe\Relation\Managers\ManyToManyRelationManager;
 use Academe\Statement\Writer;
 
 class Academe implements AcademeContract
@@ -138,7 +139,7 @@ class Academe implements AcademeContract
     {
         if (! isset($this->relationManagers[$bondClass])) {
             $bond         = $this->getBond($bondClass);
-            $managerClass = $bond->managerClass();
+            $managerClass = $bond->managerClass() ?: ManyToManyRelationManager::class;
 
             $this->relationManagers[$bondClass] = new $managerClass(
                 $bond,

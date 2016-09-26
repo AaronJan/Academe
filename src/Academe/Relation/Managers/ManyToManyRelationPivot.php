@@ -2,9 +2,8 @@
 
 namespace Academe\Relation\Managers;
 
-use Academe\Contracts\ConditionMaker;
-use Academe\Contracts\Connection\Condition;
 use Academe\Contracts\Mapper\Mapper;
+use Academe\Contracts\Writer;
 use Academe\Relation\Contracts\RelationPivot;
 
 class ManyToManyRelationPivot implements RelationPivot
@@ -62,12 +61,10 @@ class ManyToManyRelationPivot implements RelationPivot
     {
         $pivotMapper = $this->getPivotMapper();
 
-        $conditions = [
-            $pivotMapper->equal($this->mainKey, $hostPrimary),
-            $pivotMapper->in($this->attachedKey, $guestPrimaries),
-        ];
-
-        return $pivotMapper->execute($pivotMapper->delete($conditions));
+        return $pivotMapper->query()
+            ->equal($this->mainKey, $hostPrimary)
+            ->in($this->attachedKey, $guestPrimaries)
+            ->delete();
     }
 
     /**
@@ -78,10 +75,11 @@ class ManyToManyRelationPivot implements RelationPivot
     {
         $pivotMapper = $this->getPivotMapper();
 
-        $entity = $pivotMapper->execute($pivotMapper->first(
-            ['*'],
-            $this->makeEqualityConditionsFromAttributes($mainAttributes, $pivotMapper)
-        ));
+        $writer = $pivotMapper->getAcademe()->getWriter();
+
+        $conditionStatement = $this->makeEqualityConditionsFromAttributes($mainAttributes, $writer);
+
+        $entity = $pivotMapper->query($conditionStatement)->first();
 
         if ($entity) {
             $primaryKey = $pivotMapper->getPrimaryKey();
@@ -92,7 +90,8 @@ class ManyToManyRelationPivot implements RelationPivot
                 $additionAttributes
             );
         } else {
-            $pivotMapper->execute($pivotMapper->create(array_merge($additionAttributes, $mainAttributes)));
+            $pivotMapper->query()
+                ->create(array_merge($additionAttributes, $mainAttributes));
         }
     }
 
@@ -110,11 +109,9 @@ class ManyToManyRelationPivot implements RelationPivot
 
         $pivotMapper = $this->getPivotMapper();
 
-        $instruction = $pivotMapper->update([
-            $pivotMapper->equal($primaryKey, $primaryKeyValue),
-        ], $attributes);
-
-        return $pivotMapper->execute($instruction);
+        return $pivotMapper->query()
+            ->equal($primaryKey, $primaryKeyValue)
+            ->update($attributes);
     }
 
     /**
@@ -125,9 +122,9 @@ class ManyToManyRelationPivot implements RelationPivot
     {
         $pivotMapper = $this->getPivotMapper();
 
-        return $pivotMapper->execute($pivotMapper->delete([
-            $pivotMapper->equal($this->mainKey, $hostPrimary),
-        ]));
+        return $pivotMapper->query()
+            ->equal($this->mainKey, $hostPrimary)
+            ->delete();
     }
 
     /**
@@ -146,10 +143,9 @@ class ManyToManyRelationPivot implements RelationPivot
         $pivotMapper     = $this->getPivotMapper();
         $pivotPrimaryKey = $pivotMapper->getPrimaryKey();
 
-        $currentEntities = $pivotMapper->execute($pivotMapper->all(
-            [$pivotPrimaryKey, $this->attachedKey],
-            [$pivotMapper->equal($this->mainKey, $hostPrimary)]
-        ));
+        $currentEntities = $pivotMapper->query()
+            ->equal($this->mainKey, $hostPrimary)
+            ->all([$pivotPrimaryKey, $this->attachedKey]);
 
         $currentList = $this->makeList($currentEntities, $pivotPrimaryKey, $this->attachedKey);
 
@@ -243,17 +239,13 @@ class ManyToManyRelationPivot implements RelationPivot
     {
         $pivotMapper = $this->getPivotMapper();
 
-        $conditions = $this->makeEqualityConditionsFromAttributes([
+        $conditionStatement = $this->makeEqualityConditionsFromAttributes([
             $this->mainKey     => $mainKeyValue,
             $this->attachedKey => $attachedKeyValue,
-        ], $pivotMapper);
+        ], $pivotMapper->getAcademe()->getWriter());
 
-        $updated = $pivotMapper->execute($pivotMapper->update(
-            $conditions,
-            $additionAttributes
-        ));
-
-        return $updated;
+        return $pivotMapper->query($conditionStatement)
+            ->update($additionAttributes);
     }
 
     /**
@@ -265,19 +257,19 @@ class ManyToManyRelationPivot implements RelationPivot
     }
 
     /**
-     * @param                                   $attributes
-     * @param \Academe\Contracts\ConditionMaker $conditionMaker
-     * @return Condition[]
+     * @param                           $attributes
+     * @param \Academe\Contracts\Writer $writer
+     * @return \Academe\Statement\ConditionStatement
      */
-    protected function makeEqualityConditionsFromAttributes($attributes, ConditionMaker $conditionMaker)
+    protected function makeEqualityConditionsFromAttributes($attributes, Writer $writer)
     {
         $conditions = [];
 
         foreach ($attributes as $attribute => $value) {
-            $conditions[] = $conditionMaker->equal($attribute, $value);
+            $conditions[] = $writer->equal($attribute, $value);
         }
 
-        return $conditions;
+        return $writer->must($conditions);
     }
 
 }
