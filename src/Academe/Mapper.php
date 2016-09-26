@@ -16,7 +16,6 @@ use Academe\Relation\Contracts\RelationHandler;
 use Academe\Casting\CastManager;
 use Academe\Statement\MapperStatement;
 use Academe\Contracts\Connection\Condition;
-use Academe\Support\Pagination;
 
 class Mapper implements MapperContract
 {
@@ -287,11 +286,16 @@ class Mapper implements MapperContract
     }
 
     /**
+     * @param null|Condition|ConditionGroup $condition
      * @return \Academe\Statement\MapperStatement
      */
-    public function query()
+    public function query($condition = null)
     {
-        return new MapperStatement($this, $this->getAcademe()->getConditionMaker());
+        return new MapperStatement(
+            $this,
+            $this->getAcademe()->getConditionMaker(),
+            $condition
+        );
     }
 
 }

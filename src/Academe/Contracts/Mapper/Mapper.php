@@ -3,6 +3,7 @@
 namespace Academe\Contracts\Mapper;
 
 use Academe\Contracts\Academe;
+use Academe\Contracts\Connection\Condition;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Transaction;
@@ -65,9 +66,10 @@ interface Mapper
     public function relation($relationName);
 
     /**
+     * @param null|Condition|ConditionGroup $condition
      * @return \Academe\Statement\MapperStatement
      */
-    public function query();
+    public function query($condition = null);
 
     /**
      * @param array                                        $fields
