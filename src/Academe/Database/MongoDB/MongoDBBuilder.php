@@ -148,7 +148,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $operation  = 'deletemany';
         $collection = $subject;
 
-        $filters = $this->resolveConditionGroup($conditionGroup);
+        $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
 
         return new MongoDBQuery(
             $operation,
@@ -173,7 +173,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $collection     = $subject;
 
         // Match State，filter result
-        $matchStage = $this->resolveConditionGroup($conditionGroup);
+        $matchStage = $this->resolveConditionGroup($conditionGroup, $castManager);
         if (! empty($matchStage)) {
             $pipeline[] = ['$match' => $matchStage];
         }
@@ -231,7 +231,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $collection = $subject;
 
         // 将条件解析为filters
-        $filters = $this->resolveConditionGroup($conditionGroup);
+        $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
 
         return new MongoDBQuery(
             $operation,
@@ -298,7 +298,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $collection = $subject;
 
         // 将条件解析为filters
-        $filters = $this->resolveConditionGroup($conditionGroup);
+        $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
 
         return new MongoDBQuery(
             $operation,

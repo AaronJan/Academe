@@ -3,7 +3,7 @@
 namespace Academe\Actions;
 
 use Academe\Contracts\Connection\Action;
-use Academe\Traits\BeCondtionable;
+use Academe\Actions\Traits\BeCondtionable;
 use Academe\Contracts\Conditionable;
 use Academe\Contracts\Connection\ConditionGroup;
 
