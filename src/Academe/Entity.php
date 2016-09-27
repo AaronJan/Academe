@@ -24,6 +24,11 @@ class Entity implements \ArrayAccess, \JsonSerializable
         $this->offsetSet($name, $value);
     }
 
+    public function __isset($name)
+    {
+        return isset($this->attributes[$name]);
+    }
+
     public function offsetExists($offset)
     {
         return isset($this->attributes[$offset]);
