@@ -76,7 +76,7 @@ class MongoDBOperator extends BaseOperator
 
         $result = $cursor->toArray();
 
-        return $result[0]->value;
+        return empty($result) ? 0 : $result[0]->value;
     }
 
     /**
