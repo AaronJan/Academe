@@ -23,6 +23,10 @@ abstract class BaseCaster implements CasterContract
      */
     public function castIn($value, $connectionType)
     {
+        if ($value === null) {
+            return $value;
+        }
+
         $method = static::$connectionTypeToCastInMethodMap[$connectionType];
 
         return call_user_func_array([$this, $method], [$connectionType, $value]);
@@ -35,6 +39,10 @@ abstract class BaseCaster implements CasterContract
      */
     public function castOut($value, $connectionType)
     {
+        if ($value === null) {
+            return $value;
+        }
+
         $method = static::$connectionTypeToCastOutMethodMap[$connectionType];
 
         return call_user_func_array([$this, $method], [$connectionType, $value]);

@@ -27,31 +27,35 @@ class DateCaster extends BaseCaster
     /**
      * @param        $connectionType
      * @param Carbon $dateTime
-     * @return string
+     * @return mixed|string
      */
     protected function castInPDO($connectionType, $dateTime)
     {
-        return $dateTime->toDateString();
+        return empty($dateTime) ? $dateTime : $dateTime->toDateString();
     }
 
     /**
      * @param        $connectionType
      * @param string $value
-     * @return \Carbon\Carbon
+     * @return mixed|\Carbon\Carbon
      */
     protected function castOutPDO($connectionType, $value)
     {
-        return Carbon::createFromFormat('Y-m-d', $value);
+        return empty($value) ? $value : Carbon::createFromFormat('Y-m-d', $value);
     }
 
     /**
      * @param        $connectionType
      * @param Carbon $dateTime
-     * @return \MongoDB\BSON\UTCDateTime
+     * @return mixed|\MongoDB\BSON\UTCDateTime
      */
     protected function castInMongoDB($connectionType, $dateTime)
     {
-        $UTCMilliseconds = $dateTime->timestamp + $dateTime->offset;
+        if (empty($dateTime)) {
+            return $dateTime;
+        }
+
+        $UTCMilliseconds = ($dateTime->timestamp + $dateTime->offset) * 1000;
 
         return new UTCDateTime($UTCMilliseconds);
     }
@@ -59,11 +63,11 @@ class DateCaster extends BaseCaster
     /**
      * @param             $connectionType
      * @param UTCDateTime $mongoDate
-     * @return \Carbon\Carbon
+     * @return mixed|\Carbon\Carbon
      */
     protected function castOutMongoDB($connectionType, $mongoDate)
     {
-        return Carbon::instance($mongoDate->toDateTime());
+        return empty($mongoDate) ? $mongoDate : Carbon::instance($mongoDate->toDateTime());
     }
 }
 
