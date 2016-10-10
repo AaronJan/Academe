@@ -33,18 +33,10 @@ class AcademeServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($configPath, 'academe');
 
         $this->app->singleton(Academe::class, function ($app) {
-            /**
-             * @var $app \Illuminate\Foundation\Application
-             */
             return \Academe\Academe::initialize($app->config['academe']);
         });
 
         $this->app->singleton(Writer::class, function ($app) {
-            /**
-             * @var $app     \Illuminate\Foundation\Application
-             * @var $academe Academe
-             */
-
             $academe = $app->make(Academe::class);
 
             return $academe->getWriter();
