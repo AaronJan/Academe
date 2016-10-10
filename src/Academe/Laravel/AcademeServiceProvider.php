@@ -3,8 +3,6 @@
 namespace Academe\Laravel;
 
 use Academe\Contracts\Academe;
-use Academe\Contracts\ConditionMaker;
-use Academe\Contracts\InstructionMaker;
 use Academe\Contracts\Writer;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,9 +12,13 @@ class AcademeServiceProvider extends ServiceProvider
     {
         $configPath = __DIR__ . '/../../config/academe.php';
 
-        $this->publishes([
-            $configPath => config_path('academe.php'),
-        ], 'config');
+        if (function_exists('config_path')) {
+            $publishPath = config_path('academe.php');
+        } else {
+            $publishPath = base_path('config/academe.php');
+        }
+
+        $this->publishes([$configPath => $publishPath], 'config');
     }
 
     /**
