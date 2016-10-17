@@ -25,7 +25,14 @@ abstract class WriteType extends BaseExecutable
 
         $result = $connection->run($query);
 
-        return $result;
+        //cast primary key
+        $castedResult = $mapper->getCastManager()->castOut(
+            $mapper->getPrimaryKey(),
+            $result,
+            $connection->getType()
+        );
+
+        return $castedResult;
     }
 
     /**
