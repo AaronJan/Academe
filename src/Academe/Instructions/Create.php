@@ -18,6 +18,29 @@ class Create extends WriteType implements CreateContract
     }
 
     /**
+     * @param Mapper $mapper
+     * @return mixed
+     */
+    public function execute(Mapper $mapper)
+    {
+        $mapper->involve($this->getTransactions());
+
+        $connection = $mapper->getConnection();
+        $query      = $this->makeQuery($connection, $mapper, $this->attributes);
+
+        $result = $connection->run($query);
+
+        //cast primary key
+        $castedResult = $mapper->getCastManager()->castOut(
+            $mapper->getPrimaryKey(),
+            $result,
+            $connection->getType()
+        );
+
+        return $castedResult;
+    }
+
+    /**
      * @param \Academe\Contracts\Connection\Connection $connection
      * @param \Academe\Contracts\Mapper\Mapper         $mapper
      * @param array                                    $attributes
