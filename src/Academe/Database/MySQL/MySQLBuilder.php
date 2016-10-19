@@ -161,7 +161,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         $fieldPart     = self::wrap($field);
         $directionPart = $direction === 'desc' ? 'DESC' : 'ASC';
 
-        return "{$fieldPart}, {$directionPart}";
+        return "{$fieldPart} {$directionPart}";
     }
 
     /**
