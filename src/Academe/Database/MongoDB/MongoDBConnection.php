@@ -88,19 +88,22 @@ class MongoDBConnection extends BaseConnection
      */
     protected function getAuthenticationDSNs($config)
     {
-        $authenticationConfig = isset($config['authentication']) ?
+        $authentication = isset($config['authentication']) ?
             $config['authentication'] :
             [];
 
         $DSN      = '';
         $database = '';
 
-        if (isset($config['username']) && isset($config['password'])) {
-            $DSN = "{$config['username']}:{$config['password']}@";
+        if (
+            ! empty($authentication['username']) &&
+            ! empty($authentication['password'])
+        ) {
+            $DSN = "{$authentication['username']}:{$authentication['password']}@";
         }
 
-        if (isset($authenticationConfig['database'])) {
-            $database = $authenticationConfig['database'];
+        if (isset($config['database'])) {
+            $database = $config['database'];
         }
 
         return [$DSN, $database];
