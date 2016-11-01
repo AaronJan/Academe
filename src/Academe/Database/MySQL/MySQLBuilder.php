@@ -115,7 +115,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         list($limitation, $offset) = $limit;
 
         if ($offset !== null) {
-            $SQL = 'LIMIT ' . ((int) $offset) . ((int) $limitation);
+            $SQL = 'LIMIT ' . ((int) $offset) . ', ' . ((int) $limitation);
         } else {
             $SQL = 'LIMIT ' . ((int) $limitation);
         }
