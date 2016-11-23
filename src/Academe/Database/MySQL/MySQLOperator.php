@@ -37,18 +37,108 @@ class MySQLOperator extends BaseOperator
     }
 
     /**
-     * @param MySQLQueryContract $query
+     * @return \Doctrine\DBAL\Connection
+     */
+    protected function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return mixed
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function run(MySQLQueryContract $query)
     {
-        $connection = $this->connection;
+        $connection = $this->getConnection();
 
         $method = $this->getExecuteMethod($query->getOperation());
 
-        return call_user_func_array([__CLASS__, $method], [$connection, $query]);
+        try {
+            $result = $this->invokeQueryMethod($method, $connection, $query);
+        } catch (\Doctrine\DBAL\DBALException $e) {
+            if ($connection->isTransactionActive()) {
+                throw $e;
+            }
+
+            $result = $this->tryAgainIfCausedByLostConnection(
+                $e, $method, $connection, $query
+            );
+        }
+
+        return $result;
     }
 
+    /**
+     * @param \Doctrine\DBAL\DBALException                 $e
+     * @param                                              $method
+     * @param \Doctrine\DBAL\Connection                    $connection
+     * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
+     * @return mixed
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function tryAgainIfCausedByLostConnection(\Doctrine\DBAL\DBALException $e,
+                                                        $method,
+                                                        \Doctrine\DBAL\Connection $connection,
+                                                        MySQLQueryContract $query)
+    {
+        if ($this->isCausedByLostConnection($e->getPrevious())) {
+            $connection->close();
+            $connection->connect();
+
+            return $this->invokeQueryMethod($method, $connection, $query);
+        }
+
+        throw $e;
+    }
+
+    /**
+     * From Laravel.
+     *
+     * @param \Exception $e
+     * @return bool
+     */
+    protected function isCausedByLostConnection(\Exception $e)
+    {
+        $message = $e->getMessage();
+
+        $possibleErrorMessages = [
+            'server has gone away',
+            'no connection to the server',
+            'Lost connection',
+            'is dead or not enabled',
+            'Error while sending',
+            'decryption failed or bad record mac',
+            'server closed the connection unexpectedly',
+            'SSL connection has been closed unexpectedly',
+            'Error writing data to the connection',
+            'Resource deadlock avoided',
+        ];
+
+        foreach ($possibleErrorMessages as $errorMessage) {
+            if (mb_strpos($message, $errorMessage) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param                                              $method
+     * @param \Doctrine\DBAL\Connection                    $connection
+     * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
+     * @return mixed
+     */
+    protected function invokeQueryMethod($method,
+                                         \Doctrine\DBAL\Connection $connection,
+                                         MySQLQueryContract $query)
+    {
+        $callable = [__CLASS__, $method];
+
+        return call_user_func_array($callable, [$connection, $query]);
+    }
 
     /**
      * @param \Doctrine\DBAL\Connection $connection
