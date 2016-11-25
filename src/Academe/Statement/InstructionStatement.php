@@ -3,15 +3,15 @@
 namespace Academe\Statement;
 
 use Academe\Contracts\Mapper\Instruction;
-use Academe\Contracts\Mapper\Instructions\All;
-use Academe\Contracts\Mapper\Instructions\Count;
-use Academe\Contracts\Mapper\Instructions\Create;
-use Academe\Contracts\Mapper\Instructions\Delete;
-use Academe\Contracts\Mapper\Instructions\Exists;
-use Academe\Contracts\Mapper\Instructions\First;
-use Academe\Contracts\Mapper\Instructions\Paginate;
-use Academe\Contracts\Mapper\Instructions\Segment;
-use Academe\Contracts\Mapper\Instructions\Update;
+use Academe\Instructions\All;
+use Academe\Instructions\Count;
+use Academe\Instructions\Create;
+use Academe\Instructions\Delete;
+use Academe\Instructions\Exists;
+use Academe\Instructions\First;
+use Academe\Instructions\Paginate;
+use Academe\Instructions\Segment;
+use Academe\Instructions\Update;
 use Academe\Contracts\Statement;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Instructions\Traits\WithRelation;
@@ -194,16 +194,18 @@ class InstructionStatement extends RelationStatement
     }
 
     /**
-     * @param       $instructionContract
+     * @param       $instructionClass
      * @param array $instructionConstructParameters
      * @return \Academe\Statement\TerminatedStatement
      */
-    protected function makeTerminatedStatement($instructionContract,
+    protected function makeTerminatedStatement($instructionClass,
                                                array $instructionConstructParameters)
     {
-        return new TerminatedStatement($instructionContract,
+        return new TerminatedStatement(
+            $instructionClass,
             $instructionConstructParameters,
-            $this);
+            $this
+        );
     }
 
     /**

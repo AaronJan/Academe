@@ -200,12 +200,12 @@ class MySQLConnection extends BaseConnection
     }
 
     /**
-     * @param MySQLQueryContract $command
+     * @param MySQLQueryContract $query
      * @return MySQLOperator
      */
-    public function makeOperator(MySQLQueryContract $command)
+    public function makeOperator(MySQLQueryContract $query)
     {
-        return new MySQLOperator($this->getDBALConnection($command->hasChange()));
+        return new MySQLOperator($this->getDBALConnection($query->hasChange()));
     }
 
     /**

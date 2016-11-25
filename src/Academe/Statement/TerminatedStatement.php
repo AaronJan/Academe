@@ -3,39 +3,16 @@
 namespace Academe\Statement;
 
 use Academe\Contracts\Mapper\Executable;
-use Academe\Contracts\Mapper\Instructions\All;
-use Academe\Contracts\Mapper\Instructions\Count;
-use Academe\Contracts\Mapper\Instructions\Create;
-use Academe\Contracts\Mapper\Instructions\Delete;
-use Academe\Contracts\Mapper\Instructions\Exists;
-use Academe\Contracts\Mapper\Instructions\First;
-use Academe\Contracts\Mapper\Instructions\Paginate;
-use Academe\Contracts\Mapper\Instructions\Segment;
-use Academe\Contracts\Mapper\Instructions\Update;
+use Academe\Contracts\Mapper\Instruction;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Exceptions\BadMethodCallException;
+use Academe\Support\ClassInstanceBuilder;
 
 class TerminatedStatement implements Executable
 {
     /**
-     * @var array
-     */
-    static protected $instructionContractToMapMethodMap = [
-        All::class      => 'makeAllInstruction',
-        Count::class    => 'makeCountInstruction',
-        Create::class   => 'makeCreateInstruction',
-        Delete::class   => 'makeDeleteInstruction',
-        Exists::class   => 'makeExistsInstruction',
-        First::class    => 'makeFirstInstruction',
-        Paginate::class => 'makePaginateInstruction',
-        Segment::class  => 'makeSegmentInstruction',
-        Update::class   => 'makeUpdateInstruction',
-    ];
-
-    /**
      * @var string
      */
-    protected $instructionContract;
+    protected $instructionClass;
 
     /**
      * @var array
@@ -45,22 +22,22 @@ class TerminatedStatement implements Executable
     /**
      * @var \Academe\Statement\InstructionStatement
      */
-    protected $instructionStatement;
+    protected $sourceInstructionStatement;
 
     /**
      * TerminatedStatement constructor.
      *
-     * @param string                                  $instructionContract
+     * @param string                                  $instructionClass
      * @param                                         $instructionConstructParameters
-     * @param \Academe\Statement\InstructionStatement $instructionStatement
+     * @param \Academe\Statement\InstructionStatement $sourceInstructionStatement
      */
-    public function __construct($instructionContract,
+    public function __construct($instructionClass,
                                 array $instructionConstructParameters,
-                                InstructionStatement $instructionStatement)
+                                InstructionStatement $sourceInstructionStatement)
     {
-        $this->instructionContract            = $instructionContract;
+        $this->instructionClass               = $instructionClass;
         $this->instructionConstructParameters = $instructionConstructParameters;
-        $this->instructionStatement           = $instructionStatement;
+        $this->sourceInstructionStatement     = $sourceInstructionStatement;
     }
 
     /**
@@ -69,30 +46,38 @@ class TerminatedStatement implements Executable
      */
     public function execute(Mapper $mapper)
     {
-        $instruction = $this->makeInstruction($mapper);
+        $instruction = $this->makeInstruction();
 
-        $this->instructionStatement->tweakInstruction($instruction);
+        $this->sourceInstructionStatement->tweakInstruction($instruction);
 
         return $mapper->execute($instruction);
     }
 
     /**
-     * @param \Academe\Contracts\Mapper\Mapper $mapper
-     * @return mixed
+     * @return array
      */
-    protected function makeInstruction(Mapper $mapper)
+    protected function getInstructionConstructParameters()
     {
-        $instructionContract = $this->instructionContract;
+        return $this->instructionConstructParameters;
+    }
 
-        if (! isset(static::$instructionContractToMapMethodMap[$instructionContract])) {
-            $message = "Undefined Instruction contract [{$instructionContract}]";
+    /**
+     * @return Instruction
+     */
+    protected function makeInstruction()
+    {
+        $instructionClass = $this->instructionClass;
 
-            throw new BadMethodCallException($message);
+        $instruction = ClassInstanceBuilder::makeInstance(
+            $instructionClass,
+            $this->getInstructionConstructParameters()
+        );
+
+        if (! $instruction instanceof Instruction) {
+            throw new \LogicException("[$instructionClass] is not an instance of Instruction.");
         }
 
-        $method = static::$instructionContractToMapMethodMap[$instructionContract];
-
-        return call_user_func_array([$mapper, $method], $this->instructionConstructParameters);
+        return $instruction;
     }
 
 }
