@@ -7,6 +7,7 @@ use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder;
 use Academe\Database\BaseConnection;
 use Academe\Database\MongoDB\Contracts\MongoDBQuery as MongoDBQueryContract;
+use MongoDB\Database as MongoDBDatabase;
 
 class MongoDBConnection extends BaseConnection
 {
@@ -16,19 +17,19 @@ class MongoDBConnection extends BaseConnection
     protected $config;
 
     /**
-     * @var \MongoDB\Client
+     * @var \MongoDB\Database|null
      */
-    protected $mongoDBClient;
-
-    /**
-     * @var \MongoDB\Database
-     */
-    protected $databaseHandler;
+    protected $databaseHandler = null;
 
     /**
      * @var string
      */
     protected $databaseName;
+
+    /**
+     * @var int
+     */
+    protected $transactionCount = 0;
 
     /**
      * MongoDBConnection constructor.
@@ -37,10 +38,98 @@ class MongoDBConnection extends BaseConnection
      */
     public function __construct($config)
     {
-        $this->config = $config;
+        $this->setConfig($config);
 
         $this->setupDatabaseName($config);
-        $this->setupMongoDBConnection($config);
+    }
+
+    /**
+     *
+     */
+    public function connect()
+    {
+        $config = $this->getConfig();
+
+        $mongoDBClient = $this->makeMongoDBClient($config);
+
+        $this->setDatabaseHandler(
+            $mongoDBClient->selectDatabase($config['database'])
+        );
+    }
+
+    /**
+     * @param $config
+     * @return \MongoDB\Client
+     */
+    protected function makeMongoDBClient($config)
+    {
+        $DSN     = $this->getMongoDBConnectionDSN($config);
+        $options = isset($config['options']) ? $config['options'] : [];
+
+        return new \MongoDB\Client($DSN, $options);
+    }
+
+    /**
+     * @param \MongoDB\Database $databaseHandler
+     */
+    protected function setDatabaseHandler(MongoDBDatabase $databaseHandler)
+    {
+        $this->databaseHandler = $databaseHandler;
+    }
+
+    /**
+     *
+     */
+    public function close()
+    {
+        $this->transactionCount = 0;
+
+        // Currently, there isn't a "close" operation in MongoDB library.
+    }
+
+    /**
+     *
+     */
+    public function reconnect()
+    {
+        $this->close();
+        $this->connect();
+    }
+
+    /**
+     * Lazy connect.
+     */
+    public function connectIfMissingConnection()
+    {
+        $databaseHandler = $this->getDatabaseHandler();
+
+        if (is_null($databaseHandler)) {
+            $this->connect();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTransactionActive()
+    {
+        return $this->transactionCount > 0;
+    }
+
+    /**
+     * @param $config
+     */
+    protected function setConfig($config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -49,20 +138,6 @@ class MongoDBConnection extends BaseConnection
     protected function setupDatabaseName($config)
     {
         $this->databaseName = $config['database'];
-    }
-
-    /**
-     * @param $config
-     */
-    protected function setupMongoDBConnection($config)
-    {
-        $DSN     = $this->getMongoDBConnectionDSN($config);
-        $options = isset($config['options']) ? $config['options'] : [];
-
-        $mongoDBClient = new \MongoDB\Client($DSN, $options);
-
-        $this->mongoDBClient   = $mongoDBClient;
-        $this->databaseHandler = $mongoDBClient->selectDatabase($config['database']);
     }
 
     /**
@@ -131,7 +206,7 @@ class MongoDBConnection extends BaseConnection
     }
 
     /**
-     * @return \MongoDB\Database
+     * @return \MongoDB\Database|null
      */
     public function getDatabaseHandler()
     {
@@ -139,11 +214,11 @@ class MongoDBConnection extends BaseConnection
     }
 
     /**
-     * @return \MongoDB\Client
+     * @return \MongoDB\Database|null
      */
     public function getDriver()
     {
-        return $this->mongoDBClient;
+        return $this->databaseHandler;
     }
 
     /**
@@ -160,16 +235,20 @@ class MongoDBConnection extends BaseConnection
      */
     public function run(Query $query)
     {
-        $startTime = microtime(true);
+        $result = $this->interpretQuery($query);
 
-        $operator = $this->makeOperator();
-        $result   = $operator->run($query);
+        $this->logQuery($query, $result['elapsed']);
 
-        $elapsedTime = $this->getElapsedTime($startTime);
+        return $result['data'];
+    }
 
-        $this->logQuery($query, $elapsedTime);
-
-        return $result;
+    /**
+     * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
+     * @return mixed
+     */
+    protected function interpretQuery(MongoDBQueryContract $query)
+    {
+        return MongoDBQueryInterpreter::run($this, $query);
     }
 
     /**
@@ -189,14 +268,6 @@ class MongoDBConnection extends BaseConnection
     }
 
     /**
-     * @return MongoDBOperator
-     */
-    public function makeOperator()
-    {
-        return new MongoDBOperator($this->getDatabaseHandler());
-    }
-
-    /**
      * @return Builder
      */
     public function makeBuilder()
@@ -209,7 +280,10 @@ class MongoDBConnection extends BaseConnection
      */
     public function beginTransaction()
     {
-        // Nothing
+        ++ $this->transactionCount;
+
+        // Nothing but make connection
+        $this->connectIfMissingConnection();
     }
 
     /**
@@ -217,7 +291,9 @@ class MongoDBConnection extends BaseConnection
      */
     public function commitTransaction()
     {
-        // Nothing
+        -- $this->transactionCount;
+
+        // Do nothing
     }
 
     /**
@@ -225,9 +301,9 @@ class MongoDBConnection extends BaseConnection
      */
     public function rollBackTransaction()
     {
-        // Nothing
+        -- $this->transactionCount;
+
+        // Do nothing
     }
-
-
 }
 

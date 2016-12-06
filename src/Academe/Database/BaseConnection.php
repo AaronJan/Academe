@@ -40,12 +40,4 @@ abstract class BaseConnection implements Connection
         return $this->queryLogs;
     }
 
-    /**
-     * @param $startTime
-     * @return float
-     */
-    protected function getElapsedTime($startTime)
-    {
-        return round((microtime(true) - $startTime) * 1000, 2);
-    }
 }

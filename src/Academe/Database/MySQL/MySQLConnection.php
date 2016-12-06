@@ -31,9 +31,14 @@ class MySQLConnection extends BaseConnection
     protected $readDBALConnection;
 
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var \Doctrine\DBAL\Connection|null
      */
-    protected $writeDBALConnection;
+    protected $DBALConnection = null;
+
+    /**
+     * @var int
+     */
+    protected $transactionCount = 0;
 
     /**
      * MySQLConnection constructor.
@@ -42,11 +47,77 @@ class MySQLConnection extends BaseConnection
      */
     public function __construct($config)
     {
-        $this->config = $config;
+        $this->setConfig($config);
 
         $this->setupTablePrefix($config);
         $this->setupDatabaseName($config);
-        $this->setupDBALConnection($config);
+    }
+
+    /**
+     * @param $config
+     */
+    protected function setConfig($config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     *
+     */
+    public function connect()
+    {
+        $this->DBALConnection = $this->makeDBALConnection($this->getConfig());
+    }
+
+    /**
+     *
+     */
+    public function close()
+    {
+        $this->transactionCount = 0;
+
+        $DBALConnection = $this->getDBALConnection();
+
+        if ($DBALConnection) {
+            $DBALConnection->close();
+        }
+    }
+
+    /**
+     *
+     */
+    public function reconnect()
+    {
+        $this->close();
+        $this->connect();
+    }
+
+    /**
+     * Lazy connect.
+     */
+    public function connectIfMissingConnection()
+    {
+        $DBALConnection = $this->getDBALConnection();
+
+        if (is_null($DBALConnection)) {
+            $this->connect();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTransactionActive()
+    {
+        return $this->transactionCount > 0;
     }
 
     /**
@@ -68,14 +139,11 @@ class MySQLConnection extends BaseConnection
     }
 
     /**
-     * @return array
+     * @return \Doctrine\DBAL\Connection|null
      */
     public function getDriver()
     {
-        return [
-            'read'  => $this->readDBALConnection,
-            'write' => $this->readDBALConnection,
-        ];
+        return $this->getDBALConnection();
     }
 
     /**
@@ -84,20 +152,6 @@ class MySQLConnection extends BaseConnection
     public function getDatabaseName()
     {
         return $this->databaseName;
-    }
-
-    /**
-     * @param $config
-     */
-    protected function setupDBALConnection($config)
-    {
-        $this->writeDBALConnection = $this->makeDBALConnection($config);
-
-        if (isset($config['read'])) {
-            $this->readDBALConnection = $this->makeDBALConnection(array_merge($config, $config['read']));
-        } else {
-            $this->readDBALConnection = $this->writeDBALConnection;
-        }
     }
 
     /**
@@ -172,16 +226,20 @@ class MySQLConnection extends BaseConnection
      */
     public function run(Query $query)
     {
-        $startTime = microtime(true);
+        $result = $this->interpretQuery($query);
 
-        $operator = $this->makeOperator($query);
-        $result   = $operator->run($query);
+        $this->logQuery($query, $result['elapsed']);
 
-        $elapsedTime = $this->getElapsedTime($startTime);
+        return $result['data'];
+    }
 
-        $this->logQuery($query, $elapsedTime);
-
-        return $result;
+    /**
+     * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
+     * @return mixed
+     */
+    protected function interpretQuery(MySQLQueryContract $query)
+    {
+        return MySQLQueryInterpreter::run($this, $query);
     }
 
     /**
@@ -200,23 +258,11 @@ class MySQLConnection extends BaseConnection
     }
 
     /**
-     * @param MySQLQueryContract $query
-     * @return MySQLOperator
+     * @return \Doctrine\DBAL\Connection|null
      */
-    public function makeOperator(MySQLQueryContract $query)
+    public function getDBALConnection()
     {
-        return new MySQLOperator($this->getDBALConnection($query->hasChange()));
-    }
-
-    /**
-     * @param $hasChange
-     * @return \Doctrine\DBAL\Connection
-     */
-    public function getDBALConnection($hasChange)
-    {
-        return $hasChange ?
-            $this->writeDBALConnection :
-            $this->readDBALConnection;
+        return $this->DBALConnection;
     }
 
     /**
@@ -232,8 +278,11 @@ class MySQLConnection extends BaseConnection
      */
     public function beginTransaction()
     {
-        $DBALConnection = $this->getDBALConnection(true);
-        $DBALConnection->beginTransaction();
+        ++ $this->transactionCount;
+
+        $this->connectIfMissingConnection();
+
+        $this->getDBALConnection()->beginTransaction();
     }
 
     /**
@@ -241,8 +290,9 @@ class MySQLConnection extends BaseConnection
      */
     public function commitTransaction()
     {
-        $DBALConnection = $this->getDBALConnection(true);
-        $DBALConnection->commit();
+        -- $this->transactionCount;
+
+        $this->getDBALConnection()->commit();
     }
 
     /**
@@ -250,7 +300,8 @@ class MySQLConnection extends BaseConnection
      */
     public function rollBackTransaction()
     {
-        $DBALConnection = $this->getDBALConnection(true);
-        $DBALConnection->rollBack();
+        -- $this->transactionCount;
+
+        $this->getDBALConnection()->rollBack();
     }
 }

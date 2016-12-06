@@ -36,6 +36,26 @@ interface Connection
     /**
      * @return void
      */
+    public function connect();
+
+    /**
+     * @return void
+     */
+    public function close();
+
+    /**
+     * @return void
+     */
+    public function reconnect();
+
+    /**
+     * @return bool
+     */
+    public function isTransactionActive();
+
+    /**
+     * @return void
+     */
     public function beginTransaction();
 
     /**

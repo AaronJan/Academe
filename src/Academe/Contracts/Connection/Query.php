@@ -13,4 +13,10 @@ interface Query
      * @return bool
      */
     public function hasChange();
+
+    /**
+     * @return string
+     */
+    public function getOperation();
+
 }
