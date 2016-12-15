@@ -2,6 +2,7 @@
 
 namespace Academe\Database\MongoDB;
 
+use Academe\Contracts\Receipt;
 use Academe\Database\BaseQueryInterpreter;
 use Academe\Database\MongoDB\Contracts\MongoDBQuery as MongoDBQueryContract;
 
@@ -95,7 +96,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     /**
      * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
-     * @return int
+     * @return Receipt
      */
     static public function runInsertOne(MongoDBConnection $connection, MongoDBQueryContract $query)
     {
@@ -105,7 +106,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
         $insertOneResult = call_user_func_array([$collection, 'insertOne'], $query->getParameters());
 
-        return $insertOneResult->getInsertedCount();
+        return new MongoDBReceipt($insertOneResult);
     }
 
     /**

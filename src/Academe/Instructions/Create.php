@@ -3,9 +3,11 @@
 namespace Academe\Instructions;
 
 use Academe\Actions\Insert;
+use Academe\Contracts\CastManager;
 use Academe\Contracts\Connection;
 use Academe\Contracts\Mapper\Instructions\Create as CreateContract;
 use Academe\Contracts\Mapper\Mapper;
+use Academe\Contracts\Receipt;
 
 class Create extends WriteType implements CreateContract
 {
@@ -19,7 +21,7 @@ class Create extends WriteType implements CreateContract
 
     /**
      * @param Mapper $mapper
-     * @return mixed
+     * @return Receipt
      */
     public function execute(Mapper $mapper)
     {
@@ -28,16 +30,31 @@ class Create extends WriteType implements CreateContract
         $connection = $mapper->getConnection();
         $query      = $this->makeQuery($connection, $mapper, $this->attributes);
 
-        $result = $connection->run($query);
+        /**
+         * @var $receipt Receipt
+         */
+        $receipt = $connection->run($query);
 
-        //cast primary key
-        $castedResult = $mapper->getCastManager()->castOut(
+        $receipt->setupCastManager($this->makeCastHandler(
+            $mapper->getCastManager(),
             $mapper->getPrimaryKey(),
-            $result,
             $connection->getType()
-        );
+        ));
 
-        return $castedResult;
+        return $receipt;
+    }
+
+    /**
+     * @param \Academe\Contracts\CastManager $castManager
+     * @param                                $primaryKey
+     * @param                                $connectionType
+     * @return \Closure
+     */
+    protected function makeCastHandler(CastManager $castManager, $primaryKey, $connectionType)
+    {
+        return function ($id) use ($castManager, $primaryKey, $connectionType) {
+            return $castManager->castOut($primaryKey, $id, $connectionType);
+        };
     }
 
     /**

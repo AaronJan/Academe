@@ -6,6 +6,7 @@ use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Connection\Condition;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
+use Academe\Contracts\Receipt;
 use Academe\Entity;
 use Academe\Support\Pagination;
 
@@ -73,7 +74,7 @@ class MapperStatement extends InstructionStatement
 
     /**
      * @param array $attributes
-     * @return Entity
+     * @return Receipt
      */
     public function create(array $attributes)
     {

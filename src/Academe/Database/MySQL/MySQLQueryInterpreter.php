@@ -2,6 +2,7 @@
 
 namespace Academe\Database\MySQL;
 
+use Academe\Contracts\Receipt;
 use Academe\Database\BaseQueryInterpreter;
 use Academe\Database\MySQL\Contracts\MySQLQuery as MySQLQueryContract;
 
@@ -161,7 +162,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     /**
      * @param \Academe\Database\MySQL\MySQLConnection      $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
-     * @return bool
+     * @return Receipt
      */
     static public function runInsert(MySQLConnection $connection, MySQLQueryContract $query)
     {
@@ -170,7 +171,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
         $result = $DBALConnection
             ->executeQuery($query->getSQL(), $query->getParameters());
 
-        return $result->rowCount() > 0;
+        return new MySQLReceipt($DBALConnection, $result->rowCount());
     }
 
     /**
