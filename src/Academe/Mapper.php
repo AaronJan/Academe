@@ -198,12 +198,23 @@ class Mapper implements MapperContract
      * @param null|Condition|ConditionGroup $condition
      * @return \Academe\Statement\MapperStatement
      */
-    public function query($condition = null)
+    public function queryWith($condition = null)
     {
         return new MapperStatement(
             $this,
             $this->getAcademe()->getConditionMaker(),
             $condition
+        );
+    }
+
+    /**
+     * @return \Academe\Statement\MapperStatement
+     */
+    public function query()
+    {
+        return new MapperStatement(
+            $this,
+            $this->getAcademe()->getConditionMaker()
         );
     }
 

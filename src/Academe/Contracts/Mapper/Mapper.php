@@ -69,6 +69,11 @@ interface Mapper
      * @param null|Condition|ConditionGroup $condition
      * @return \Academe\Statement\MapperStatement
      */
-    public function query($condition = null);
+    public function queryWith($condition = null);
+
+    /**
+     * @return \Academe\Statement\MapperStatement
+     */
+    public function query();
 
 }
