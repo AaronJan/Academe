@@ -5,6 +5,7 @@ namespace Academe\Database\MongoDB;
 use Academe\Contracts\Receipt;
 use Academe\Database\BaseQueryInterpreter;
 use Academe\Database\MongoDB\Contracts\MongoDBQuery as MongoDBQueryContract;
+use MongoDB\Driver\Exception\ConnectionTimeoutException;
 
 /**
  * Class MongoDBOperator
@@ -33,7 +34,17 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
         $startTime = microtime(true);
 
-        $result = static::performDatabaseQuery($method, $connection, $query);
+        try {
+            $result = static::performDatabaseQuery($method, $connection, $query);
+        } catch (ConnectionTimeoutException $e) {
+            if ($connection->isTransactionActive()) {
+                throw $e;
+            }
+
+            $connection->reconnect();
+
+            $result = static::performDatabaseQuery($method, $connection, $query);
+        }
 
         $elapsedTime = static::getElapsedTime($startTime);
 

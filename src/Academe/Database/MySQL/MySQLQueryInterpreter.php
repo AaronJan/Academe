@@ -71,7 +71,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
         if ($this->isCausedByLostConnection($e->getPrevious())) {
             $connection->reconnect();
 
-            return $this->performDatabaseQuery($method, $connection, $query);
+            return static::performDatabaseQuery($method, $connection, $query);
         }
 
         throw $e;
