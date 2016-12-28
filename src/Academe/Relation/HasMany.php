@@ -5,7 +5,6 @@ namespace Academe\Relation;
 use Academe\Contracts\Academe;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\Contracts\Relation;
-use Academe\Relation\Contracts\RelationHandler;
 use Academe\Relation\Handlers\HasManyRelationHandler;
 
 class HasMany implements Relation

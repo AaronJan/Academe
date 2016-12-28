@@ -214,7 +214,7 @@ class InstructionStatement extends RelationStatement
      */
     protected function filterFields($fields)
     {
-        return $fields ?: ($this->fields ?: ['*']);
+        return $fields ?: ($this->getFields() ?: ['*']);
     }
 
     /**

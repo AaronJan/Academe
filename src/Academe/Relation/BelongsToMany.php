@@ -5,7 +5,6 @@ namespace Academe\Relation;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\Contracts\Relation;
 use Academe\Contracts\Academe;
-use Academe\Relation\Contracts\RelationHandler;
 use Academe\Relation\Handlers\BelongsToManyRelationHandler;
 
 class BelongsToMany implements Relation
