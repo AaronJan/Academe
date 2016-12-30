@@ -255,11 +255,6 @@ class ConditionStatement implements Statement, ConditionGroup
         return true;
     }
 
-    public function asStrict()
-    {
-        throw new BadMethodCallException("Not allowed.");
-    }
-
     /**
      * @return bool
      */
@@ -268,9 +263,5 @@ class ConditionStatement implements Statement, ConditionGroup
         return false;
     }
 
-    public function asLoose()
-    {
-        throw new BadMethodCallException("Not allowed.");
-    }
 }
 

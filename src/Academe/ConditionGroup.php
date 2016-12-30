@@ -60,17 +60,4 @@ class ConditionGroup implements ConditionGroupContract
         return ! $this->mustSatisfyAll;
     }
 
-    public function asStrict()
-    {
-        $this->mustSatisfyAll = true;
-
-        return $this;
-    }
-
-    public function asLoose()
-    {
-        $this->mustSatisfyAll = false;
-
-        return $this;
-    }
 }

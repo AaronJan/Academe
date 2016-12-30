@@ -19,13 +19,9 @@ interface ConditionGroup
      */
     public function isStrict();
 
-    public function asStrict();
-
     /**
      * @return bool
      */
     public function isLoose();
-
-    public function asLoose();
 
 }
