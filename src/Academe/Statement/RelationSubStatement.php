@@ -2,7 +2,7 @@
 
 namespace Academe\Statement;
 
-class RelationStatement extends ConditionStatement
+class RelationSubStatement extends ConditionStatement
 {
     /**
      * @var array|null

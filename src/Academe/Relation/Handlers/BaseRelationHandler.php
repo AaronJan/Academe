@@ -5,7 +5,7 @@ namespace Academe\Relation\Handlers;
 use Academe\Academe;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\Contracts\RelationHandler;
-use Academe\Statement\RelationStatement;
+use Academe\Statement\RelationSubStatement;
 
 abstract class BaseRelationHandler implements RelationHandler
 {
@@ -24,11 +24,11 @@ abstract class BaseRelationHandler implements RelationHandler
 
     /**
      * @param \Academe\Contracts\Academe $academe
-     * @return \Academe\Statement\RelationStatement
+     * @return \Academe\Statement\RelationSubStatement
      */
     protected function makeLimitedFluentStatement(\Academe\Contracts\Academe $academe)
     {
-        return new RelationStatement($academe->getConditionMaker());
+        return new RelationSubStatement($academe->getConditionMaker());
     }
 
 }

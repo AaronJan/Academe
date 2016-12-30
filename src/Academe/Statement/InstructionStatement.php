@@ -20,7 +20,7 @@ use Academe\Instructions\Traits\Lockable;
 use Academe\Traits\ParseRelation;
 use Academe\Instructions\Traits\Sortable;
 
-class InstructionStatement extends RelationStatement
+class InstructionStatement extends RelationSubStatement
 {
     use ParseRelation;
 
@@ -52,7 +52,7 @@ class InstructionStatement extends RelationStatement
     {
         $this->conditions = $statement->getConditions();
 
-        if ($statement instanceof RelationStatement) {
+        if ($statement instanceof RelationSubStatement) {
             $this->fields = $statement->getFields();
         }
 
