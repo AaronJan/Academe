@@ -3,8 +3,6 @@
 namespace Academe\Contracts\Mapper;
 
 use Academe\Contracts\Academe;
-use Academe\Contracts\Connection\Condition;
-use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Transaction;
 use Academe\Exceptions\BadMethodCallException;
@@ -64,12 +62,6 @@ interface Mapper
      * @throws BadMethodCallException
      */
     public function relation($relationName);
-
-    /**
-     * @param null|Condition|ConditionGroup $condition
-     * @return \Academe\Statement\MapperStatement
-     */
-    public function queryWith($condition = null);
 
     /**
      * @return \Academe\Statement\MapperStatement

@@ -31,6 +31,17 @@ class ConditionStatement implements Statement, ConditionGroup
     }
 
     /**
+     * @param null|Condition|ConditionGroup $condition
+     * @return $this
+     */
+    public function apply($condition)
+    {
+        $this->addCondition($condition);
+
+        return $this;
+    }
+
+    /**
      * @return InstructionStatement
      */
     public function upgrade()

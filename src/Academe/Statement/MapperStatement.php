@@ -3,8 +3,6 @@
 namespace Academe\Statement;
 
 use Academe\Contracts\ConditionMaker;
-use Academe\Contracts\Connection\Condition;
-use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Contracts\Receipt;
 use Academe\Entity;
@@ -27,19 +25,13 @@ class MapperStatement extends InstructionStatement
      *
      * @param \Academe\Contracts\Mapper\Mapper  $mapper
      * @param \Academe\Contracts\ConditionMaker $conditionMaker
-     * @param null|Condition|ConditionGroup     $condition
      */
     public function __construct(Mapper $mapper,
-                                ConditionMaker $conditionMaker,
-                                $condition = null)
+                                ConditionMaker $conditionMaker)
     {
         parent::__construct($conditionMaker);
 
         $this->mapper = $mapper;
-
-        if ($condition !== null) {
-            $this->addCondition($condition);
-        }
     }
 
     /**

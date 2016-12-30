@@ -2,7 +2,6 @@
 
 namespace Academe;
 
-use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Academe as AcademeContract;
 use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Mapper\Mapper as MapperContract;
@@ -15,7 +14,6 @@ use Academe\Relation\Contracts\Relation;
 use Academe\Relation\Contracts\RelationHandler;
 use Academe\Casting\CastManager;
 use Academe\Statement\MapperStatement;
-use Academe\Contracts\Connection\Condition;
 
 class Mapper implements MapperContract
 {
@@ -192,19 +190,6 @@ class Mapper implements MapperContract
         );
 
         return $relationHandler;
-    }
-
-    /**
-     * @param null|Condition|ConditionGroup $condition
-     * @return \Academe\Statement\MapperStatement
-     */
-    public function queryWith($condition = null)
-    {
-        return new MapperStatement(
-            $this,
-            $this->getAcademe()->getConditionMaker(),
-            $condition
-        );
     }
 
     /**
