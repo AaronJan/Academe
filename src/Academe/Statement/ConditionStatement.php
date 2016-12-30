@@ -236,7 +236,7 @@ class ConditionStatement implements Statement, ConditionGroup
      */
     public function compileConditionGroup()
     {
-        return $this->conditionMaker->group($this->conditions);
+        return $this->conditionMaker->group($this->getConditions());
     }
 
     /**
