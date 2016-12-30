@@ -76,123 +76,123 @@ class ConditionStatement implements Statement, ConditionGroup
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @return $this
      */
-    public function equal($attribute, $value)
+    public function equal($field, $value)
     {
-        $this->addCondition($this->conditionMaker->equal($attribute, $value));
+        $this->addCondition($this->conditionMaker->equal($field, $value));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @return $this
      */
-    public function notEqual($attribute, $value)
+    public function notEqual($field, $value)
     {
-        $this->addCondition($this->conditionMaker->notEqual($attribute, $value));
+        $this->addCondition($this->conditionMaker->notEqual($field, $value));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @return $this
      */
-    public function greaterThan($attribute, $value)
+    public function greaterThan($field, $value)
     {
-        $this->addCondition($this->conditionMaker->greaterThan($attribute, $value));
+        $this->addCondition($this->conditionMaker->greaterThan($field, $value));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @return $this
      */
-    public function greaterThanOrEqual($attribute, $value)
+    public function greaterThanOrEqual($field, $value)
     {
-        $this->addCondition($this->conditionMaker->greaterThanOrEqual($attribute, $value));
+        $this->addCondition($this->conditionMaker->greaterThanOrEqual($field, $value));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $values
      * @return $this
      */
-    public function in($attribute, $values)
+    public function in($field, $values)
     {
-        $this->addCondition($this->conditionMaker->in($attribute, $values));
+        $this->addCondition($this->conditionMaker->in($field, $values));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $values
      * @return $this
      */
-    public function notIn($attribute, $values)
+    public function notIn($field, $values)
     {
-        $this->addCondition($this->conditionMaker->notIn($attribute, $values));
+        $this->addCondition($this->conditionMaker->notIn($field, $values));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @return $this
      */
-    public function lessThan($attribute, $value)
+    public function lessThan($field, $value)
     {
-        $this->addCondition($this->conditionMaker->lessThan($attribute, $value));
+        $this->addCondition($this->conditionMaker->lessThan($field, $value));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @return $this
      */
-    public function lessThanOrEqual($attribute, $value)
+    public function lessThanOrEqual($field, $value)
     {
-        $this->addCondition($this->conditionMaker->lessThanOrEqual($attribute, $value));
+        $this->addCondition($this->conditionMaker->lessThanOrEqual($field, $value));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $value
      * @param $matchMode
      * @return $this
      */
-    public function like($attribute, $value, $matchMode)
+    public function like($field, $value, $matchMode)
     {
-        $this->addCondition($this->conditionMaker->like($attribute, $value, $matchMode));
+        $this->addCondition($this->conditionMaker->like($field, $value, $matchMode));
 
         return $this;
     }
 
     /**
-     * @param $attribute
+     * @param $field
      * @param $divisor
      * @param $remainder
      * @return $this
      */
-    public function mod($attribute, $divisor, $remainder)
+    public function mod($field, $divisor, $remainder)
     {
-        $this->addCondition($this->conditionMaker->mod($attribute, $divisor, $remainder));
+        $this->addCondition($this->conditionMaker->mod($field, $divisor, $remainder));
 
         return $this;
     }
