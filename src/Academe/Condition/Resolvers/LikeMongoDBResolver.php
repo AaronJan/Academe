@@ -25,6 +25,6 @@ class LikeMongoDBResolver
             $regexp = "^$regexp$";
         }
 
-        return [$name => ['$regex' => "/{$regexp}/", '$options' => '']];
+        return [$name => ['$regex' => "/{$regexp}/"]];
     }
 }

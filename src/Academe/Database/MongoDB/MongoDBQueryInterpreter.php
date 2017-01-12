@@ -18,6 +18,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
         'find'       => 'runFind',
         'aggregate'  => 'runAggregate',
         'insertone'  => 'runInsertOne',
+        'update'     => 'runUpdate',
         'updatemany' => 'runUpdateMany',
         'deletemany' => 'runDeleteMany',
     ];
@@ -118,6 +119,22 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
         $insertOneResult = call_user_func_array([$collection, 'insertOne'], $query->getParameters());
 
         return new MongoDBReceipt($insertOneResult);
+    }
+
+    /**
+     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
+     * @return int
+     */
+    static public function runUpdate(MongoDBConnection $connection, MongoDBQueryContract $query)
+    {
+        $databaseHandler = $connection->getDatabaseHandler();
+
+        $collection = $databaseHandler->selectCollection($query->getCollection());
+
+        $updateResult = call_user_func_array([$collection, 'updateMany'], $query->getParameters());
+
+        return $updateResult->getModifiedCount();
     }
 
     /**

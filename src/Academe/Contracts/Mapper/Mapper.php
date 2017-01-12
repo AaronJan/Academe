@@ -68,4 +68,9 @@ interface Mapper
      */
     public function query();
 
+    /**
+     * @return \Academe\MongoDB\Statement\MapperStatement
+     */
+    public function queryAsMongoDB();
+
 }

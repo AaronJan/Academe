@@ -2,7 +2,9 @@
 
 namespace Academe;
 
+use Academe\Condition\ContainsAll;
 use Academe\Condition\Equal;
+use Academe\Condition\FieldExists;
 use Academe\Condition\GreaterThan;
 use Academe\Condition\GreaterThanOrEqual;
 use Academe\Condition\In;
@@ -12,6 +14,8 @@ use Academe\Condition\Like;
 use Academe\Condition\Mod;
 use Academe\Condition\NotEqual;
 use Academe\Condition\NotIn;
+use Academe\Condition\SizeIs;
+use Academe\Condition\TypeIs;
 use Academe\Contracts\Academe as AcademeContract;
 use Academe\Contracts\ConditionMaker as ConditionMakerContract;
 
@@ -146,6 +150,48 @@ class ConditionMaker implements ConditionMakerContract
     public function notIn($attribute, $values)
     {
         return new NotIn($attribute, $values);
+    }
+
+    //todo MongoDB methods
+
+    /**
+     * @param $field
+     * @param $size
+     * @return \Academe\Condition\SizeIs
+     */
+    public function sizeIs($field, $size)
+    {
+        return new SizeIs($field, $size);
+    }
+
+    /**
+     * @param $field
+     * @param bool $isExists
+     * @return \Academe\Condition\FieldExists
+     */
+    public function fieldExists($field, $isExists)
+    {
+        return new FieldExists($field, $isExists);
+    }
+
+    /**
+     * @param $field
+     * @param $typeAlias
+     * @return \Academe\Condition\TypeIs
+     */
+    public function typeIs($field, $typeAlias)
+    {
+        return new TypeIs($field, $typeAlias);
+    }
+
+    /**
+     * @param $field
+     * @param $values
+     * @return \Academe\Condition\ContainsAll
+     */
+    public function containsAll($field, $values)
+    {
+        return new ContainsAll($field, $values);
     }
 
 }

@@ -25,16 +25,25 @@ class ListCaster extends BaseCaster
     /**
      * @var \Academe\Contracts\Caster[]
      */
-    protected $list;
+    protected $casterMap;
 
     /**
      * ListCaster constructor.
      *
-     * @param \Academe\Contracts\Caster[] $list
+     * @param \Academe\Contracts\Caster[] $casterMap
      */
-    public function __construct(array $list = [])
+    public function __construct(array $casterMap = [])
     {
-        $this->list = $list;
+        $this->casterMap = $casterMap;
+    }
+
+    /**
+     * @param $name
+     * @return \Academe\Contracts\Caster|bool|mixed
+     */
+    protected function getCaster($name)
+    {
+        return isset($this->casterMap[$name]) ? $this->casterMap[$name] : false;
     }
 
     /**
@@ -48,9 +57,10 @@ class ListCaster extends BaseCaster
         $resolvedAttributes = [];
 
         foreach ($record as $name => $value) {
-            if (isset($this->list[$name])) {
-                $caster = $this->list[$name];
-                $value  = $caster->{$method}($value, $connectionType);
+            $caster = $this->getCaster($name);
+
+            if ($caster) {
+                $value = $caster->{$method}($value, $connectionType);
             }
 
             $resolvedAttributes[$name] = $value;

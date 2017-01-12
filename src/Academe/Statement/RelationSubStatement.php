@@ -27,6 +27,5 @@ class RelationSubStatement extends ConditionStatement
 
         return $this;
     }
-
 }
 

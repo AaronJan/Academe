@@ -6,6 +6,7 @@ use Academe\Contracts\Mapper\Executable;
 use Academe\Contracts\Mapper\Instruction;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Support\ClassInstanceBuilder;
+use Academe\Contracts\InstructionStatement as InstructionStatementContract;
 
 class TerminatedStatement implements Executable
 {
@@ -20,20 +21,20 @@ class TerminatedStatement implements Executable
     protected $instructionConstructParameters;
 
     /**
-     * @var \Academe\Statement\InstructionStatement
+     * @var \Academe\Contracts\InstructionStatement
      */
     protected $sourceInstructionStatement;
 
     /**
      * TerminatedStatement constructor.
      *
-     * @param string                                  $instructionClass
-     * @param                                         $instructionConstructParameters
-     * @param \Academe\Statement\InstructionStatement $sourceInstructionStatement
+     * @param                                         $instructionClass
+     * @param array                                   $instructionConstructParameters
+     * @param \Academe\Contracts\InstructionStatement $sourceInstructionStatement
      */
     public function __construct($instructionClass,
                                 array $instructionConstructParameters,
-                                InstructionStatement $sourceInstructionStatement)
+                                InstructionStatementContract $sourceInstructionStatement)
     {
         $this->instructionClass               = $instructionClass;
         $this->instructionConstructParameters = $instructionConstructParameters;
@@ -41,16 +42,11 @@ class TerminatedStatement implements Executable
     }
 
     /**
-     * @param Mapper $mapper
-     * @return mixed
+     * @return \Academe\Contracts\InstructionStatement
      */
-    public function execute(Mapper $mapper)
+    protected function getSourceInstructionStatement()
     {
-        $instruction = $this->makeInstruction();
-
-        $this->sourceInstructionStatement->tweakInstruction($instruction);
-
-        return $mapper->execute($instruction);
+        return $this->sourceInstructionStatement;
     }
 
     /**
@@ -62,11 +58,32 @@ class TerminatedStatement implements Executable
     }
 
     /**
+     * @return string
+     */
+    protected function getInstructionClass()
+    {
+        return $this->instructionClass;
+    }
+    
+    /**
+     * @param Mapper $mapper
+     * @return mixed
+     */
+    public function execute(Mapper $mapper)
+    {
+        $instruction = $this->makeInstruction();
+
+        $this->getSourceInstructionStatement()->tweakInstruction($instruction);
+
+        return $mapper->execute($instruction);
+    }
+
+    /**
      * @return Instruction
      */
     protected function makeInstruction()
     {
-        $instructionClass = $this->instructionClass;
+        $instructionClass = $this->getInstructionClass();
 
         $instruction = ClassInstanceBuilder::makeInstance(
             $instructionClass,

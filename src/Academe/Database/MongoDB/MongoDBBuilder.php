@@ -12,6 +12,7 @@ use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
 use Academe\Database\BaseBuilder;
+use Academe\MongoDB\Statement\MongoDBManualUpdate;
 
 class MongoDBBuilder extends BaseBuilder implements BuilderContract
 {
@@ -39,7 +40,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         // parse[Method], for example: $this->parseSelect()
         $method = 'parse' . ucfirst($action->getName());
 
-        return $this->$method($action, $subject, $castManager);
+        return $this->{$method}($action, $subject, $castManager);
     }
 
     /**
@@ -242,6 +243,43 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
+     * @param Action                              $action
+     * @param                                     $subject
+     * @param \Academe\Contracts\CastManager|null $castManager
+     * @return \Academe\Database\MongoDB\MongoDBQuery
+     */
+    protected function parseAdvanceupdate(Action $action, $subject, CastManager $castManager = null)
+    {
+        /**
+         * @var $mongodbManualUpdate MongoDBManualUpdate
+         */
+
+        list($conditionGroup, $mongodbManualUpdate) = $action->getParameters();
+
+        $compiledUpdateParameters = $mongodbManualUpdate->compileToUpdateParameters(
+            Connection::TYPE_MONGODB,
+            $castManager
+        );
+
+        $operation  = 'update';
+        $collection = $subject;
+
+        // 将条件解析为filters
+        $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
+
+        return new MongoDBQuery(
+            $operation,
+            $collection,
+            [
+                $filters,
+                $compiledUpdateParameters['update'],
+                $compiledUpdateParameters['options'],
+            ],
+            false
+        );
+    }
+
+    /**
      * @param Action $action
      * @return array
      */
@@ -297,7 +335,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $operation  = 'updatemany';
         $collection = $subject;
 
-        // 将条件解析为filters
+        // to Filters
         $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
 
         return new MongoDBQuery(
@@ -339,8 +377,6 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * 编译条件信息,返回SQL和bind值
-     *
      * @param ConditionGroup|null                 $conditionGroup
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
@@ -373,19 +409,34 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         if ($conditionGroup->isStrict()) {
             return $useNested ?
                 ['$and' => $subQueries] :
-                static::collapse($subQueries);
+                static::collapseQueries($subQueries);
         } else {
             return ['$or' => $subQueries];
         }
     }
 
     /**
-     * @param array $array
+     * @param array $queries
      * @return array mixed
      */
-    static public function collapse(array $array)
+    static public function collapseQueries(array $queries)
     {
-        return empty($array) ? [] : call_user_func_array('array_merge', $array);
+        $collapsed = [];
+
+        foreach ($queries as $query) {
+            reset($query);
+
+            $field    = key($query);
+            $criteria = $query[$field];
+
+            if (isset($collapsed[$field])) {
+                $collapsed[$field] = array_merge($collapsed[$field], $criteria);
+            } else {
+                $collapsed[$field] = $criteria;
+            }
+        }
+
+        return $collapsed;
     }
 
 }

@@ -14,6 +14,7 @@ use Academe\Relation\Contracts\Relation;
 use Academe\Relation\Contracts\RelationHandler;
 use Academe\Casting\CastManager;
 use Academe\Statement\MapperStatement;
+use Academe\MongoDB\Statement\MapperStatement as MongoDBMapperStatement;
 
 class Mapper implements MapperContract
 {
@@ -201,6 +202,29 @@ class Mapper implements MapperContract
             $this,
             $this->getAcademe()->getConditionMaker()
         );
+    }
+
+    /**
+     * @return \Academe\MongoDB\Statement\MapperStatement
+     */
+    public function queryAsMongoDB()
+    {
+        $this->throwIfConnectionNotCapable(Connection::TYPE_MONGODB);
+
+        return new MongoDBMapperStatement(
+            $this,
+            $this->getAcademe()->getConditionMaker()
+        );
+    }
+
+    /**
+     * @param $connetionType
+     */
+    protected function throwIfConnectionNotCapable($connetionType)
+    {
+        if ($connetionType != $this->getConnection()->getType()) {
+            throw new BadMethodCallException("Mapper doesn't support MongoDB");
+        }
     }
 
 }

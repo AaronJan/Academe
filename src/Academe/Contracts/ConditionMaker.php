@@ -94,4 +94,32 @@ interface ConditionMaker
      */
     public function notIn($attribute, $values);
 
+    /**
+     * @param $field
+     * @param $size
+     * @return \Academe\Condition\SizeIs
+     */
+    public function sizeIs($field, $size);
+
+    /**
+     * @param $field
+     * @param bool $isExists
+     * @return \Academe\Condition\FieldExists
+     */
+    public function fieldExists($field, $isExists);
+
+    /**
+     * @param $field
+     * @param $typeAlias
+     * @return \Academe\Condition\TypeIs
+     */
+    public function typeIs($field, $typeAlias);
+
+    /**
+     * @param $field
+     * @param $values
+     * @return \Academe\Condition\ContainsAll
+     */
+    public function containsAll($field, $values);
+
 }

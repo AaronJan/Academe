@@ -13,7 +13,9 @@ use Academe\Casting\Casters\IntegerCaster;
 use Academe\Casting\Casters\JSONCaster;
 use Academe\Casting\Casters\ListCaster;
 use Academe\Casting\Casters\MongoDBObjectIDCaster;
+use Academe\Casting\Casters\SetCaster;
 use Academe\Casting\Casters\StringCaster;
+use Academe\Contracts\Caster;
 
 class CasterMaker
 {
@@ -59,11 +61,20 @@ class CasterMaker
 
     /**
      * @param array $config
+     * @return \Academe\Casting\Casters\SetCaster
+     */
+    static public function set(array $config)
+    {
+        return new SetCaster($config);
+    }
+
+    /**
+     * @param \Academe\Contracts\Caster|null $caster
      * @return \Academe\Casting\Casters\GroupCaster
      */
-    static public function group(array $config)
+    static public function group(Caster $caster = null)
     {
-        return new GroupCaster($config);
+        return new GroupCaster($caster);
     }
 
     /**
