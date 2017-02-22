@@ -3,10 +3,6 @@
 namespace Academe\Relation\Contracts;
 
 use Academe\Contracts\Academe;
-use Academe\Contracts\Caster;
-use Academe\Contracts\Connection\Condition;
-use Academe\Contracts\Connection\ConditionGroup;
-use Academe\Entity;
 
 interface RelationHandler
 {
@@ -16,7 +12,7 @@ interface RelationHandler
     public function getHostKeyField();
 
     /**
-     * @param Entity[]|mixed $entities
+     * @param array[] $entities
      */
     public function associate($entities);
 

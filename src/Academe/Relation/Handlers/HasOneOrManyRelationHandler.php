@@ -6,7 +6,6 @@ use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Contracts\Transaction;
-use Academe\Entity;
 use Academe\Relation\HasMany;
 use Academe\Relation\HasOne;
 
@@ -120,9 +119,9 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param Entity[]|mixed $entities
+     * @param array[]|mixed $entities
      * @param                $type
-     * @return Entity[]|mixed
+     * @return array[]|mixed
      */
     public function associateByType($entities, $type)
     {
@@ -155,7 +154,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
      * @param        $dictionary
      * @param        $key
      * @param string $type "one" or "many"
-     * @return array|Entity|null
+     * @return array|null
      */
     protected function getRelationResult($dictionary, $key, $type)
     {

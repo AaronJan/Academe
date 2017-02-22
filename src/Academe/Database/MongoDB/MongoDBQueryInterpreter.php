@@ -24,7 +24,8 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     ];
 
     /**
-     * @param MongoDBQueryContract $query
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
+     * @param MongoDBQueryContract                        $query
      * @return array
      */
     static public function run(MongoDBConnection $connection, MongoDBQueryContract $query)

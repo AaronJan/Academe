@@ -2,9 +2,7 @@
 
 namespace Academe\Relation\Handlers;
 
-use Academe\Contracts\Academe;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Entity;
 use Academe\Relation\Contracts\RelationHandler;
 use Academe\Relation\HasOne;
 
@@ -27,8 +25,8 @@ class HasOneRelationHandler extends HasOneOrManyRelationHandler implements Relat
     }
 
     /**
-     * @param Entity[]|mixed $entities
-     * @return Entity[]|mixed
+     * @param array[] $entities
+     * @return array[]
      */
     public function associate($entities)
     {

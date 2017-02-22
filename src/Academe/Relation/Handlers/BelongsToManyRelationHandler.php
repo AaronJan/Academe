@@ -5,7 +5,6 @@ namespace Academe\Relation\Handlers;
 use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Blueprint;
-use Academe\Entity;
 use Academe\Relation\BelongsToMany;
 
 class BelongsToManyRelationHandler extends BaseRelationHandler
@@ -116,8 +115,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param Entity[]|mixed $entities
-     * @return Entity[]|mixed
+     * @param array[]|mixed $entities
+     * @return array[]|mixed
      */
     public function associate($entities)
     {
@@ -168,7 +167,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     /**
      * @param $dictionary
      * @param $key
-     * @return Entity[]
+     * @return array[]
      */
     protected function getRelationResult($dictionary, $key)
     {
@@ -223,7 +222,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
         $guestMapper->involve($transactions);
 
-        $guestEntities = $guestMapper->query($statement)
+        $guestEntities = $guestMapper->query()
+            ->loadFrom($statement)
             ->involve($transactions)
             ->with($nestedRelations)
             ->all();

@@ -5,7 +5,6 @@ namespace Academe\Statement;
 use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Contracts\Receipt;
-use Academe\Entity;
 use Academe\Support\Pagination;
 
 /**
@@ -105,7 +104,7 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
 
     /**
      * @param array|null $fields
-     * @return Entity|null
+     * @return array|null
      */
     public function first(array $fields = null)
     {

@@ -6,7 +6,6 @@ use Academe\Actions\Select;
 use Academe\Contracts\CastManager;
 use Academe\Contracts\Connection;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Entity;
 use Academe\Formation;
 use Academe\Instructions\Traits\Lockable;
 use Academe\Instructions\Traits\Sortable;
@@ -114,18 +113,7 @@ abstract class SelectionType extends BaseExecutable
 
         $castedRecords = $this->castRecords($records, $mapper);
 
-        return $this->convertToEntities($castedRecords);
-    }
-
-    /**
-     * @param array $records
-     * @return Entity[]
-     */
-    protected function convertToEntities(array $records)
-    {
-        return array_map(function ($record) {
-            return new Entity($record);
-        }, $records);
+        return $castedRecords;
     }
 
     /**
