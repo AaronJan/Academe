@@ -5,19 +5,19 @@ namespace Academe\Support;
 use ReflectionClass;
 use LogicException;
 
-class ClassInstanceBuilder
+class InstanceBuilder
 {
     /**
      * @param       $class
      * @param array $constructParameters
      * @return object
      */
-    static public function makeInstance($class, array $constructParameters = [])
+    static public function make($class, array $constructParameters = [])
     {
         $reflector = new ReflectionClass($class);
 
         if (! $reflector->isInstantiable()) {
-            throw new LogicException("[] is not instantiable.");
+            throw new LogicException("[{$class}] is not instantiable.");
         }
 
         $constructor = $reflector->getConstructor();

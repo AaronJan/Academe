@@ -5,7 +5,7 @@ namespace Academe\Statement;
 use Academe\Contracts\Mapper\Executable;
 use Academe\Contracts\Mapper\Instruction;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Support\ClassInstanceBuilder;
+use Academe\Support\InstanceBuilder;
 use Academe\Contracts\InstructionStatement as InstructionStatementContract;
 
 class TerminatedStatement implements Executable
@@ -85,7 +85,7 @@ class TerminatedStatement implements Executable
     {
         $instructionClass = $this->getInstructionClass();
 
-        $instruction = ClassInstanceBuilder::makeInstance(
+        $instruction = InstanceBuilder::make(
             $instructionClass,
             $this->getInstructionConstructParameters()
         );
