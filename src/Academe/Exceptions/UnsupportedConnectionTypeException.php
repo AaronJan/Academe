@@ -2,7 +2,7 @@
 
 namespace Academe\Exceptions;
 
-class UnsupportedConnectionException extends LogicException
+class UnsupportedConnectionTypeException extends \DomainException
 {
 
 }

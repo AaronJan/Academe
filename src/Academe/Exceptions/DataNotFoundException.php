@@ -2,12 +2,7 @@
 
 namespace Academe\Exceptions;
 
-use Academe\Contracts\Mapper\Mapper;
-
-class DataNotFoundException extends \RuntimeException
+class DataNotFoundException extends \Exception
 {
-    public function setMapper(Mapper $mapper)
-    {
 
-    }
 }
