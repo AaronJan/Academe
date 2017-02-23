@@ -2,7 +2,7 @@
 
 namespace Academe\Casting\Casters;
 
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 
 class IntegerCaster extends BaseCaster
 {
@@ -10,16 +10,16 @@ class IntegerCaster extends BaseCaster
      * @var array
      */
     static protected $connectionTypeToCastInMethodMap = [
-        Connection::TYPE_MYSQL   => 'castInPDO',
-        Connection::TYPE_MONGODB => 'castInMongoDB',
+        ConnectionConstant::TYPE_MYSQL   => 'castInPDO',
+        ConnectionConstant::TYPE_MONGODB => 'castInMongoDB',
     ];
 
     /**
      * @var array
      */
     static protected $connectionTypeToCastOutMethodMap = [
-        Connection::TYPE_MYSQL   => 'castOutPDO',
-        Connection::TYPE_MONGODB => 'castOutMongoDB',
+        ConnectionConstant::TYPE_MYSQL   => 'castOutPDO',
+        ConnectionConstant::TYPE_MONGODB => 'castOutMongoDB',
     ];
 
     /**

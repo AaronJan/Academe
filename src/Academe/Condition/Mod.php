@@ -5,7 +5,7 @@ namespace Academe\Condition;
 use Academe\Condition\Resolvers\ModPDOResolver;
 use Academe\Condition\Resolvers\ModMongoDBResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 
 class Mod extends BaseCondition implements ConditionContract
 {
@@ -13,8 +13,8 @@ class Mod extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MYSQL   => ModPDOResolver::class,
-        Connection::TYPE_MONGODB => ModMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => ModPDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => ModMongoDBResolver::class,
     ];
 
     /**

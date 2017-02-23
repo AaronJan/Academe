@@ -6,7 +6,7 @@ use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Action;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Actions\Traits\BeCondtionable;
-use Academe\Contracts\Conditionable;
+use Academe\Contracts\Action\Conditionable;
 
 class Calculate implements Action, Conditionable
 {

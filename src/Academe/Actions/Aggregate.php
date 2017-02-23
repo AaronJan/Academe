@@ -6,7 +6,7 @@ use Academe\Contracts\Connection\Action;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Actions\Traits\BeCondtionable;
 use Academe\Actions\Traits\BeLockable;
-use Academe\Contracts\Conditionable;
+use Academe\Contracts\Action\Conditionable;
 
 class Aggregate implements Action, Conditionable
 {

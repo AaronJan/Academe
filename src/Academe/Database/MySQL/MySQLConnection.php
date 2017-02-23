@@ -2,8 +2,8 @@
 
 namespace Academe\Database\MySQL;
 
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\Connection\Query;
-use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder;
 use Academe\Database\BaseConnection;
 use Academe\Database\MySQL\Contracts\MySQLQuery as MySQLQueryContract;
@@ -217,7 +217,7 @@ class MySQLConnection extends BaseConnection
      */
     public function getType()
     {
-        return Connection::TYPE_MYSQL;
+        return ConnectionConstant::TYPE_MYSQL;
     }
 
     /**

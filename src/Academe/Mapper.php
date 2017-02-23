@@ -2,6 +2,7 @@
 
 namespace Academe;
 
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\Academe as AcademeContract;
 use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Mapper\Mapper as MapperContract;
@@ -189,7 +190,7 @@ class Mapper implements MapperContract
      */
     public function queryAsMongoDB()
     {
-        $this->throwIfConnectionNotCapable(Connection::TYPE_MONGODB);
+        $this->throwIfConnectionNotCapable(ConnectionConstant::TYPE_MONGODB);
 
         return new MongoDBMapperStatement(
             $this,

@@ -5,7 +5,7 @@ namespace Academe\Condition;
 use Academe\Condition\Resolvers\LikePDOResolver;
 use Academe\Condition\Resolvers\LikeMongoDBResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 use Academe\Exceptions\BadMethodCallException;
 
 class Like extends BaseCondition implements ConditionContract
@@ -14,8 +14,8 @@ class Like extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MYSQL   => LikePDOResolver::class,
-        Connection::TYPE_MONGODB => LikeMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => LikePDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => LikeMongoDBResolver::class,
     ];
 
     const MATCH_FROM_LEFT  = 1;

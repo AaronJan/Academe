@@ -5,7 +5,7 @@ namespace Academe\Condition;
 use Academe\Condition\Resolvers\GreaterThanMongoDBResolver;
 use Academe\Condition\Resolvers\GreaterThanPDOResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 
 class GreaterThan extends BaseCondition implements ConditionContract
 {
@@ -13,8 +13,8 @@ class GreaterThan extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MYSQL   => GreaterThanPDOResolver::class,
-        Connection::TYPE_MONGODB => GreaterThanMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => GreaterThanPDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => GreaterThanMongoDBResolver::class,
     ];
 
     /**

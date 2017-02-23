@@ -4,7 +4,7 @@ namespace Academe\Actions;
 
 use Academe\Contracts\Connection\Action;
 use Academe\Actions\Traits\BeCondtionable;
-use Academe\Contracts\Conditionable;
+use Academe\Contracts\Action\Conditionable;
 use Academe\Contracts\Connection\ConditionGroup;
 
 class Update implements Action, Conditionable

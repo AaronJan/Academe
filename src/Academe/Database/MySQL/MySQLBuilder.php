@@ -3,16 +3,15 @@
 namespace Academe\Database\MySQL;
 
 use Academe\Actions\Select;
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\CastManager;
 use Academe\Contracts\Conditionable;
-use Academe\Contracts\Connection\Condition;
 use Academe\Contracts\Connection\Formation;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
 use Academe\Database\BaseBuilder;
-use Academe\Exceptions\LogicException;
 use Academe\Traits\SQLValueWrapper;
 
 class MySQLBuilder extends BaseBuilder implements BuilderContract
@@ -201,7 +200,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         ksort($attributes);
 
         if ($castManager) {
-            $attributes = $this->castAttributes($castManager, $attributes, Connection::TYPE_MYSQL);
+            $attributes = $this->castAttributes($castManager, $attributes, ConnectionConstant::TYPE_MYSQL);
         }
 
         $attributeNameSQLPart = '(' . $this->columnize(array_keys($attributes)) . ')';
@@ -238,7 +237,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         ksort($attributes);
 
         if ($castManager) {
-            $attributes = $this->castAttributes($castManager, $attributes, Connection::TYPE_MYSQL);
+            $attributes = $this->castAttributes($castManager, $attributes, ConnectionConstant::TYPE_MYSQL);
         }
 
         $parameters = array_values($attributes);
@@ -432,7 +431,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                 );
             } else {
                 list($SQL, $parameters) = $condition->parse(
-                    Connection::TYPE_MYSQL,
+                    ConnectionConstant::TYPE_MYSQL,
                     $castManager
                 );
             }

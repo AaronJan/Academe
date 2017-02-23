@@ -1,6 +1,6 @@
 <?php
 
-namespace Academe\Contracts;
+namespace Academe\Contracts\Action;
 
 use Academe\Contracts\Connection\ConditionGroup;
 

@@ -3,12 +3,12 @@
 namespace Academe\Database\MongoDB;
 
 use Academe\Actions\Aggregate;
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\CastManager;
-use Academe\Contracts\Conditionable;
+use Academe\Contracts\Action\Conditionable;
 use Academe\Contracts\Connection\Formation;
-use Academe\Contracts\Directable;
+use Academe\Contracts\Action\Directable;
 use Academe\Contracts\Connection\ConditionGroup;
-use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
 use Academe\Database\BaseBuilder;
@@ -200,7 +200,11 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         list($attributes) = $action->getParameters();
 
         if ($castManager) {
-            $attributes = $this->castAttributes($castManager, $attributes, Connection::TYPE_MONGODB);
+            $attributes = $this->castAttributes(
+                $castManager,
+                $attributes,
+                ConnectionConstant::TYPE_MONGODB
+            );
         }
 
         $operation  = 'insertone';
@@ -225,7 +229,11 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         list($conditionGroup, $attributes) = $action->getParameters();
 
         if ($castManager) {
-            $attributes = $this->castAttributes($castManager, $attributes, Connection::TYPE_MONGODB);
+            $attributes = $this->castAttributes(
+                $castManager,
+                $attributes,
+                ConnectionConstant::TYPE_MONGODB
+            );
         }
 
         $operation  = 'updatemany';
@@ -257,7 +265,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         list($conditionGroup, $mongodbManualUpdate) = $action->getParameters();
 
         $compiledUpdateParameters = $mongodbManualUpdate->compileToUpdateParameters(
-            Connection::TYPE_MONGODB,
+            ConnectionConstant::TYPE_MONGODB,
             $castManager
         );
 
@@ -402,7 +410,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
                 $subQueries[] = $this->resolveConditionGroup($condition, $castManager);
             } else {
-                $subQueries[] = $condition->parse(Connection::TYPE_MONGODB, $castManager);
+                $subQueries[] = $condition->parse(ConnectionConstant::TYPE_MONGODB, $castManager);
             }
         }
 

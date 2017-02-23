@@ -5,7 +5,7 @@ namespace Academe\Condition;
 use Academe\Condition\Resolvers\InPDOResolver;
 use Academe\Condition\Resolvers\InMongoDBResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 
 class In extends BaseCondition implements ConditionContract
 {
@@ -13,8 +13,8 @@ class In extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MYSQL   => InPDOResolver::class,
-        Connection::TYPE_MONGODB => InMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => InPDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => InMongoDBResolver::class,
     ];
 
     /**

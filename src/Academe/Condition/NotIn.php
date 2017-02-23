@@ -5,7 +5,7 @@ namespace Academe\Condition;
 use Academe\Condition\Resolvers\NotInPDOResolver;
 use Academe\Condition\Resolvers\NotInMongoDBResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 
 class NotIn extends BaseCondition implements ConditionContract
 {
@@ -13,8 +13,8 @@ class NotIn extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MYSQL   => NotInPDOResolver::class,
-        Connection::TYPE_MONGODB => NotInMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => NotInPDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => NotInMongoDBResolver::class,
     ];
 
     /**

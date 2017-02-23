@@ -6,8 +6,8 @@ use Academe\Contracts\Connection\Action;
 use Academe\Actions\Traits\BeCondtionable;
 use Academe\Actions\Traits\BeFormatted;
 use Academe\Actions\Traits\BeLockable;
-use Academe\Contracts\Conditionable;
-use Academe\Contracts\Directable;
+use Academe\Contracts\Action\Conditionable;
+use Academe\Contracts\Action\Directable;
 
 class Select implements Action, Conditionable, Directable
 {

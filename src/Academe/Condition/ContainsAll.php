@@ -3,8 +3,8 @@
 namespace Academe\Condition;
 
 use Academe\Condition\Resolvers\ContainsAllMongoDBResolver;
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
 
 class ContainsAll extends BaseCondition implements ConditionContract
 {
@@ -12,7 +12,7 @@ class ContainsAll extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MONGODB => ContainsAllMongoDBResolver::class,
+        ConnectionConstant::TYPE_MONGODB => ContainsAllMongoDBResolver::class,
     ];
 
     /**

@@ -5,7 +5,7 @@ namespace Academe\Condition;
 use Academe\Condition\Resolvers\NotEqualMongoDBResolver;
 use Academe\Condition\Resolvers\NotEqualPDOResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
+use Academe\Constant\ConnectionConstant;
 
 class NotEqual extends BaseCondition implements ConditionContract
 {
@@ -13,8 +13,8 @@ class NotEqual extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MYSQL   => NotEqualPDOResolver::class,
-        Connection::TYPE_MONGODB => NotEqualMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => NotEqualPDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => NotEqualMongoDBResolver::class,
     ];
 
     /**

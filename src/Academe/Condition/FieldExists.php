@@ -3,8 +3,8 @@
 namespace Academe\Condition;
 
 use Academe\Condition\Resolvers\FieldExistsMongoDBResolver;
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\Connection\Condition as ConditionContract;
-use Academe\Contracts\Connection\Connection;
 
 class FieldExists extends BaseCondition implements ConditionContract
 {
@@ -12,7 +12,7 @@ class FieldExists extends BaseCondition implements ConditionContract
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        Connection::TYPE_MONGODB => FieldExistsMongoDBResolver::class,
+        ConnectionConstant::TYPE_MONGODB => FieldExistsMongoDBResolver::class,
     ];
 
     /**

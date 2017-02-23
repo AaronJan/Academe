@@ -2,8 +2,8 @@
 
 namespace Academe\Database\MongoDB;
 
+use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\Connection\Query;
-use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder;
 use Academe\Database\BaseConnection;
 use Academe\Database\MongoDB\Contracts\MongoDBQuery as MongoDBQueryContract;
@@ -202,7 +202,7 @@ class MongoDBConnection extends BaseConnection
      */
     public function getType()
     {
-        return Connection::TYPE_MONGODB;
+        return ConnectionConstant::TYPE_MONGODB;
     }
 
     /**
