@@ -30,7 +30,6 @@ class MongoDBObjectIDCaster extends BaseCaster
     protected function throwUnsupportException()
     {
         $message = "MongoDBObjectIDCaster can't be used with Database other than MongoDB.";
-
         throw new BadMethodCallException($message);
     }
 

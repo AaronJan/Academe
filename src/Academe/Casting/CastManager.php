@@ -23,38 +23,38 @@ class CastManager implements CastManagerContract
     }
 
     /**
-     * @param string $attribute
+     * @param string $field
      * @param mixed  $value
      * @param int    $connectionType
      * @return mixed
      */
-    public function castIn($attribute, $value, $connectionType)
+    public function castIn($field, $value, $connectionType)
     {
-        return $this->cast('castIn', $attribute, $value, $connectionType);
+        return $this->cast('castIn', $field, $value, $connectionType);
     }
 
     /**
-     * @param string $attribute
+     * @param string $field
      * @param mixed  $value
      * @param int    $connectionType
      * @return mixed
      */
-    public function castOut($attribute, $value, $connectionType)
+    public function castOut($field, $value, $connectionType)
     {
-        return $this->cast('castOut', $attribute, $value, $connectionType);
+        return $this->cast('castOut', $field, $value, $connectionType);
     }
 
     /**
      * @param string $method
-     * @param string $attribute
+     * @param string $field
      * @param mixed  $value
      * @param int    $connectionType
      * @return mixed
      */
-    protected function cast($method, $attribute, $value, $connectionType)
+    protected function cast($method, $field, $value, $connectionType)
     {
-        if (isset($this->castRules[$attribute])) {
-            $caster = $this->castRules[$attribute];
+        if (isset($this->castRules[$field])) {
+            $caster = $this->castRules[$field];
 
             $value = $caster->{$method}($value, $connectionType);
         }

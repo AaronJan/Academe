@@ -5,18 +5,18 @@ namespace Academe\Contracts;
 interface CastManager
 {
     /**
-     * @param string $attribute
+     * @param string $field
      * @param mixed  $value
      * @param int    $connectionType
      * @return mixed
      */
-    public function castIn($attribute, $value, $connectionType);
+    public function castIn($field, $value, $connectionType);
 
     /**
-     * @param string $attribute
+     * @param string $field
      * @param mixed  $value
      * @param int    $connectionType
      * @return mixed
      */
-    public function castOut($attribute, $value, $connectionType);
+    public function castOut($field, $value, $connectionType);
 }

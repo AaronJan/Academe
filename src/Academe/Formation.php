@@ -84,7 +84,8 @@ class Formation implements FormationContract
         list($field, $direction) = $order;
 
         if (! in_array($direction, static::$allowedDirections)) {
-            $message = "Direction can only be one of [" . implode(',', static::$allowedDirections) . ']';
+            $message = "Direction can only be one of [" .
+                implode(',', static::$allowedDirections) . ']';
 
             throw new LogicException($message);
         }
