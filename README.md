@@ -1,11 +1,22 @@
 # Academe ORM
 
-**This project is under active development. If you like this project, do be hesitated, click the little star!**
+**This project is under active development. If you like this project, do not be hesitated, click the little star!**
 
 
 ## Introduction
 
 I always thought ORM should be better (to be continued).
+
+
+## TODOs
+
+* Model
+
+* Soft Delete
+
+* Optimistic Lock
+
+* Transaction in Statement
 
 
 ## Credits
