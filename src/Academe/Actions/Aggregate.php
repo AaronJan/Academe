@@ -59,7 +59,8 @@ class Aggregate implements Action, Conditionable
     static protected function validateMethod($method)
     {
         if (! in_array($method, static::$allowedMethods)) {
-            throw new BadMethodCallException("Method [{$method}] not allowed.");
+            $message = "Method [{$method}] is not allowed in Aggregate calculation.";
+            throw new BadMethodCallException($message);
         }
     }
 
