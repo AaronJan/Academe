@@ -2,7 +2,7 @@
 
 namespace Academe\Database;
 
-use Academe\Exceptions\BadMethodCallException;
+use Academe\Exceptions\LogicException;
 
 abstract class BaseQueryInterpreter
 {
@@ -14,7 +14,7 @@ abstract class BaseQueryInterpreter
     /**
      * @param $operation
      * @return bool|mixed
-     * @throws BadMethodCallException
+     * @throws LogicException
      */
     static public function getMethodForOperation($operation)
     {
@@ -23,7 +23,7 @@ abstract class BaseQueryInterpreter
         if (isset(static::$operationToMethodMap[$operation])) {
             return static::$operationToMethodMap[$operation];
         } else {
-            throw new BadMethodCallException("Unsupported operation [{$operation}]");
+            throw new LogicException("Unsupported operation [{$operation}]");
         }
     }
 

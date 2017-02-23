@@ -33,8 +33,27 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
 
         $method = static::getMethodForOperation($query->getOperation());
 
-        $startTime = microtime(true);
+        $startTime   = microtime(true);
+        $result      = static::getQueryResults($method, $connection, $query);
+        $elapsedTime = static::getElapsedTime($startTime);
 
+        return [
+            'data'    => $result,
+            'elapsed' => $elapsedTime,
+        ];
+    }
+
+    /**
+     * @param                                              $method
+     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
+     * @return mixed
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    static protected function getQueryResults($method,
+                                              MySQLConnection $connection,
+                                              MySQLQueryContract $query)
+    {
         try {
             $result = static::performDatabaseQuery($method, $connection, $query);
         } catch (\Doctrine\DBAL\DBALException $e) {
@@ -47,12 +66,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
             );
         }
 
-        $elapsedTime = static::getElapsedTime($startTime);
-
-        return [
-            'data'    => $result,
-            'elapsed' => $elapsedTime,
-        ];
+        return $result;
     }
 
     /**
@@ -68,7 +82,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
                                                         MySQLConnection $connection,
                                                         MySQLQueryContract $query)
     {
-        if ($this->isCausedByLostConnection($e->getPrevious())) {
+        if (static::isCausedByLostConnection($e->getPrevious())) {
             $connection->reconnect();
 
             return static::performDatabaseQuery($method, $connection, $query);
@@ -83,7 +97,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
      * @param \Exception $e
      * @return bool
      */
-    protected function isCausedByLostConnection(\Exception $e)
+    static protected function isCausedByLostConnection(\Exception $e)
     {
         $message = $e->getMessage();
 
