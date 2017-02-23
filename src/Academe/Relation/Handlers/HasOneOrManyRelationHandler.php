@@ -5,7 +5,6 @@ namespace Academe\Relation\Handlers;
 use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Contracts\Transaction;
 use Academe\Relation\HasMany;
 use Academe\Relation\HasOne;
 
@@ -79,14 +78,12 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
-     * @param Transaction[]              $transactions
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations,
-                                array $transactions = [])
+                                array $nestedRelations)
     {
         if ($this->loaded) {
             return $this;
@@ -107,10 +104,10 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
 
         $constrain($fluentStatement);
 
-        $childMapper->involve($transactions);
-
-        $executable = $fluentStatement->upgrade()
-            ->involve($transactions)->with($nestedRelations)->all();
+        $executable = $fluentStatement
+            ->upgrade()
+            ->with($nestedRelations)
+            ->all();
 
         $this->results = $childMapper->execute($executable);
         $this->loaded  = true;

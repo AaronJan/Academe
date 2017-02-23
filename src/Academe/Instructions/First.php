@@ -18,13 +18,9 @@ class First extends SelectionType implements FirstContract
      */
     public function execute(Mapper $mapper)
     {
-        $transactions = $this->getTransactions();
-
-        $mapper->involve($transactions);
-
         $entities = $this->getEntities($mapper);
 
-        $loadedRelations = $this->getLoadedRelations($entities, $mapper, $transactions);
+        $loadedRelations = $this->getLoadedRelations($entities, $mapper);
 
         if (! empty($loadedRelations)) {
             $this->associateRelations($entities, $loadedRelations);

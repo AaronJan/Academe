@@ -5,7 +5,6 @@ namespace Academe\Instructions;
 use Academe\Actions\Aggregate;
 use Academe\Contracts\Connection;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Contracts\Transaction;
 use Academe\Instructions\Traits\WithRelation;
 use Academe\Support\Pagination;
 use Academe\Contracts\Mapper\Instructions\Paginate as PaginateContract;
@@ -51,12 +50,8 @@ class Paginate extends Segment implements PaginateContract
      */
     public function execute(Mapper $mapper)
     {
-        $transactions = $this->getTransactions();
-
-        $mapper->involve($transactions);
-
         $total    = $this->getCountForPagination($mapper);
-        $entities = $this->getPaginationEntities($mapper, $total, $transactions);
+        $entities = $this->getPaginationEntities($mapper, $total);
 
         return new Pagination($entities, $total, $this->perPage, $this->page);
     }
@@ -64,10 +59,9 @@ class Paginate extends Segment implements PaginateContract
     /**
      * @param \Academe\Contracts\Mapper\Mapper $mapper
      * @param                                  $total
-     * @param Transaction[]                    $transactions
      * @return array
      */
-    protected function getPaginationEntities(Mapper $mapper, $total, array $transactions = [])
+    protected function getPaginationEntities(Mapper $mapper, $total)
     {
         if ($total == 0) {
             return [];
@@ -75,7 +69,7 @@ class Paginate extends Segment implements PaginateContract
 
         $entities = $this->getEntities($mapper);
 
-        $loadedRelations = $this->getLoadedRelations($entities, $mapper, $transactions);
+        $loadedRelations = $this->getLoadedRelations($entities, $mapper);
 
         if (! empty($loadedRelations)) {
             $this->associateRelations($entities, $loadedRelations);

@@ -52,8 +52,6 @@ class BaseCount extends BaseExecutable implements CountContract
      */
     public function execute(Mapper $mapper)
     {
-        $mapper->involve($this->getTransactions());
-
         $connection = $mapper->getConnection();
         $query      = $this->makeQuery($connection, $mapper);
 

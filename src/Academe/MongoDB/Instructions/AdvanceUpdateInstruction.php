@@ -40,8 +40,6 @@ class AdvanceUpdateInstruction extends BaseExecutable implements UpdateContract
      */
     public function execute(Mapper $mapper)
     {
-        $mapper->involve($this->getTransactions());
-
         $connection = $mapper->getConnection();
         $query      = $this->makeQuery($connection, $mapper, $this->getMongoDBManualUpdate());
 

@@ -4,7 +4,6 @@ namespace Academe\Contracts\Mapper;
 
 use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\Connection;
-use Academe\Contracts\Transaction;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Relation\Contracts\RelationHandler;
 
@@ -44,11 +43,6 @@ interface Mapper
      * @return \Academe\Relation\Contracts\Relation[]|array
      */
     public function getRelations();
-
-    /**
-     * @param Transaction|Transaction[] $transactions
-     */
-    public function involve($transactions);
 
     /**
      * @param Executable $instruction

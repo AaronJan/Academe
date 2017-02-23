@@ -8,7 +8,6 @@ use Academe\Contracts\Mapper\Mapper as MapperContract;
 use Academe\Contracts\Mapper\Blueprint;
 use Academe\Contracts\Connection\Builder;
 use Academe\Contracts\Mapper\Executable;
-use Academe\Contracts\Transaction;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Relation\Contracts\Relation;
 use Academe\Relation\Contracts\RelationHandler;
@@ -93,25 +92,6 @@ class Mapper implements MapperContract
     public function getAcademe()
     {
         return $this->academe;
-    }
-
-    /**
-     * @param Transaction|Transaction[] $transactions
-     */
-    public function involve($transactions)
-    {
-        if (! is_array($transactions)) {
-            $transactions = [$transactions];
-        }
-
-        $connection = $this->getConnection();
-
-        /**
-         * @var $transactions Transaction[]
-         */
-        foreach ($transactions as $transaction) {
-            $transaction->begin($connection);
-        }
     }
 
     /**

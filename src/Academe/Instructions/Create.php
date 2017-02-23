@@ -25,8 +25,6 @@ class Create extends WriteType implements CreateContract
      */
     public function execute(Mapper $mapper)
     {
-        $mapper->involve($this->getTransactions());
-
         $connection = $mapper->getConnection();
         $query      = $this->makeQuery($connection, $mapper, $this->attributes);
 

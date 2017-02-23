@@ -3,7 +3,6 @@
 namespace Academe\Statement;
 
 use Academe\Instructions\Traits\Lockable;
-use Academe\Instructions\Traits\Transactional;
 use Academe\Instructions\Traits\Sortable;
 use Academe\Instructions\Traits\WithRelation;
 
@@ -53,7 +52,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
     public function tweakInstruction(Instruction $instruction)
     {
         /**
-         * @var $instruction Lockable|Transactional|Sortable|WithRelation
+         * @var $instruction Lockable|Sortable|WithRelation
          */
 
         if (method_exists($this, 'tweakLock')) {
@@ -65,10 +64,6 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         }
 
         $this->tweakRelation($instruction);
-
-        if (method_exists($this, 'tweakTransaction')) {
-            $this->tweakTransaction($instruction);
-        }
     }
 
     /**

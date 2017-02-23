@@ -30,12 +30,10 @@ trait WithRelation
     /**
      * @param                                  $entities
      * @param \Academe\Contracts\Mapper\Mapper $hostMapper
-     * @param array                            $transactions
      * @return array
      */
     protected function getLoadedRelations($entities,
-                                          Mapper $hostMapper,
-                                          array $transactions = [])
+                                          Mapper $hostMapper)
     {
         $loadedRelations = [];
 
@@ -49,8 +47,7 @@ trait WithRelation
                 $entities,
                 $constrain,
                 $hostMapper->getAcademe(),
-                $nested,
-                $transactions
+                $nested
             );
         }
 

@@ -179,14 +179,12 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
-     * @param array                      $transactions
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations,
-                                array $transactions = [])
+                                array $nestedRelations)
     {
         if ($this->loaded) {
             return $this;
@@ -203,10 +201,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         }, $entities);
 
         // Fetch pivot entities
-        $pivotMapper->involve($transactions);
 
         $pivotEntities = $pivotMapper->query()
-            ->involve($transactions)
             ->in($this->hostField, $hostPrimaryKeyValues)
             ->all();
 
@@ -220,11 +216,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
         $constrain($statement);
 
-        $guestMapper->involve($transactions);
-
         $guestEntities = $guestMapper->query()
             ->loadFrom($statement)
-            ->involve($transactions)
             ->with($nestedRelations)
             ->all();
 

@@ -118,14 +118,12 @@ class BelongsToRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
-     * @param array                      $transactions
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations,
-                                array $transactions = [])
+                                array $nestedRelations)
     {
         if ($this->loaded) {
             return $this;
@@ -147,10 +145,10 @@ class BelongsToRelationHandler extends BaseRelationHandler
 
         $constrain($fluentStatement);
 
-        $parentMapper->involve($transactions);
-
-        $executable = $fluentStatement->upgrade()
-            ->involve($transactions)->with($nestedRelations)->all();
+        $executable = $fluentStatement
+            ->upgrade()
+            ->with($nestedRelations)
+            ->all();
 
         $this->results = $parentMapper->execute($executable);
         $this->loaded  = true;
