@@ -7,6 +7,7 @@ use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Mapper\Blueprint;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Exceptions\ErrorException;
+use Academe\Exceptions\LogicException;
 use Academe\Relation\Contracts\Bond;
 use Academe\Relation\Contracts\RelationManager;
 use Academe\Relation\Managers\ManyToManyRelationManager;
@@ -77,12 +78,12 @@ class Academe implements AcademeContract
     /**
      * @param $config
      * @return \Academe\Contracts\Academe
-     * @throws \Academe\Exceptions\ErrorException
+     * @throws \Academe\Exceptions\LogicException
      */
     static public function initialize($config)
     {
         if (static::$instance !== null) {
-            throw new ErrorException('Academe is already initialized.');
+            throw new LogicException('Academe is already initialized.');
         }
 
         static::$instance = new static($config);
