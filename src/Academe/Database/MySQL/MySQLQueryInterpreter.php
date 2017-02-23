@@ -34,7 +34,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
         $method = static::getMethodForOperation($query->getOperation());
 
         $startTime   = microtime(true);
-        $result      = static::getQueryResults($method, $connection, $query);
+        $result      = static::getQueryResult($method, $connection, $query);
         $elapsedTime = static::getElapsedTime($startTime);
 
         return [
@@ -50,9 +50,9 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
      * @return mixed
      * @throws \Doctrine\DBAL\DBALException
      */
-    static protected function getQueryResults($method,
-                                              MySQLConnection $connection,
-                                              MySQLQueryContract $query)
+    static protected function getQueryResult($method,
+                                             MySQLConnection $connection,
+                                             MySQLQueryContract $query)
     {
         try {
             $result = static::performDatabaseQuery($method, $connection, $query);

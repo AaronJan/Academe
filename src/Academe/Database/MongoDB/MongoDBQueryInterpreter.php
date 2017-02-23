@@ -34,8 +34,26 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
         $method = static::getMethodForOperation($query->getOperation());
 
-        $startTime = microtime(true);
+        $startTime   = microtime(true);
+        $result      = static::getQueryResult($method, $connection, $query);
+        $elapsedTime = static::getElapsedTime($startTime);
 
+        return [
+            'data'    => $result,
+            'elapsed' => $elapsedTime,
+        ];
+    }
+
+    /**
+     * @param                                                  $method
+     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
+     * @return mixed
+     */
+    static protected function getQueryResult($method,
+                                             MongoDBConnection $connection,
+                                             MongoDBQueryContract $query)
+    {
         try {
             $result = static::performDatabaseQuery($method, $connection, $query);
         } catch (ConnectionTimeoutException $e) {
@@ -48,13 +66,9 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
             $result = static::performDatabaseQuery($method, $connection, $query);
         }
 
-        $elapsedTime = static::getElapsedTime($startTime);
-
-        return [
-            'data'    => $result,
-            'elapsed' => $elapsedTime,
-        ];
+        return $result;
     }
+
 
     /**
      * @param                                                  $method
