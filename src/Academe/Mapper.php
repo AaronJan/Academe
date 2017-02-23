@@ -119,12 +119,12 @@ class Mapper implements MapperContract
     }
 
     /**
-     * @param Executable $instruction
+     * @param Executable $executable
      * @return mixed
      */
-    public function execute(Executable $instruction)
+    public function execute(Executable $executable)
     {
-        $result = $instruction->execute($this);
+        $result = $executable->execute($this);
 
         return $result;
     }
