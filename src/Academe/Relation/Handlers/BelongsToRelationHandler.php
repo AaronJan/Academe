@@ -79,7 +79,7 @@ class BelongsToRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param \Academe\Entity[]|mixed $entities
+     * @param array[]|mixed $entities
      */
     public function associate($entities)
     {
