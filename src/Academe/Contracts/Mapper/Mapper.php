@@ -45,10 +45,10 @@ interface Mapper
     public function getRelations();
 
     /**
-     * @param Executable $instruction
+     * @param Executable $executable
      * @return mixed
      */
-    public function execute(Executable $instruction);
+    public function execute(Executable $executable);
 
     /**
      * @param $relationName
