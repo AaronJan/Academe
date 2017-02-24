@@ -16,14 +16,14 @@ class All extends SelectionType implements AllContract
      */
     public function execute(Mapper $mapper)
     {
-        $entities = $this->getEntities($mapper);
+        $records = $this->getEntities($mapper);
 
-        $loadedRelations = $this->getLoadedRelations($entities, $mapper);
+        $loadedRelations = $this->getLoadedRelations($records, $mapper);
 
         if (! empty($loadedRelations)) {
-            $this->associateRelations($entities, $loadedRelations);
+            $this->associateRelations($records, $loadedRelations);
         }
 
-        return $entities;
+        return $records;
     }
 }

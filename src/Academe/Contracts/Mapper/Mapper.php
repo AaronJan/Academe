@@ -46,7 +46,7 @@ interface Mapper
 
     /**
      * @param Executable $executable
-     * @return mixed
+     * @return mixed|array
      */
     public function execute(Executable $executable);
 
@@ -66,5 +66,17 @@ interface Mapper
      * @return \Academe\MongoDB\Statement\MapperStatement
      */
     public function queryAsMongoDB();
+
+    /**
+     * @param array $records
+     * @return array
+     */
+    public function convertRecords(array $records);
+
+    /**
+     * @param $record
+     * @return mixed
+     */
+    public function convertRecord($record);
 
 }

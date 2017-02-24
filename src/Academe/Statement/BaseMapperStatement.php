@@ -51,7 +51,7 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
 
     /**
      * @param array|null $attributes
-     * @return array
+     * @return mixed[]
      */
     public function all(array $attributes = null)
     {
@@ -104,7 +104,7 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
 
     /**
      * @param array|null $fields
-     * @return array|null
+     * @return array|mixed|null
      */
     public function first(array $fields = null)
     {

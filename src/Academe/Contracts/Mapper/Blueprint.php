@@ -2,6 +2,8 @@
 
 namespace Academe\Contracts\Mapper;
 
+use Academe\Academe;
+
 interface Blueprint
 {
     /**
@@ -30,13 +32,13 @@ interface Blueprint
     public function castRules();
 
     /**
-     * @return array
-     */
-    public function customs();
-
-    /**
      * @return null|string
      */
     public function mapperClass();
+
+    /**
+     * @return \Academe\Model;
+     */
+    public function model();
 
 }

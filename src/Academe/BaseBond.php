@@ -23,14 +23,6 @@ abstract class BaseBond implements BondContract
     }
 
     /**
-     * @return array
-     */
-    public function customs()
-    {
-        return [];
-    }
-
-    /**
      * @return null|string
      */
     public function mapperClass()

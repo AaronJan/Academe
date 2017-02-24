@@ -23,18 +23,19 @@ abstract class BaseBlueprint implements BlueprintContract
     }
 
     /**
-     * @return array
-     */
-    public function customs()
-    {
-        return [];
-    }
-
-    /**
      * @return null|string
      */
     public function mapperClass()
     {
         return null;
     }
+
+    /**
+     * @return \Academe\Model
+     */
+    public function model()
+    {
+        return new Model();
+    }
+
 }

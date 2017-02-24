@@ -121,7 +121,7 @@ class Mapper implements MapperContract
 
     /**
      * @param Executable $executable
-     * @return mixed
+     * @return mixed|array
      */
     public function execute(Executable $executable)
     {
@@ -206,6 +206,28 @@ class Mapper implements MapperContract
         if ($connetionType != $this->getConnection()->getType()) {
             throw new BadMethodCallException("Mapper doesn't support MongoDB");
         }
+    }
+
+    /**
+     * @param array $records
+     * @return mixed[]
+     */
+    public function convertRecords(array $records)
+    {
+        $model = $this->getBlueprint()->model();
+
+        return array_map(function ($record) use ($model) {
+            return $model->newInstance($record);
+        }, $records);
+    }
+
+    /**
+     * @param $record
+     * @return mixed
+     */
+    public function convertRecord($record)
+    {
+        return $this->getBlueprint()->model()->newInstance($record);
     }
 
 }

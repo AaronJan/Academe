@@ -113,7 +113,7 @@ abstract class SelectionType extends BaseExecutable
 
         $castedRecords = $this->castRecords($records, $mapper);
 
-        return $castedRecords;
+        return $mapper->convertRecords($castedRecords);
     }
 
     /**
