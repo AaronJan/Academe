@@ -77,7 +77,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
      * @return mixed
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function tryAgainIfCausedByLostConnection(\Doctrine\DBAL\DBALException $e,
+    static protected function tryAgainIfCausedByLostConnection(\Doctrine\DBAL\DBALException $e,
                                                         $method,
                                                         MySQLConnection $connection,
                                                         MySQLQueryContract $query)
