@@ -26,9 +26,7 @@ class First extends SelectionType implements FirstContract
             $this->associateRelations($entities, $loadedRelations);
         }
 
-        $record = reset($entities);
-
-        return $record ? $mapper->convertRecord($record) : $record;
+        return reset($entities);
     }
 
     /**
