@@ -10,11 +10,7 @@ I always thought ORM should be better (to be continued).
 
 ## TODOs
 
-* Model
-
-* Soft Delete
-
-* Optimistic Lock
+* Refactor casting
 
 * Transaction in Statement
 
