@@ -19,4 +19,19 @@ interface CastManager
      * @return mixed
      */
     public function castOut($field, $value, $connectionType);
+
+    /**
+     * @param $attributes
+     * @param $connectionType
+     * @return array
+     */
+    public function castInAttributes($attributes, $connectionType);
+
+    /**
+     * @param $attributes
+     * @param $connectionType
+     * @return array
+     */
+    public function castOutAttributes($attributes, $connectionType);
+
 }

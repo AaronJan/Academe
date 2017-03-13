@@ -127,25 +127,8 @@ abstract class SelectionType extends BaseExecutable
         $connectionType = $mapper->getConnection()->getType();
 
         return array_map(function ($record) use ($castManager, $connectionType) {
-            return $this->castRecord($record, $castManager, $connectionType);
+            return $castManager->castOutAttributes($record, $connectionType);
         }, $records);
-    }
-
-    /**
-     * @param                                $record
-     * @param \Academe\Contracts\CastManager $castManager
-     * @param                                $connectionType
-     * @return array
-     */
-    protected function castRecord($record, CastManager $castManager, $connectionType)
-    {
-        $castedRecord = [];
-
-        foreach ($record as $field => $value) {
-            $castedRecord[$field] = $castManager->castOut($field, $value, $connectionType);
-        }
-
-        return $castedRecord;
     }
 
 }

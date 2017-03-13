@@ -4,6 +4,7 @@ namespace Academe\Casting;
 
 use Academe\Contracts\Caster;
 use Academe\Contracts\CastManager as CastManagerContract;
+use Academe\Support\ArrayHelper;
 
 class CastManager implements CastManagerContract
 {
@@ -60,6 +61,39 @@ class CastManager implements CastManagerContract
         }
 
         return $value;
+    }
+
+    /**
+     * @param $attributes
+     * @param $connectionType
+     * @return array
+     */
+    public function castInAttributes($attributes, $connectionType)
+    {
+        return ArrayHelper::map($attributes, $this->makeCastAttributesCallback('castIn', $connectionType));
+    }
+
+    /**
+     * @param $attributes
+     * @param $connectionType
+     * @return array
+     */
+    public function castOutAttributes($attributes, $connectionType)
+    {
+        return ArrayHelper::map($attributes, $this->makeCastAttributesCallback('castOut', $connectionType));
+
+    }
+
+    /**
+     * @param $method
+     * @param $connectionType
+     * @return \Closure
+     */
+    protected function makeCastAttributesCallback($method, $connectionType)
+    {
+        return function ($value, $field) use ($method, $connectionType) {
+            return $this->{$method}($field, $value, $connectionType);
+        };
     }
 
 }
