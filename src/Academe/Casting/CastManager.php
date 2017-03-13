@@ -70,7 +70,10 @@ class CastManager implements CastManagerContract
      */
     public function castInAttributes($attributes, $connectionType)
     {
-        return ArrayHelper::map($attributes, $this->makeCastAttributesCallback('castIn', $connectionType));
+        return ArrayHelper::map(
+            (array) $attributes,
+            $this->makeCastAttributesCallback('castIn', $connectionType)
+        );
     }
 
     /**
@@ -80,8 +83,10 @@ class CastManager implements CastManagerContract
      */
     public function castOutAttributes($attributes, $connectionType)
     {
-        return ArrayHelper::map($attributes, $this->makeCastAttributesCallback('castOut', $connectionType));
-
+        return ArrayHelper::map(
+            (array) $attributes,
+            $this->makeCastAttributesCallback('castOut', $connectionType)
+        );
     }
 
     /**
