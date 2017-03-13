@@ -2,13 +2,12 @@
 
 namespace Academe\Database\MySQL;
 
+use Academe\Actions\Aggregate;
 use Academe\Actions\Select;
 use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\CastManager;
-use Academe\Contracts\Conditionable;
 use Academe\Contracts\Connection\Formation;
 use Academe\Contracts\Connection\ConditionGroup;
-use Academe\Contracts\Connection\Connection;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
 use Academe\Database\BaseBuilder;
@@ -265,7 +264,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action|Conditionable                $action
+     * @param Action|Aggregate                    $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MySQL\MySQLQuery

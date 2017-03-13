@@ -408,7 +408,10 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
                     $useNested = true;
                 }
 
-                $subQueries[] = $this->resolveConditionGroup($condition, $castManager);
+                $child = $this->resolveConditionGroup($condition, $castManager);
+                if (! empty($child)) {
+                    $subQueries[] = $child;
+                }
             } else {
                 $subQueries[] = $condition->parse(ConnectionConstant::TYPE_MONGODB, $castManager);
             }
