@@ -218,6 +218,8 @@ class MongoDBConnection extends BaseConnection
      */
     public function getDriver()
     {
+        $this->connectIfMissingConnection();
+
         return $this->databaseHandler;
     }
 

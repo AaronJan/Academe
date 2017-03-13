@@ -29,9 +29,9 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
      */
     static public function run(MySQLConnection $connection, MySQLQueryContract $query)
     {
-        $connection->connectIfMissingConnection();
-
         $method = static::getMethodForOperation($query->getOperation());
+
+        $connection->connectIfMissingConnection();
 
         $startTime   = microtime(true);
         $result      = static::getQueryResult($method, $connection, $query);

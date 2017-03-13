@@ -143,6 +143,8 @@ class MySQLConnection extends BaseConnection
      */
     public function getDriver()
     {
+        $this->connectIfMissingConnection();
+
         return $this->getDBALConnection();
     }
 

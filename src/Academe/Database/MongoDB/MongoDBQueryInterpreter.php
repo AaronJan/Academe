@@ -30,9 +30,9 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
      */
     static public function run(MongoDBConnection $connection, MongoDBQueryContract $query)
     {
-        $connection->connectIfMissingConnection();
-
         $method = static::getMethodForOperation($query->getOperation());
+
+        $connection->connectIfMissingConnection();
 
         $startTime   = microtime(true);
         $result      = static::getQueryResult($method, $connection, $query);
