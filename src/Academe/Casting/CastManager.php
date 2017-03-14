@@ -70,7 +70,7 @@ class CastManager implements CastManagerContract
      */
     public function castInAttributes($attributes, $connectionType)
     {
-        return ArrayHelper::map(
+        return ArrayHelper::mapWithKeys(
             (array) $attributes,
             $this->makeCastAttributesCallback('castIn', $connectionType)
         );
@@ -83,7 +83,7 @@ class CastManager implements CastManagerContract
      */
     public function castOutAttributes($attributes, $connectionType)
     {
-        return ArrayHelper::map(
+        return ArrayHelper::mapWithKeys(
             (array) $attributes,
             $this->makeCastAttributesCallback('castOut', $connectionType)
         );
@@ -97,7 +97,9 @@ class CastManager implements CastManagerContract
     protected function makeCastAttributesCallback($method, $connectionType)
     {
         return function ($value, $field) use ($method, $connectionType) {
-            return $this->{$method}($field, $value, $connectionType);
+            $casted = $this->{$method}($field, $value, $connectionType);
+
+            return [$field => $casted];
         };
     }
 
