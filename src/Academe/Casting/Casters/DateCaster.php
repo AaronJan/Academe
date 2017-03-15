@@ -41,7 +41,7 @@ class DateCaster extends BaseCaster
      */
     protected function castOutPDO($connectionType, $value)
     {
-        return empty($value) ? $value : Carbon::createFromFormat('Y-m-d', $value);
+        return empty($value) ? $value : Carbon::parse($value);
     }
 
     /**
