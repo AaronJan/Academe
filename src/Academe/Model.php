@@ -70,7 +70,7 @@ class Model implements \ArrayAccess, \JsonSerializable
      */
     public function offsetGet($offset)
     {
-        return $this->attributes[$offset] ?: null;
+        return $this->attributes[$offset] ?? null;
     }
 
     /**
