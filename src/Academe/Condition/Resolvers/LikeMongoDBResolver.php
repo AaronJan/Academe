@@ -18,11 +18,11 @@ class LikeMongoDBResolver
         $regexp = preg_quote($value);
 
         if ($matchMode === Like::MATCH_FROM_LEFT) {
-            $regexp = "^$regexp";
+            $regexp = "^{$regexp}";
         } elseif ($matchMode === Like::MATCH_FROM_RIGHT) {
-            $regexp = "$regexp$";
+            $regexp = "{$regexp}$";
         } else {
-            $regexp = "^$regexp$";
+            // keep it
         }
 
         return [$name => ['$regex' => "/{$regexp}/"]];
