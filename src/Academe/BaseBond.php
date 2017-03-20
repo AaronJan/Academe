@@ -45,4 +45,13 @@ abstract class BaseBond implements BondContract
     {
         return 'pivot';
     }
+
+    /**
+     * @return \Academe\Model
+     */
+    public function model()
+    {
+        return new Model();
+    }
+
 }
