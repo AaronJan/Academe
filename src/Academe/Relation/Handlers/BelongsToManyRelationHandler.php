@@ -37,6 +37,11 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     /**
      * @var array
      */
+    protected $pivotResults = [];
+
+    /**
+     * @var array
+     */
     protected $groupedResults = [];
 
     /**
@@ -120,31 +125,117 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      */
     public function associate($entities)
     {
-        $hostPrimaryKey = $this->hostBlueprint->primaryKey();
-
-        $dictionary = $this->buildPivotDictionary(
+        $dictionary      = $this->buildPivotedDictionary(
+            $this->pivotResults,
             $this->results,
-            $this->pivotField,
-            $this->hostField
+            $this->hostField,
+            $this->guestField,
+            $this->guestBlueprint->primaryKey()
         );
+        $pivotDictionary = $this->buildPivotDictionary($this->pivotResults, $this->hostField, $this->guestField);
 
-        foreach ($entities as $entity) {
-            $key                         = $entity[$hostPrimaryKey];
-            $entity[$this->relationName] = $this->getRelationResult($dictionary, $key);
-        }
+        $entities = $this->attachRelations($entities, $dictionary, $pivotDictionary);
 
         return $entities;
     }
 
     /**
+     * @param array $hostEntities
+     * @param       $guestDictionary
+     * @param       $pivotDictionary
      * @return array
      */
-    protected function buildPivotDictionary($entities, $pivotField, $key)
+    protected function attachRelations(array $hostEntities, $guestDictionary, $pivotDictionary)
     {
-        $dictionary = [];
+        $relationName   = $this->relationName;
+        $hostPrimaryKey = $this->hostBlueprint->primaryKey();
+
+        return array_map(function ($entity) use (
+            $hostPrimaryKey,
+            $guestDictionary,
+            $pivotDictionary,
+            $relationName
+        ) {
+            $hostPrimaryValue = $entity[$hostPrimaryKey];
+
+            $entity[$relationName] = $this->attachPivotEntityToRelation(
+                $this->cloneEntities(
+                    $this->getRelationResult($guestDictionary, $hostPrimaryValue)
+                ),
+                $pivotDictionary,
+                $hostPrimaryValue
+            );
+
+            return $entity;
+        }, $hostEntities);
+    }
+
+    /**
+     * @param array $entities
+     * @return array
+     */
+    protected function cloneEntities(array $entities)
+    {
+        return array_map(function ($entity) {
+            return clone $entity;
+        }, $entities);
+    }
+
+    /**
+     * @param array $relationEntities
+     * @param       $pivotDictionary
+     * @param       $hostPrimaryValue
+     * @return array
+     */
+    protected function attachPivotEntityToRelation(array $relationEntities,
+                                                   $pivotDictionary,
+                                                   $hostPrimaryValue)
+    {
+        $pivotField      = $this->pivotField;
+        $guestPrimaryKey = $this->guestBlueprint->primaryKey();
+
+        return array_map(function ($relationEntity) use (
+            $pivotDictionary,
+            $pivotField,
+            $hostPrimaryValue,
+            $guestPrimaryKey
+        ) {
+            $relationEntity[$pivotField] = $this->getRelationResult(
+                $pivotDictionary,
+                $this->getPivotDictionaryKey($hostPrimaryValue, $relationEntity[$guestPrimaryKey])
+            );
+
+            return $relationEntity;
+        }, $relationEntities);
+    }
+
+    /**
+     * @param array $pivotEntities
+     * @param array $entities
+     * @param       $hostField
+     * @param       $guestField
+     * @param       $guestPrimaryKey
+     * @return array
+     */
+    protected function buildPivotedDictionary(
+        array $pivotEntities,
+        array $entities,
+        $hostField,
+        $guestField,
+        $guestPrimaryKey)
+    {
+        $dictionary         = [];
+        $pivotMapDictionary = $this->buildDictionary($pivotEntities, $guestField);
+
 
         foreach ($entities as $entity) {
-            $dictionary[$entity[$pivotField][$key]][] = $entity;
+            $entityPrimaryValue = $entity[$guestPrimaryKey];
+
+            $maps = $pivotMapDictionary[$entityPrimaryValue] ?? [];
+
+            foreach ($maps as $map) {
+                $dictionary[$map[$hostField]][] = $entity;
+            }
         }
 
         return $dictionary;
@@ -206,9 +297,11 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             ->in($this->hostField, $hostPrimaryKeyValues)
             ->all();
 
-        $guestPrimaryKeyValues = array_map(function ($pivotEntity) {
-            return $pivotEntity[$this->guestField];
-        }, $pivotEntities);
+        $guestPrimaryKeyValues = array_unique(
+            array_map(function ($pivotEntity) {
+                return $pivotEntity[$this->guestField];
+            }, $pivotEntities)
+        );
 
         // Fetch guest entities
         $statement = $this->makeLimitedFluentStatement($academe)
@@ -221,19 +314,42 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             ->with($nestedRelations)
             ->all();
 
-        $pivotDictionary = $this->buildDictionary($pivotEntities, $this->guestField);
-        $pivotField      = $academe->getBond($this->relation->getBondClass())->pivotField();
-
-        foreach ($guestEntities as $guestEntity) {
-            $guestEntity[$pivotField] = isset($pivotDictionary[$guestEntity[$guestPrimaryKey]]) ?
-                reset($pivotDictionary[$guestEntity[$guestPrimaryKey]]) :
-                null;
-        }
-
-        $this->results = $guestEntities;
-        $this->loaded  = true;
+        $this->results      = $guestEntities;
+        $this->pivotResults = $pivotEntities;
+        $this->loaded       = true;
 
         return $this;
+    }
+
+    /**
+     * @param $hostPrimaryValue
+     * @param $guestPrimaryValue
+     * @return string
+     */
+    protected function getPivotDictionaryKey($hostPrimaryValue, $guestPrimaryValue)
+    {
+        return "{$hostPrimaryValue}_{$guestPrimaryValue}";
+    }
+
+    /**
+     * @param array $pivotEntities
+     * @param       $hostField
+     * @param       $guestField
+     * @return array
+     */
+    protected function buildPivotDictionary(array $pivotEntities, $hostField, $guestField)
+    {
+        $dictionary = [];
+
+        foreach ($pivotEntities as $pivotEntity) {
+            $key              = $this->getPivotDictionaryKey(
+                $pivotEntity[$hostField],
+                $pivotEntity[$guestField]
+            );
+            $dictionary[$key] = $pivotEntity;
+        }
+
+        return $dictionary;
     }
 
 }
