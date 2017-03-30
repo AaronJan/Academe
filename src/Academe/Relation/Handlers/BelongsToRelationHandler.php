@@ -15,11 +15,6 @@ class BelongsToRelationHandler extends BaseRelationHandler
     protected $relation;
 
     /**
-     * @var null|\Closure
-     */
-    protected $tweaker = null;
-
-    /**
      * @var ConditionGroup|null
      */
     protected $conditionGroup = null;
@@ -132,16 +127,13 @@ class BelongsToRelationHandler extends BaseRelationHandler
         $foreignKey = $this->foreignKey;
         $otherKey   = $this->otherKey;
 
-        //拿到父级的ID
         $parentKeyAttributes = array_map(function ($entity) use ($foreignKey) {
             return $entity[$foreignKey];
         }, $entities);
 
         $parentMapper = $academe->getMapper($this->relation->getParentBlueprintClass());
 
-        $fluentStatement = $this->makeLimitedFluentStatement($academe);
-
-        $fluentStatement->in($otherKey, $parentKeyAttributes);
+        $fluentStatement = $this->makeLimitedFluentStatement($academe)->in($otherKey, $parentKeyAttributes);
 
         $constrain($fluentStatement);
 

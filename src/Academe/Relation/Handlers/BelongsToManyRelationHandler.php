@@ -15,11 +15,6 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     protected $relation;
 
     /**
-     * @var null|\Closure
-     */
-    protected $tweaker = null;
-
-    /**
      * @var ConditionGroup|null
      */
     protected $conditionGroup = null;

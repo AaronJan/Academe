@@ -26,11 +26,6 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     protected $hostMapper;
 
     /**
-     * @var null|\Closure
-     */
-    protected $tweaker = null;
-
-    /**
      * @var ConditionGroup|null
      */
     protected $conditionGroup = null;

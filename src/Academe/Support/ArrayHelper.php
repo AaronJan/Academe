@@ -2,6 +2,8 @@
 
 namespace Academe\Support;
 
+use Symfony\Component\HttpKernel\Fragment\InlineFragmentRenderer;
+
 class ArrayHelper
 {
     /**
@@ -36,6 +38,26 @@ class ArrayHelper
         }
 
         return $result;
+    }
+
+    /**
+     * Modified from Laravel's.
+     *
+     * @param $array
+     * @param $depth
+     * @return mixed
+     */
+    static public function flatten($array, $depth = \INF)
+    {
+        return array_reduce($array, function ($result, $item) use ($depth) {
+            if (! is_array($item)) {
+                return array_merge($result, [$item]);
+            } elseif ($depth === 1) {
+                return array_merge($result, array_values($item));
+            } else {
+                return array_merge($result, static::flatten($item, ($depth - 1)));
+            }
+        }, []);
     }
 
 }
