@@ -107,14 +107,6 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @return string
-     */
-    public function getHostKeyField()
-    {
-        return $this->hostBlueprint->primaryKey();
-    }
-
-    /**
      * @param array[]|mixed $entities
      * @return array[]|mixed
      */

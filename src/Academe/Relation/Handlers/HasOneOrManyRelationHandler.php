@@ -61,14 +61,6 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     protected $relationName;
 
     /**
-     * @return string
-     */
-    public function getHostKeyField()
-    {
-        return $this->localKey;
-    }
-
-    /**
      * @param                            $entities
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe

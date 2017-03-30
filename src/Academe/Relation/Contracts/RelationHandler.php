@@ -7,11 +7,6 @@ use Academe\Contracts\Academe;
 interface RelationHandler
 {
     /**
-     * @return string
-     */
-    public function getHostKeyField();
-
-    /**
      * @param array[] $entities
      */
     public function associate($entities);

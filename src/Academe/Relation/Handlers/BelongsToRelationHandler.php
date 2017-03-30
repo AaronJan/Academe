@@ -66,14 +66,6 @@ class BelongsToRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @return string
-     */
-    public function getHostKeyField()
-    {
-        return $this->otherKey;
-    }
-
-    /**
      * @param array[]|mixed $entities
      */
     public function associate($entities)

@@ -95,14 +95,6 @@ class WithManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @return string
-     */
-    public function getHostKeyField()
-    {
-        return $this->localKey;
-    }
-
-    /**
      * @param                            $entities
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
@@ -121,11 +113,7 @@ class WithManyRelationHandler extends BaseRelationHandler
         $foreignKey = $this->foreignKey;
         $localKey   = $this->localKey;
 
-        $childKeys = ArrayHelper::flatten(
-            ArrayHelper::map($entities, function ($entity) use ($foreignKey) {
-                return (array) $entity[$foreignKey];
-            })
-        );
+        $childKeys = $this->getChildKeysFromHostEntities($entities, $foreignKey);
 
         $childMapper = $academe->getMapper($this->relation->getChildBlueprintClass());
 
@@ -142,6 +130,22 @@ class WithManyRelationHandler extends BaseRelationHandler
         $this->loaded  = true;
 
         return $this;
+    }
+
+    /**
+     * @param array|mixed $entities
+     * @param             $foreignKey
+     * @return array
+     */
+    protected function getChildKeysFromHostEntities($entities, $foreignKey)
+    {
+        $childKeys = ArrayHelper::flatten(
+            ArrayHelper::map($entities, function ($entity) use ($foreignKey) {
+                return (array) $entity[$foreignKey];
+            })
+        );
+
+        return array_unique($childKeys);
     }
 
 
