@@ -3,11 +3,11 @@
 namespace Academe\Relation\Handlers;
 
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Relation\WithMany;
 use Academe\Contracts\Academe;
+use Academe\Relation\WithManyPredefined;
 use Academe\Support\ArrayHelper;
 
-class WithManyRelationHandler extends BaseRelationHandler
+class WithManyPredefinedRelationHandler extends BaseRelationHandler
 {
     /**
      * @var bool
@@ -30,7 +30,7 @@ class WithManyRelationHandler extends BaseRelationHandler
     protected $localKey;
 
     /**
-     * @var \Academe\Relation\WithMany
+     * @var \Academe\Relation\WithManyPredefined
      */
     protected $relation;
 
@@ -40,13 +40,13 @@ class WithManyRelationHandler extends BaseRelationHandler
     protected $relationName;
 
     /**
-     * WithManyRelationHandler constructor.
+     * WithManyPredefinedRelationHandler constructor.
      *
-     * @param \Academe\Relation\WithMany       $relation
-     * @param \Academe\Contracts\Mapper\Mapper $hostMapper
-     * @param                                  $relationName
+     * @param \Academe\Relation\WithManyPredefined $relation
+     * @param \Academe\Contracts\Mapper\Mapper     $hostMapper
+     * @param                                      $relationName
      */
-    public function __construct(WithMany $relation, Mapper $hostMapper, $relationName)
+    public function __construct(WithManyPredefined $relation, Mapper $hostMapper, $relationName)
     {
         $this->relation     = $relation;
         $this->hostMapper   = $hostMapper;
@@ -61,7 +61,7 @@ class WithManyRelationHandler extends BaseRelationHandler
      */
     public function associate($entities)
     {
-        $groupDictionary = $this->buildDictionaryForGroup($this->results, $this->localKey);
+        $groupDictionary = $this->buildDictionaryForGroup($this->relation->getPredefined(), $this->localKey);
 
         foreach ($entities as $entity) {
             $children = [];
@@ -106,47 +106,9 @@ class WithManyRelationHandler extends BaseRelationHandler
                                 Academe $academe,
                                 array $nestedRelations)
     {
-        if ($this->loaded) {
-            return $this;
-        }
-
-        $foreignKey = $this->foreignKey;
-        $localKey   = $this->localKey;
-
-        $childKeys = $this->getAllChildKeysFromHostEntities($entities, $foreignKey);
-
-        $childMapper = $academe->getMapper($this->relation->getChildBlueprintClass());
-
-        $fluentStatement = $this->makeLimitedFluentStatement($academe)->in($localKey, $childKeys);
-
-        $constrain($fluentStatement);
-
-        $executable = $fluentStatement
-            ->upgrade()
-            ->with($nestedRelations)
-            ->all();
-
-        $this->results = $childMapper->execute($executable);
-        $this->loaded  = true;
+        // do nothing, is it awesome?
 
         return $this;
     }
-
-    /**
-     * @param array|mixed $entities
-     * @param             $foreignKey
-     * @return array
-     */
-    protected function getAllChildKeysFromHostEntities($entities, $foreignKey)
-    {
-        $childKeys = ArrayHelper::flatten(
-            ArrayHelper::map($entities, function ($entity) use ($foreignKey) {
-                return (array) $entity[$foreignKey];
-            })
-        );
-
-        return array_unique($childKeys);
-    }
-
 
 }
