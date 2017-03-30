@@ -79,7 +79,7 @@ class ManyToManyRelationPivot implements RelationPivot
 
         $conditionStatement = $this->makeEqualityConditionsFromAttributes($mainAttributes, $writer);
 
-        $entity = $pivotMapper->query($conditionStatement)->first();
+        $entity = $pivotMapper->query()->apply($conditionStatement)->first();
 
         if ($entity) {
             $primaryKey = $pivotMapper->getPrimaryKey();
@@ -244,7 +244,8 @@ class ManyToManyRelationPivot implements RelationPivot
             $this->attachedKey => $attachedKeyValue,
         ], $pivotMapper->getAcademe()->getWriter());
 
-        return $pivotMapper->query($conditionStatement)
+        return $pivotMapper->query()
+            ->apply($conditionStatement)
             ->update($additionAttributes);
     }
 
