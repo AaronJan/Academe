@@ -51,7 +51,7 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
 
     /**
      * @param array|null $attributes
-     * @return mixed[]
+     * @return mixed[]|mixed
      */
     public function all(array $attributes = null)
     {
