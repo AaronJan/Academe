@@ -5,6 +5,12 @@ namespace Academe\Relation\Contracts;
 interface RelationPivot
 {
     /**
+     * @param $hostPrimary
+     * @return array
+     */
+    public function getOtherKeys($hostPrimary);
+
+    /**
      * @param       $hostPrimary
      * @param       $guestPrimary
      * @param array $additionAttributes

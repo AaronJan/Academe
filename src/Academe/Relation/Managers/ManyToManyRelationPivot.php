@@ -5,6 +5,7 @@ namespace Academe\Relation\Managers;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Contracts\Writer;
 use Academe\Relation\Contracts\RelationPivot;
+use Academe\Support\ArrayHelper;
 
 class ManyToManyRelationPivot implements RelationPivot
 {
@@ -271,6 +272,23 @@ class ManyToManyRelationPivot implements RelationPivot
         }
 
         return $writer->must($conditions);
+    }
+
+    /**
+     * @param $hostPrimary
+     * @return array
+     */
+    public function getOtherKeys($hostPrimary)
+    {
+        $attachedKey = $this->attachedKey;
+
+        $pivotEntities = $this->getPivotMapper()->query()
+            ->equal($this->mainKey, $hostPrimary)
+            ->all([$attachedKey]);
+
+        return ArrayHelper::map($pivotEntities, function ($pivotEntity) use ($attachedKey) {
+            return $pivotEntity[$attachedKey];
+        });
     }
 
 }
