@@ -5,6 +5,7 @@ namespace Academe\Casting;
 use Academe\Casting\Casters\BooleanCaster;
 use Academe\Casting\Casters\DateCaster;
 use Academe\Casting\Casters\DateTimeCaster;
+use Academe\Casting\Casters\DecimalCaster;
 use Academe\Casting\Casters\DoubleCaster;
 use Academe\Casting\Casters\FloatCaster;
 use Academe\Casting\Casters\GroupCaster;
@@ -125,4 +126,13 @@ class CasterMaker
     {
         return new StringCaster();
     }
+
+    /**
+     * @return \Academe\Casting\Casters\DecimalCaster
+     */
+    static public function decimal()
+    {
+        return new DecimalCaster();
+    }
+    
 }
