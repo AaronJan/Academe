@@ -6,6 +6,7 @@ use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\Connection;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Relation\Contracts\RelationHandler;
+use Academe\Transaction;
 
 interface Mapper
 {
@@ -78,5 +79,11 @@ interface Mapper
      * @return mixed
      */
     public function convertRecord($record);
+
+    /**
+     * @param \Academe\Transaction $transaction
+     * @return bool
+     */
+    public function involve(Transaction $transaction);
 
 }

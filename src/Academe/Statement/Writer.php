@@ -4,6 +4,7 @@ namespace Academe\Statement;
 
 use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Writer as WriterContract;
+use Academe\Transaction;
 
 class Writer implements WriterContract
 {
@@ -20,6 +21,14 @@ class Writer implements WriterContract
     public function __construct(ConditionMaker $conditionMaker)
     {
         $this->conditionMaker = $conditionMaker;
+    }
+
+    /**
+     * @return \Academe\Transaction
+     */
+    public function newTransaction()
+    {
+        return new Transaction();
     }
 
     /**

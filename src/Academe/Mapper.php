@@ -230,4 +230,13 @@ class Mapper implements MapperContract
         return $this->getBlueprint()->model()->newInstance($record);
     }
 
+    /**
+     * @param \Academe\Transaction $transaction
+     * @return bool
+     */
+    public function involve(Transaction $transaction)
+    {
+        return $transaction->involveConnection($this->getConnection());
+    }
+
 }

@@ -5,6 +5,11 @@ namespace Academe\Contracts;
 interface Writer
 {
     /**
+     * @return \Academe\Transaction
+     */
+    public function newTransaction();
+
+    /**
      * @param $field
      * @param $value
      * @return \Academe\Statement\ConditionStatement

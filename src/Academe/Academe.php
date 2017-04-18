@@ -6,7 +6,6 @@ use Academe\Contracts\Academe as AcademeContract;
 use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Mapper\Blueprint;
 use Academe\Contracts\Mapper\Mapper;
-use Academe\Exceptions\ErrorException;
 use Academe\Exceptions\LogicException;
 use Academe\Relation\Contracts\Bond;
 use Academe\Relation\Contracts\RelationManager;
@@ -73,6 +72,14 @@ class Academe implements AcademeContract
     public function getWriter()
     {
         return $this->writer;
+    }
+
+    /**
+     * @return \Academe\Transaction
+     */
+    public function newTransaction()
+    {
+        return new Transaction();
     }
 
     /**

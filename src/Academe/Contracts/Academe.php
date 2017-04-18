@@ -11,9 +11,14 @@ interface Academe
     /**
      * @param $config
      * @return \Academe\Contracts\Academe
-     * @throws \Academe\Exceptions\ErrorException
+     * @throws \Academe\Exceptions\LogicException
      */
     static public function initialize($config);
+
+    /**
+     * @return \Academe\Transaction
+     */
+    public function newTransaction();
 
     /**
      * @return \Academe\Contracts\Academe
