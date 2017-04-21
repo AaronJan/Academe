@@ -109,7 +109,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
      */
     public function associateByType($entities, $type)
     {
-        $dictionary = $this->buildDictionary();
+        $dictionary = $this->buildDictionaryForGroup();
 
         foreach ($entities as $entity) {
             $key                         = $entity[$this->localKey];
@@ -122,7 +122,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     /**
      * @return array
      */
-    protected function buildDictionary()
+    protected function buildDictionaryForGroup()
     {
         $dictionary = [];
         $foreignKey = $this->foreignKey;

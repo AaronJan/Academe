@@ -212,7 +212,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $guestPrimaryKey)
     {
         $dictionary         = [];
-        $pivotMapDictionary = $this->buildDictionary($pivotEntities, $guestField);
+        $pivotMapDictionary = $this->buildDictionaryForGroup($pivotEntities, $guestField);
 
 
         foreach ($entities as $entity) {
@@ -231,7 +231,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     /**
      * @return array
      */
-    protected function buildDictionary($entities, $key)
+    protected function buildDictionaryForGroup($entities, $key)
     {
         $dictionary = [];
 

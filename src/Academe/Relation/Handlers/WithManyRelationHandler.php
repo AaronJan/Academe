@@ -61,14 +61,14 @@ class WithManyRelationHandler extends BaseRelationHandler
      */
     public function associate($entities)
     {
-        $groupDictionary = $this->buildDictionaryForGroup($this->results, $this->localKey);
+        $dictionary = $this->buildDictionary($this->results, $this->localKey);
 
         foreach ($entities as $entity) {
             $children = [];
 
             foreach ($entity[$this->foreignKey] as $childKey) {
-                if (isset($groupDictionary[$childKey])) {
-                    $children[] = $groupDictionary[$childKey];
+                if (isset($dictionary[$childKey])) {
+                    $children[] = $dictionary[$childKey];
                 }
             }
 
@@ -83,12 +83,12 @@ class WithManyRelationHandler extends BaseRelationHandler
      * @param             $key
      * @return array
      */
-    protected function buildDictionaryForGroup($entities, $key)
+    protected function buildDictionary($entities, $key)
     {
         $dictionary = [];
 
         foreach ($entities as $entity) {
-            $dictionary[$entity[$key]][] = $entity;
+            $dictionary[$entity[$key]] = $entity;
         }
 
         return $dictionary;
