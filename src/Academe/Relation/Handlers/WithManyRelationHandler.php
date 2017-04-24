@@ -66,7 +66,7 @@ class WithManyRelationHandler extends BaseRelationHandler
         foreach ($entities as $entity) {
             $children = [];
 
-            foreach ($entity[$this->foreignKey] as $childKey) {
+            foreach (ArrayHelper::get($entity, $this->foreignKey) as $childKey) {
                 if (isset($dictionary[$childKey])) {
                     $children[] = $dictionary[$childKey];
                 }
@@ -141,7 +141,7 @@ class WithManyRelationHandler extends BaseRelationHandler
     {
         $childKeys = ArrayHelper::flatten(
             ArrayHelper::map($entities, function ($entity) use ($foreignKey) {
-                return (array) $entity[$foreignKey];
+                return (array) ArrayHelper::get($entity, $foreignKey);
             })
         );
 

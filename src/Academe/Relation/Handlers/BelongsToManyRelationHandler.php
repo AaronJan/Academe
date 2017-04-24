@@ -6,6 +6,7 @@ use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Blueprint;
 use Academe\Relation\BelongsToMany;
+use Academe\Support\ArrayHelper;
 
 class BelongsToManyRelationHandler extends BaseRelationHandler
 {
@@ -143,7 +144,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             $pivotDictionary,
             $relationName
         ) {
-            $hostPrimaryValue = $entity[$hostPrimaryKey];
+            $hostPrimaryValue = ArrayHelper::get($entity, $hostPrimaryKey);
 
             $entity[$relationName] = $this->attachPivotEntityToRelation(
                 $this->cloneEntities(
@@ -275,7 +276,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $guestPrimaryKey = $guestMapper->getPrimaryKey();
 
         $hostPrimaryKeyValues = array_map(function ($entity) use ($hostPrimaryKey) {
-            return $entity[$hostPrimaryKey];
+            return ArrayHelper::get($entity, $hostPrimaryKey);
         }, $entities);
 
         // Fetch pivot entities
@@ -286,7 +287,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
         $guestPrimaryKeyValues = array_unique(
             array_map(function ($pivotEntity) {
-                return $pivotEntity[$this->guestField];
+                return ArrayHelper::get($pivotEntity, $this->guestField);
             }, $pivotEntities)
         );
 

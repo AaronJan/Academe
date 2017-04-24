@@ -6,6 +6,7 @@ use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\BelongsTo;
+use Academe\Support\ArrayHelper;
 
 class BelongsToRelationHandler extends BaseRelationHandler
 {
@@ -71,7 +72,7 @@ class BelongsToRelationHandler extends BaseRelationHandler
     public function associate($entities)
     {
         foreach ($entities as $entity) {
-            $entity[$this->relationName] = $this->getAssociatedResult($entity[$this->foreignKey]);
+            $entity[$this->relationName] = $this->getAssociatedResult(ArrayHelper::get($entity, $this->foreignKey));
         }
     }
 
@@ -120,7 +121,7 @@ class BelongsToRelationHandler extends BaseRelationHandler
         $otherKey   = $this->otherKey;
 
         $parentKeyAttributes = array_map(function ($entity) use ($foreignKey) {
-            return $entity[$foreignKey];
+            return ArrayHelper::get($entity, $foreignKey);
         }, $entities);
 
         $parentMapper = $academe->getMapper($this->relation->getParentBlueprintClass());

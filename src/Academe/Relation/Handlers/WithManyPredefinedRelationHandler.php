@@ -66,7 +66,7 @@ class WithManyPredefinedRelationHandler extends BaseRelationHandler
         foreach ($entities as $entity) {
             $children = [];
 
-            foreach ($entity[$this->foreignKey] as $childKey) {
+            foreach (ArrayHelper::get($entity, $this->foreignKey) as $childKey) {
                 if (isset($dictionary[$childKey])) {
                     $children[] = $dictionary[$childKey];
                 }

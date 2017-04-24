@@ -7,6 +7,7 @@ use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\HasMany;
 use Academe\Relation\HasOne;
+use Academe\Support\ArrayHelper;
 
 /**
  * Class HasOneOrManyRelationHandler
@@ -80,7 +81,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
         $localKey   = $this->localKey;
 
         $childKeyAttributes = array_map(function ($entity) use ($localKey) {
-            return $entity[$localKey];
+            return ArrayHelper::get($entity, $localKey);
         }, $entities);
 
         $childMapper = $academe->getMapper($this->relation->getChildBlueprintClass());
@@ -103,7 +104,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param array[]|mixed $entities
+     * @param array[]|mixed  $entities
      * @param                $type
      * @return array[]|mixed
      */
@@ -112,7 +113,7 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
         $dictionary = $this->buildDictionaryForGroup();
 
         foreach ($entities as $entity) {
-            $key                         = $entity[$this->localKey];
+            $key                         = ArrayHelper::get($entity, $this->localKey);
             $entity[$this->relationName] = $this->getRelationResult($dictionary, $key, $type);
         }
 
