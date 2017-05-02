@@ -289,7 +289,7 @@ class MySQLConnection extends BaseConnection
 
         $DBALConnection = $this->getDBALConnection();
 
-        if (! $isTransactionActive) {
+        if (! $isTransactionActive && ! is_null($isolationLevel)) {
             $DBALConnection->setTransactionIsolation($isolationLevel);
         }
 
