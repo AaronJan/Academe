@@ -5,9 +5,10 @@ namespace Academe\Contracts;
 interface Writer
 {
     /**
+     * @param null|integer $isolationLevel
      * @return \Academe\Transaction
      */
-    public function newTransaction();
+    public function newTransaction($isolationLevel = null);
 
     /**
      * @param $field
