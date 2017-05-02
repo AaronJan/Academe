@@ -2,6 +2,7 @@
 
 namespace Academe;
 
+use Academe\Constant\TransactionConstant;
 use Academe\Contracts\Connection\Connection;
 
 class Transaction
@@ -26,6 +27,29 @@ class Transaction
      */
     protected $isExecuted = false;
 
+    /**
+     * @var null|int
+     */
+    protected $isolationLevel = null;
+
+    /**
+     * Transaction constructor.
+     *
+     * @param null $isolationLevel
+     */
+    public function __construct($isolationLevel = null)
+    {
+        $this->isolationLevel = $isolationLevel;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getIsolationLevel()
+    {
+        return $this->isolationLevel;
+    }
+    
     /**
      *
      */
@@ -84,8 +108,10 @@ class Transaction
             throw new \LogicException("Transaction has already started.");
         }
 
+        $isolationLevel = $this->getIsolationLevel();
+
         foreach ($this->connections as $connection) {
-            $connection->beginTransaction();
+            $connection->beginTransaction($isolationLevel);
         }
 
         $this->isStarted = true;

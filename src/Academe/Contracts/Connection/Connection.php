@@ -51,9 +51,10 @@ interface Connection
     public function isTransactionActive();
 
     /**
+     * @param null|integer $isolationLevel
      * @return void
      */
-    public function beginTransaction();
+    public function beginTransaction($isolationLevel = null);
 
     /**
      * @return void

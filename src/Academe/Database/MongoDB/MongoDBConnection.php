@@ -278,9 +278,10 @@ class MongoDBConnection extends BaseConnection
     }
 
     /**
+     * @param null|integer $isolationLevel
      * @return void
      */
-    public function beginTransaction()
+    public function beginTransaction($isolationLevel = null)
     {
         ++ $this->transactionCount;
 

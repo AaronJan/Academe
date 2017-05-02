@@ -276,15 +276,24 @@ class MySQLConnection extends BaseConnection
     }
 
     /**
+     * @param null|integer $isolationLevel
      * @return void
      */
-    public function beginTransaction()
+    public function beginTransaction($isolationLevel = null)
     {
-        ++ $this->transactionCount;
+        $isTransactionActive = $this->isTransactionActive();
 
         $this->connectIfMissingConnection();
 
-        $this->getDBALConnection()->beginTransaction();
+        ++ $this->transactionCount;
+
+        $DBALConnection = $this->getDBALConnection();
+
+        if (! $isTransactionActive) {
+            $DBALConnection->setTransactionIsolation($isolationLevel);
+        }
+
+        $DBALConnection->beginTransaction();
     }
 
     /**
