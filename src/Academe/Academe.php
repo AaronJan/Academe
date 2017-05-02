@@ -75,11 +75,12 @@ class Academe implements AcademeContract
     }
 
     /**
+     * @param null|integer $isolationLevel
      * @return \Academe\Transaction
      */
-    public function newTransaction()
+    public function newTransaction($isolationLevel = null)
     {
-        return new Transaction();
+        return new Transaction($isolationLevel);
     }
 
     /**

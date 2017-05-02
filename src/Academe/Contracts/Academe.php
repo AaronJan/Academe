@@ -16,9 +16,10 @@ interface Academe
     static public function initialize($config);
 
     /**
+     * @param null|integer $isolationLevel
      * @return \Academe\Transaction
      */
-    public function newTransaction();
+    public function newTransaction($isolationLevel = null);
 
     /**
      * @return \Academe\Contracts\Academe
