@@ -50,7 +50,7 @@ class ConnectionManager
         $name = $name ?: $this->defaultConnectionName;
 
         if (! isset($this->connections[$name])) {
-            $this->connections[$name] = $this->makeConnection($this->getConnectionConfig($name));
+            $this->connections[$name] = $this->makeConnection($name, $this->getConnectionConfig($name));
         }
 
         return $this->connections[$name];
@@ -72,16 +72,17 @@ class ConnectionManager
     }
 
     /**
-     * @param array $config
+     * @param string $name
+     * @param array  $config
      * @return Connection
      * @throws \Exception
      */
-    protected function makeConnection($config)
+    protected function makeConnection($name, $config)
     {
         $connectionClass = $this->getConnectionClass($config['type']);
 
         try {
-            $connection = new $connectionClass($config);
+            $connection = new $connectionClass($name, $config);
         } catch (\Exception $e) {
             throw $e;
         }

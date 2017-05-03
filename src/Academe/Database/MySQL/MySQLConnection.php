@@ -43,12 +43,14 @@ class MySQLConnection extends BaseConnection
     /**
      * MySQLConnection constructor.
      *
-     * @param $config
+     * @param string $name
+     * @param        $config
      */
-    public function __construct($config)
+    public function __construct($name, $config)
     {
-        $this->setConfig($config);
+        $this->name = $name;
 
+        $this->setConfig($config);
         $this->setupTablePrefix($config);
         $this->setupDatabaseName($config);
     }

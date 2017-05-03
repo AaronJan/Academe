@@ -34,12 +34,14 @@ class MongoDBConnection extends BaseConnection
     /**
      * MongoDBConnection constructor.
      *
-     * @param $config
+     * @param string $name
+     * @param        $config
      */
-    public function __construct($config)
+    public function __construct($name, $config)
     {
-        $this->setConfig($config);
+        $this->name = $name;
 
+        $this->setConfig($config);
         $this->setupDatabaseName($config);
     }
 
@@ -308,5 +310,6 @@ class MongoDBConnection extends BaseConnection
 
         // Do nothing
     }
+
 }
 

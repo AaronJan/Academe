@@ -2,6 +2,7 @@
 
 namespace Academe\Statement\Traits;
 
+use Academe\Constant\TransactionConstant;
 use Academe\Instructions\Traits\Lockable as LockableInstruction;
 use Academe\Contracts\Mapper\Instruction;
 
@@ -10,16 +11,14 @@ trait Lockable
     /**
      * @var integer
      */
-    protected $lockLevel = 0;
+    protected $lockLevel = TransactionConstant::LOCK_UNSET;
 
     /**
      * @return $this
      */
     public function lockForShare()
     {
-        $this->lockLevel = 1;
-
-        return $this;
+        return $this->setLockLevel(TransactionConstant::LOCK_FOR_SHARE);
     }
 
     /**
@@ -27,9 +26,7 @@ trait Lockable
      */
     public function lock()
     {
-        $this->lockLevel = 2;
-
-        return $this;
+        return $this->setLockLevel(TransactionConstant::LOCK_FOR_UPDATE);
     }
 
     /**
@@ -41,7 +38,7 @@ trait Lockable
     }
 
     /**
-     * @param integer $level
+     * @param integer|null $level
      * @return $this
      */
     public function setLockLevel($level)
@@ -59,7 +56,7 @@ trait Lockable
         /**
          * @var $instruction LockableInstruction
          */
-        if ($this->lockLevel) {
+        if ($this->lockLevel !== TransactionConstant::LOCK_UNSET) {
             $instruction->setLock($this->lockLevel);
         }
     }

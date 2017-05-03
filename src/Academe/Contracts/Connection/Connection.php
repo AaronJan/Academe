@@ -2,8 +2,15 @@
 
 namespace Academe\Contracts\Connection;
 
+use Academe\Transaction;
+
 interface Connection
 {
+    /**
+     * @return string
+     */
+    public function getName();
+
     /**
      * @return string
      */
@@ -80,5 +87,21 @@ interface Connection
      * @return array
      */
     public function getQueryLogs();
+
+    /**
+     * @return int|null
+     */
+    public function getTransactionSelectLockLevel();
+
+    /**
+     * @param \Academe\Transaction $transaction
+     * @return int
+     */
+    public function rememberTransaction(Transaction $transaction);
+
+    /**
+     * @param $id
+     */
+    public function forgetTransaction($id);
 
 }

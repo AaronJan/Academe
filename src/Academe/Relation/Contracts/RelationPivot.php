@@ -2,6 +2,8 @@
 
 namespace Academe\Relation\Contracts;
 
+use Academe\Constant\TransactionConstant;
+
 interface RelationPivot
 {
     /**
@@ -33,13 +35,13 @@ interface RelationPivot
     public function detachAll($hostPrimary);
 
     /**
-     * @param      $hostPrimary
-     * @param      $guestPrimaries
-     * @param bool $detaching
-     * @param int  $lockLevel
+     * @param          $hostPrimary
+     * @param          $guestPrimaries
+     * @param bool     $detaching
+     * @param int|null $lockLevel
      * @return array
      */
-    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true, $lockLevel = 0);
+    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true, $lockLevel = TransactionConstant::LOCK_UNSET);
 
 }
 

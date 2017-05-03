@@ -69,6 +69,8 @@ class BaseCount extends BaseExecutable implements CountContract
     {
         $action = $this->makeCountAggregateAction();
 
+        $this->setLockIfNotBeenSet($action, $connection->getTransactionSelectLockLevel());
+
         if ($this->conditionGroup) {
             $action = $action->setConditionGroup($this->conditionGroup);
         }

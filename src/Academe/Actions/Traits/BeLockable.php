@@ -2,12 +2,22 @@
 
 namespace Academe\Actions\Traits;
 
+use Academe\Constant\TransactionConstant;
+
 trait BeLockable
 {
     /**
-     * @var int
+     * @var int|null
      */
-    protected $lockLevel = 0;
+    protected $lockLevel = TransactionConstant::LOCK_UNSET;
+
+    /**
+     * @return bool
+     */
+    public function hasLockBeenSet()
+    {
+        return $this->lockLevel !== TransactionConstant::LOCK_UNSET;
+    }
 
     /**
      * @param int $level
@@ -15,7 +25,8 @@ trait BeLockable
      */
     public function setLock($level)
     {
-        $this->lockLevel = $level;
+        $this->lockBeenSet = true;
+        $this->lockLevel   = $level;
 
         return $this;
     }
@@ -25,9 +36,7 @@ trait BeLockable
      */
     public function setShareLock()
     {
-        $this->lockLevel = 1;
-
-        return $this;
+        return $this->setLock(TransactionConstant::LOCK_FOR_SHARE);
     }
 
     /**
@@ -35,13 +44,11 @@ trait BeLockable
      */
     public function setExclusiveLock()
     {
-        $this->lockLevel = 2;
-
-        return $this;
+        return $this->setLock(TransactionConstant::LOCK_FOR_UPDATE);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getLockLevel()
     {

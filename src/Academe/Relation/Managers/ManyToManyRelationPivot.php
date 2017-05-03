@@ -2,6 +2,7 @@
 
 namespace Academe\Relation\Managers;
 
+use Academe\Constant\TransactionConstant;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Contracts\Writer;
 use Academe\Relation\Contracts\RelationPivot;
@@ -134,13 +135,13 @@ class ManyToManyRelationPivot implements RelationPivot
     }
 
     /**
-     * @param      $hostPrimary
-     * @param      $guestPrimaries
-     * @param bool $detaching
-     * @param int  $lockLevel
+     * @param          $hostPrimary
+     * @param          $guestPrimaries
+     * @param bool     $detaching
+     * @param int|null $lockLevel
      * @return array
      */
-    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true, $lockLevel = 0)
+    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true, $lockLevel = TransactionConstant::LOCK_UNSET)
     {
         $changes         = [
             'attached' => [],

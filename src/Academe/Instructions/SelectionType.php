@@ -94,6 +94,8 @@ abstract class SelectionType extends BaseExecutable
     {
         $action = $this->makeSelectActionWithFormation();
 
+        $this->setLockIfNotBeenSet($action, $connection->getTransactionSelectLockLevel());
+
         if ($this->conditionGroup) {
             $action = $action->setConditionGroup($this->conditionGroup);
         }
