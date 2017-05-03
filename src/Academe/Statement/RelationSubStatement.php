@@ -2,8 +2,12 @@
 
 namespace Academe\Statement;
 
+use Academe\Statement\Traits\Lockable;
+
 class RelationSubStatement extends ConditionStatement
 {
+    use Lockable;
+
     /**
      * @var array|null
      */

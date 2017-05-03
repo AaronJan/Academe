@@ -16,11 +16,13 @@ interface RelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
+     * @param integer                    $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations);
+                                array $nestedRelations,
+                                $lockLevel = 0);
 
 }

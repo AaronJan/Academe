@@ -8,9 +8,9 @@ use Academe\Contracts\Mapper\Instruction;
 trait Lockable
 {
     /**
-     * @var null|int
+     * @var integer
      */
-    protected $lockLevel;
+    protected $lockLevel = 0;
 
     /**
      * @return $this
@@ -28,6 +28,25 @@ trait Lockable
     public function lock()
     {
         $this->lockLevel = 2;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLockLevel()
+    {
+        return $this->lockLevel;
+    }
+
+    /**
+     * @param integer $level
+     * @return $this
+     */
+    public function setLockLevel($level)
+    {
+        $this->lockLevel = $level;
 
         return $this;
     }

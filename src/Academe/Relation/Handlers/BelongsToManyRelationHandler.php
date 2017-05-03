@@ -258,12 +258,14 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
+     * @param int                        $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations)
+                                array $nestedRelations,
+                                $lockLevel = 0)
     {
         if ($this->loaded) {
             return $this;
@@ -282,6 +284,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         // Fetch pivot entities
 
         $pivotEntities = $pivotMapper->query()
+            ->setLockLevel($lockLevel)
             ->in($this->hostField, $hostPrimaryKeyValues)
             ->all();
 
@@ -293,6 +296,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
         // Fetch guest entities
         $statement = $this->makeLimitedFluentStatement($academe)
+            ->setLockLevel($lockLevel)
             ->in($guestPrimaryKey, $guestPrimaryKeyValues);
 
         $constrain($statement);

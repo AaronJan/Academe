@@ -99,12 +99,14 @@ class WithManyPredefinedRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
+     * @param int                        $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations)
+                                array $nestedRelations,
+                                $lockLevel = 0)
     {
         // do nothing, is it awesome?
 

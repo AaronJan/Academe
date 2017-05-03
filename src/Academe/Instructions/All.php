@@ -18,7 +18,7 @@ class All extends SelectionType implements AllContract
     {
         $records = $this->getEntities($mapper);
 
-        $loadedRelations = $this->getLoadedRelations($records, $mapper);
+        $loadedRelations = $this->getLoadedRelations($records, $mapper, $this->getLockLevel());
 
         if (! empty($loadedRelations)) {
             $this->associateRelations($records, $loadedRelations);

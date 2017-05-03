@@ -69,7 +69,7 @@ class Paginate extends Segment implements PaginateContract
 
         $entities = $this->getEntities($mapper);
 
-        $loadedRelations = $this->getLoadedRelations($entities, $mapper);
+        $loadedRelations = $this->getLoadedRelations($entities, $mapper, $this->getLockLevel());
 
         if (! empty($loadedRelations)) {
             $this->associateRelations($entities, $loadedRelations);

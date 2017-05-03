@@ -106,12 +106,14 @@ class BelongsToRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
+     * @param int                        $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
-                                array $nestedRelations)
+                                array $nestedRelations,
+                                $lockLevel = 0)
     {
         if ($this->loaded) {
             return $this;
@@ -126,7 +128,9 @@ class BelongsToRelationHandler extends BaseRelationHandler
 
         $parentMapper = $academe->getMapper($this->relation->getParentBlueprintClass());
 
-        $fluentStatement = $this->makeLimitedFluentStatement($academe)->in($otherKey, $parentKeyAttributes);
+        $fluentStatement = $this->makeLimitedFluentStatement($academe)
+            ->setLockLevel($lockLevel)
+            ->in($otherKey, $parentKeyAttributes);
 
         $constrain($fluentStatement);
 
