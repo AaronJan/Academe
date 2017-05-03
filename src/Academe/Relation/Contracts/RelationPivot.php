@@ -14,8 +14,10 @@ interface RelationPivot
      * @param       $hostPrimary
      * @param       $guestPrimary
      * @param array $additionAttributes
+     * @param int   $lockLevel
+     * @return
      */
-    public function attachByKey($hostPrimary, $guestPrimary, $additionAttributes = []);
+    public function attachByKey($hostPrimary, $guestPrimary, $additionAttributes = [], $lockLevel = 0);
 
     /**
      * @param $hostPrimary
@@ -34,9 +36,10 @@ interface RelationPivot
      * @param      $hostPrimary
      * @param      $guestPrimaries
      * @param bool $detaching
+     * @param int  $lockLevel
      * @return array
      */
-    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true);
+    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true, $lockLevel = 0);
 
 }
 

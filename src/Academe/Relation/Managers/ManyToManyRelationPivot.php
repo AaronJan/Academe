@@ -42,15 +42,16 @@ class ManyToManyRelationPivot implements RelationPivot
      * @param       $hostPrimary
      * @param       $guestPrimary
      * @param array $additionAttributes
+     * @param int   $lockLevel
      */
-    public function attachByKey($hostPrimary, $guestPrimary, $additionAttributes = [])
+    public function attachByKey($hostPrimary, $guestPrimary, $additionAttributes = [], $lockLevel = 0)
     {
         $mainAttributes = [
             $this->mainKey     => $hostPrimary,
             $this->attachedKey => $guestPrimary,
         ];
 
-        $this->createOrUpdate($mainAttributes, $additionAttributes);
+        $this->createOrUpdate($mainAttributes, $additionAttributes, $lockLevel);
     }
 
     /**
@@ -71,8 +72,9 @@ class ManyToManyRelationPivot implements RelationPivot
     /**
      * @param array $mainAttributes
      * @param array $additionAttributes
+     * @param int   $lockLevel
      */
-    protected function createOrUpdate($mainAttributes, $additionAttributes)
+    protected function createOrUpdate($mainAttributes, $additionAttributes, $lockLevel = 0)
     {
         $pivotMapper = $this->getPivotMapper();
 
@@ -80,7 +82,10 @@ class ManyToManyRelationPivot implements RelationPivot
 
         $conditionStatement = $this->makeEqualityConditionsFromAttributes($mainAttributes, $writer);
 
-        $entity = $pivotMapper->query()->apply($conditionStatement)->first();
+        $entity = $pivotMapper->query()
+            ->setLockLevel($lockLevel)
+            ->apply($conditionStatement)
+            ->first();
 
         if ($entity) {
             $primaryKey = $pivotMapper->getPrimaryKey();
@@ -132,9 +137,10 @@ class ManyToManyRelationPivot implements RelationPivot
      * @param      $hostPrimary
      * @param      $guestPrimaries
      * @param bool $detaching
+     * @param int  $lockLevel
      * @return array
      */
-    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true)
+    public function syncByKeys($hostPrimary, $guestPrimaries, $detaching = true, $lockLevel = 0)
     {
         $changes         = [
             'attached' => [],
@@ -145,6 +151,7 @@ class ManyToManyRelationPivot implements RelationPivot
         $pivotPrimaryKey = $pivotMapper->getPrimaryKey();
 
         $currentEntities = $pivotMapper->query()
+            ->setLockLevel($lockLevel)
             ->equal($this->mainKey, $hostPrimary)
             ->all([$pivotPrimaryKey, $this->attachedKey]);
 
@@ -152,7 +159,9 @@ class ManyToManyRelationPivot implements RelationPivot
 
         $keyValueList = $this->formatSyncList($guestPrimaries);
 
-        $detach = array_diff($currentList, array_keys($keyValueList));
+        $detach = array_values(
+            array_diff($currentList, array_keys($keyValueList))
+        );
 
         if ($detaching && count($detach) > 0) {
             $this->detachByKeys($hostPrimary, $detach);
@@ -161,7 +170,7 @@ class ManyToManyRelationPivot implements RelationPivot
 
         $changes = array_merge(
             $changes,
-            $this->attachNewOrUpdateExists($hostPrimary, $currentList, $keyValueList)
+            $this->attachNewOrUpdateExists($hostPrimary, $currentList, $keyValueList, $lockLevel)
         );
 
         return $changes;
@@ -204,12 +213,13 @@ class ManyToManyRelationPivot implements RelationPivot
     }
 
     /**
-     * @param $mainKeyValue
-     * @param $currentList
-     * @param $keyValueList
+     * @param     $mainKeyValue
+     * @param     $currentList
+     * @param     $keyValueList
+     * @param int $lockLevel
      * @return array
      */
-    protected function attachNewOrUpdateExists($mainKeyValue, $currentList, $keyValueList)
+    protected function attachNewOrUpdateExists($mainKeyValue, $currentList, $keyValueList, $lockLevel = 0)
     {
         $changes = [
             'attached' => [],
@@ -218,7 +228,7 @@ class ManyToManyRelationPivot implements RelationPivot
 
         foreach ($keyValueList as $id => $attributes) {
             if (! in_array($id, $currentList)) {
-                $this->attachByKey($mainKeyValue, $id, $attributes);
+                $this->attachByKey($mainKeyValue, $id, $attributes, $lockLevel);
                 $changes['attached'][] = $id;
             } elseif (count($attributes) > 0) {
                 if ($this->updateExistingPivot($mainKeyValue, $id, $attributes)) {
