@@ -2,6 +2,7 @@
 
 namespace Academe\Relation\Contracts;
 
+use Academe\Constant\TransactionConstant;
 use Academe\Contracts\Academe;
 
 interface RelationHandler
@@ -16,13 +17,13 @@ interface RelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
-     * @param integer                    $lockLevel
+     * @param integer|null               $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
                                 array $nestedRelations,
-                                $lockLevel = 0);
+                                $lockLevel = TransactionConstant::LOCK_UNSET);
 
 }

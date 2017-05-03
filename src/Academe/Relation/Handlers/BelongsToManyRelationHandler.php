@@ -2,6 +2,7 @@
 
 namespace Academe\Relation\Handlers;
 
+use Academe\Constant\TransactionConstant;
 use Academe\Contracts\Academe;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Blueprint;
@@ -258,14 +259,14 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      * @param \Closure                   $constrain
      * @param \Academe\Contracts\Academe $academe
      * @param array                      $nestedRelations
-     * @param int                        $lockLevel
+     * @param int|null                   $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
                                 array $nestedRelations,
-                                $lockLevel = 0)
+                                $lockLevel = TransactionConstant::LOCK_UNSET)
     {
         if ($this->loaded) {
             return $this;
@@ -296,13 +297,13 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
         // Fetch guest entities
         $statement = $this->makeLimitedFluentStatement($academe)
-            ->setLockLevel($lockLevel)
             ->in($guestPrimaryKey, $guestPrimaryKeyValues);
 
         $constrain($statement);
 
         $guestEntities = $guestMapper->query()
             ->loadFrom($statement)
+            ->setLockLevel($lockLevel)
             ->with($nestedRelations)
             ->all();
 
