@@ -40,8 +40,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         $this->conditions = $statement->getConditions();
 
         if ($statement instanceof RelationSubStatement) {
-            $this->fields    = $statement->getFields();
-            $this->lockLevel = $statement->getLockLevel();
+            $this->fields = $statement->getFields();
         }
 
         return $this;
