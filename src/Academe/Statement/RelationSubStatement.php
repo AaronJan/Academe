@@ -2,8 +2,6 @@
 
 namespace Academe\Statement;
 
-use Academe\Statement\Traits\Lockable;
-
 class RelationSubStatement extends ConditionStatement
 {
     /**

@@ -31,4 +31,16 @@ abstract class BaseRelationHandler implements RelationHandler
         return new RelationSubStatement($academe->getConditionMaker());
     }
 
+    /**
+     * @param \Academe\Statement\RelationSubStatement|\Academe\Statement\MapperStatement                $statement
+     * @param \Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition|null $condition
+     * @return \Academe\Statement\RelationSubStatement|\Academe\Statement\MapperStatement
+     */
+    protected function applyConditionIfExisted($statement, $condition)
+    {
+        return $condition ?
+            $statement->apply($condition) :
+            $statement;
+    }
+
 }

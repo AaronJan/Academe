@@ -129,8 +129,10 @@ class BelongsToRelationHandler extends BaseRelationHandler
 
         $parentMapper = $academe->getMapper($this->relation->getParentBlueprintClass());
 
-        $fluentStatement = $this->makeLimitedFluentStatement($academe)
-            ->apply($this->relation->getCondition());
+        $fluentStatement = $this->applyConditionIfExisted(
+            $this->makeLimitedFluentStatement($academe),
+            $this->relation->getCondition()
+        );
 
         $constrain($fluentStatement);
 

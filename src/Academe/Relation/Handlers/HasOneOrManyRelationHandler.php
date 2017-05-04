@@ -89,8 +89,10 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
 
         $childMapper = $academe->getMapper($this->relation->getChildBlueprintClass());
 
-        $fluentStatement = $this->makeLimitedFluentStatement($academe)
-            ->apply($this->relation->getCondition());
+        $fluentStatement = $this->applyConditionIfExisted(
+            $this->makeLimitedFluentStatement($academe),
+            $this->relation->getCondition()
+        );
 
         $constrain($fluentStatement);
 
