@@ -130,11 +130,12 @@ class BelongsToRelationHandler extends BaseRelationHandler
         $parentMapper = $academe->getMapper($this->relation->getParentBlueprintClass());
 
         $fluentStatement = $this->makeLimitedFluentStatement($academe)
-            ->in($otherKey, $parentKeyAttributes);
+            ->apply($this->relation->getCondition());
 
         $constrain($fluentStatement);
 
         $executable = $fluentStatement
+            ->in($otherKey, $parentKeyAttributes)
             ->upgrade()
             ->setLockLevel($lockLevel)
             ->with($nestedRelations)

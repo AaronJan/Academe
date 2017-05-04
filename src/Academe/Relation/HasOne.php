@@ -26,6 +26,11 @@ class HasOne implements Relation
     protected $localKey;
 
     /**
+     * @var null|\Academe\Contracts\Connection\Condition|\Academe\ConditionGroup
+     */
+    protected $condition;
+
+    /**
      * HasOne constructor.
      *
      * @param $childBlueprintClass
@@ -72,5 +77,25 @@ class HasOne implements Relation
     {
         return new HasOneRelationHandler($this, $hostMapper, $relationName);
     }
+
+    /**
+     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @return $this
+     */
+    public function setCondition($condition)
+    {
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     */
+    public function getCondition()
+    {
+        return $this->condition;
+    }
+
 }
 

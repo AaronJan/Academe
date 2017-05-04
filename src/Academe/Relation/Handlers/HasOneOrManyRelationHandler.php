@@ -90,11 +90,12 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
         $childMapper = $academe->getMapper($this->relation->getChildBlueprintClass());
 
         $fluentStatement = $this->makeLimitedFluentStatement($academe)
-            ->in($foreignKey, $childKeyAttributes);
+            ->apply($this->relation->getCondition());
 
         $constrain($fluentStatement);
 
         $executable = $fluentStatement
+            ->in($foreignKey, $childKeyAttributes)
             ->upgrade()
             ->setLockLevel($lockLevel)
             ->with($nestedRelations)

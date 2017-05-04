@@ -20,6 +20,16 @@ class BelongsToMany implements Relation
     protected $isHost;
 
     /**
+     * @var null|\Academe\Contracts\Connection\Condition|\Academe\ConditionGroup
+     */
+    protected $pivotCondition;
+
+    /**
+     * @var null|\Academe\Contracts\Connection\Condition|\Academe\ConditionGroup
+     */
+    protected $guestCondition;
+
+    /**
      * BelongsToMany constructor.
      *
      * @param      $bondClass
@@ -56,6 +66,44 @@ class BelongsToMany implements Relation
     public function isHost()
     {
         return $this->isHost;
+    }
+
+    /**
+     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @return $this
+     */
+    public function setPivotCondition($condition)
+    {
+        $this->pivotCondition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     */
+    public function getPivotCondition()
+    {
+        return $this->pivotCondition;
+    }
+
+    /**
+     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @return $this
+     */
+    public function setGuestCondition($condition)
+    {
+        $this->guestCondition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     */
+    public function getGuestCondition()
+    {
+        return $this->guestCondition;
     }
 
 }

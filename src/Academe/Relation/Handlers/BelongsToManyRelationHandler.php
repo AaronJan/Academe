@@ -285,6 +285,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         // Fetch pivot entities
 
         $pivotEntities = $pivotMapper->query()
+            ->apply($this->relation->getPivotCondition())
             ->setLockLevel($lockLevel)
             ->in($this->hostField, $hostPrimaryKeyValues)
             ->all();
@@ -297,12 +298,13 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
         // Fetch guest entities
         $statement = $this->makeLimitedFluentStatement($academe)
-            ->in($guestPrimaryKey, $guestPrimaryKeyValues);
+            ->apply($this->relation->getGuestCondition());
 
         $constrain($statement);
 
         $guestEntities = $guestMapper->query()
             ->loadFrom($statement)
+            ->in($guestPrimaryKey, $guestPrimaryKeyValues)
             ->setLockLevel($lockLevel)
             ->with($nestedRelations)
             ->all();

@@ -24,6 +24,18 @@ class WithMany implements Relation
      */
     protected $localKey;
 
+    /**
+     * @var null|\Academe\Contracts\Connection\Condition|\Academe\ConditionGroup
+     */
+    protected $condition;
+
+    /**
+     * WithMany constructor.
+     *
+     * @param $childBlueprintClass
+     * @param $foreignKey
+     * @param $localKey
+     */
     public function __construct($childBlueprintClass, $foreignKey, $localKey)
     {
         $this->childBlueprintClass = $childBlueprintClass;
@@ -64,6 +76,25 @@ class WithMany implements Relation
     public function makeHandler(Mapper $hostMapper, $relationName, Academe $academe)
     {
         return new WithManyRelationHandler($this, $hostMapper, $relationName);
+    }
+
+    /**
+     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @return $this
+     */
+    public function setCondition($condition)
+    {
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     */
+    public function getCondition()
+    {
+        return $this->condition;
     }
 
 }

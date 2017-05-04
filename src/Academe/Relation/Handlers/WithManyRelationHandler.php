@@ -121,11 +121,12 @@ class WithManyRelationHandler extends BaseRelationHandler
         $childMapper = $academe->getMapper($this->relation->getChildBlueprintClass());
 
         $fluentStatement = $this->makeLimitedFluentStatement($academe)
-            ->in($localKey, $childKeys);
+            ->apply($this->relation->getCondition());
 
         $constrain($fluentStatement);
 
         $executable = $fluentStatement
+            ->in($localKey, $childKeys)
             ->upgrade()
             ->setLockLevel($lockLevel)
             ->with($nestedRelations)

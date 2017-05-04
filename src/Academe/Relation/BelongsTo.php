@@ -25,6 +25,11 @@ class BelongsTo implements Relation
     protected $otherKey;
 
     /**
+     * @var null|\Academe\Contracts\Connection\Condition|\Academe\ConditionGroup
+     */
+    protected $condition;
+
+    /**
      * BelongsTo constructor.
      *
      * @param string $parentBlueprintClass
@@ -72,5 +77,25 @@ class BelongsTo implements Relation
     {
         return $this->otherKey;
     }
+
+    /**
+     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @return $this
+     */
+    public function setCondition($condition)
+    {
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     */
+    public function getCondition()
+    {
+        return $this->condition;
+    }
+
 }
 
