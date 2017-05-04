@@ -85,27 +85,29 @@ class Paginate extends Segment implements PaginateContract
     protected function getCountForPagination(Mapper $mapper)
     {
         $connection = $mapper->getConnection();
-        $query      = $this->makeCountForPaginationQuery($connection, $mapper->getSubject());
+        $query      = $this->makeCountForPaginationQuery($connection, $mapper);
 
         return $connection->run($query);
     }
 
     /**
-     * @param Connection\Connection $connection
-     * @param                       $subject
-     * @return Connection\Query
+     * @param Connection\Connection            $connection
+     * @param \Academe\Contracts\Mapper\Mapper $mapper
+     * @return \Academe\Contracts\Connection\Query
      */
     protected function makeCountForPaginationQuery(Connection\Connection $connection,
-                                                   $subject)
+                                                   Mapper $mapper)
     {
-        $builder = $connection->makeBuilder();
-        $action  = $this->makeCountAggregateAction();
+        $action = $this->makeCountAggregateAction();
+
+        $this->setLockIfNotBeenSet($action, $connection->getTransactionSelectLockLevel());
 
         if ($this->conditionGroup) {
             $action = $action->setConditionGroup($this->conditionGroup);
         }
 
-        return $builder->parse($subject, $action);
+        return $connection->makeBuilder()
+            ->parse($mapper->getSubject(), $action, $mapper->getCastManager());
     }
 
     /**
