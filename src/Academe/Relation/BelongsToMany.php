@@ -69,7 +69,7 @@ class BelongsToMany implements Relation
     }
 
     /**
-     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @param \Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition $condition
      * @return $this
      */
     public function setPivotCondition($condition)
@@ -80,7 +80,7 @@ class BelongsToMany implements Relation
     }
 
     /**
-     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     * @return \Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition|null
      */
     public function getPivotCondition()
     {
@@ -88,7 +88,7 @@ class BelongsToMany implements Relation
     }
 
     /**
-     * @param \Academe\Contracts\Connection\Condition|\Academe\ConditionGroup $condition
+     * @param \Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition $condition
      * @return $this
      */
     public function setGuestCondition($condition)
@@ -99,7 +99,7 @@ class BelongsToMany implements Relation
     }
 
     /**
-     * @return \Academe\ConditionGroup|\Academe\Contracts\Connection\Condition|null
+     * @return \Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition|null
      */
     public function getGuestCondition()
     {
