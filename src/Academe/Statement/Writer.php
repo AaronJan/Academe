@@ -79,7 +79,7 @@ class Writer implements WriterContract
      * @param $value
      * @return \Academe\Statement\ConditionStatement
      */
-    public function greaterThaniOrEqual($field, $value)
+    public function greaterThanOrEqual($field, $value)
     {
         return $this->makeConditionStatement('greaterThanOrEqual', func_get_args());
     }

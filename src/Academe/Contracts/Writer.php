@@ -36,7 +36,7 @@ interface Writer
      * @param $value
      * @return \Academe\Statement\ConditionStatement
      */
-    public function greaterThaniOrEqual($field, $value);
+    public function greaterThanOrEqual($field, $value);
 
     /**
      * @param $field
