@@ -29,7 +29,7 @@ class JSONCaster extends BaseCaster
      */
     static protected function castInPDO($connectionType, $value)
     {
-        return json_encode($value);
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 
     /**

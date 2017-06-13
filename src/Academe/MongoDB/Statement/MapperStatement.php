@@ -12,7 +12,7 @@ class MapperStatement extends BaseMapperStatement
 
     /**
      * @param callable $callback
-     * @return \Academe\Statement\TerminatedStatement
+     * @return mixed|array
      */
     public function updateBy(callable $callback)
     {
