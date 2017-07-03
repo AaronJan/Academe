@@ -10,7 +10,7 @@ use Academe\Exceptions\LogicException;
 use Academe\Relation\Contracts\Bond;
 use Academe\Relation\Contracts\RelationManager;
 use Academe\Relation\Managers\ManyToManyRelationManager;
-use Academe\Statement\Writer;
+use Academe\Statement\Writer as StatementWriter;
 
 class Academe implements AcademeContract
 {
@@ -30,7 +30,7 @@ class Academe implements AcademeContract
     protected $conditionMaker;
 
     /**
-     * @var Writer
+     * @var StatementWriter
      */
     protected $writer;
 
@@ -129,7 +129,7 @@ class Academe implements AcademeContract
      */
     protected function initializeWriter()
     {
-        $this->writer = new Writer($this->getConditionMaker());
+        $this->writer = new StatementWriter($this->getConditionMaker());
     }
 
     /**
