@@ -4,7 +4,6 @@ namespace Academe\Contracts;
 
 use Academe\Relation\Contracts\Bond;
 use Academe\Relation\Contracts\RelationManager;
-use Academe\Statement\Writer;
 
 interface Academe
 {
