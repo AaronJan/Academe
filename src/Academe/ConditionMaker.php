@@ -8,6 +8,7 @@ use Academe\Condition\FieldExists;
 use Academe\Condition\GreaterThan;
 use Academe\Condition\GreaterThanOrEqual;
 use Academe\Condition\In;
+use Academe\Condition\IsNull;
 use Academe\Condition\LessThan;
 use Academe\Condition\LessThanOrEqual;
 use Academe\Condition\Like;
@@ -58,6 +59,15 @@ class ConditionMaker implements ConditionMakerContract
     public function equal($attribute, $value)
     {
         return new Equal($attribute, $value);
+    }
+
+    /**
+     * @param $field
+     * @return \Academe\Condition\IsNull
+     */
+    public function isNull($field)
+    {
+        return new IsNull($field);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Academe\Contracts;
 
+use Academe\Condition\IsNull;
 use Academe\Condition\Equal;
 use Academe\Condition\GreaterThan;
 use Academe\Condition\GreaterThanOrEqual;
@@ -28,6 +29,12 @@ interface ConditionMaker
      * @return Equal
      */
     public function equal($attribute, $value);
+
+    /**
+     * @param $field
+     * @return IsNull
+     */
+    public function isNull($field);
 
     /**
      * @param $attribute

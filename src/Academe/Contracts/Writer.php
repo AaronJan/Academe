@@ -26,6 +26,12 @@ interface Writer
 
     /**
      * @param $field
+     * @return \Academe\Statement\ConditionStatement
+     */
+    public function isNull($field);
+
+    /**
+     * @param $field
      * @param $value
      * @return \Academe\Statement\ConditionStatement
      */

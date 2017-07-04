@@ -2,19 +2,19 @@
 
 namespace Academe\Condition;
 
-use Academe\Condition\Resolvers\EqualMongoDBResolver;
-use Academe\Condition\Resolvers\EqualPDOResolver;
+use Academe\Condition\Resolvers\IsNullMongoDBResolver;
+use Academe\Condition\Resolvers\IsNullPDOResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
 use Academe\Constant\ConnectionConstant;
 
-class Equal extends BaseCondition implements ConditionContract
+class IsNull extends BaseCondition implements ConditionContract
 {
     /**
      * @var array
      */
     static protected $connectionToResolverClassMap = [
-        ConnectionConstant::TYPE_MYSQL   => EqualPDOResolver::class,
-        ConnectionConstant::TYPE_MONGODB => EqualMongoDBResolver::class,
+        ConnectionConstant::TYPE_MYSQL   => IsNullPDOResolver::class,
+        ConnectionConstant::TYPE_MONGODB => IsNullMongoDBResolver::class,
     ];
 
     /**
@@ -28,9 +28,9 @@ class Equal extends BaseCondition implements ConditionContract
      * @param $field
      * @param $value
      */
-    public function __construct($field, $value)
+    public function __construct($field)
     {
-        $this->parameters = [$field, $value];
+        $this->parameters = [$field];
     }
 
     /**

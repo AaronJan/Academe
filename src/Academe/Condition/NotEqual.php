@@ -25,12 +25,12 @@ class NotEqual extends BaseCondition implements ConditionContract
     /**
      * Equal constructor.
      *
-     * @param $attribute
+     * @param $field
      * @param $notExpect
      */
-    public function __construct($attribute, $notExpect)
+    public function __construct($field, $notExpect)
     {
-        $this->parameters = [$attribute, $notExpect];
+        $this->parameters = [$field, $notExpect];
     }
 
     /**
