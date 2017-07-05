@@ -2,7 +2,7 @@
 
 namespace Academe\Condition\Resolvers;
 
-use Academe\Condition\Equal;
+use Academe\Condition\IsNull;
 use Academe\Contracts\CastManager;
 use Academe\Traits\SQLValueWrapper;
 
@@ -12,13 +12,13 @@ class IsNullPDOResolver
 
     /**
      * @param                                     $connectionType
-     * @param Equal                               $equal
+     * @param IsNull                              $isNull
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
-    static public function resolve($connectionType, Equal $equal, CastManager $castManager = null)
+    static public function resolve($connectionType, IsNull $isNull, CastManager $castManager = null)
     {
-        list($field) = $equal->getParameters();
+        list($field) = $isNull->getParameters();
 
         return [(static::wrap($field) . ' IS NULL'), []];
     }
