@@ -1,11 +1,11 @@
-# Academe ORM
+# Academe
 
 **This project is under active development. If you like this project, do not be hesitated, click the little star!**
 
 
 ## Introduction
 
-I always thought ORM should be better (to be continued).
+I always thought data-manipulation should be better (to be continued).
 
 
 ## TODOs
