@@ -153,7 +153,7 @@ class WithManyRelationHandler extends BaseRelationHandler
             })
         );
 
-        return array_unique($childKeys);
+        return array_values(array_unique($childKeys));
     }
 
 

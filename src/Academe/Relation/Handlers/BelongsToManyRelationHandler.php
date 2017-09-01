@@ -292,11 +292,11 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             ->in($this->hostField, $hostPrimaryKeyValues)
             ->all();
 
-        $guestPrimaryKeyValues = array_unique(
+        $guestPrimaryKeyValues = array_values(array_unique(
             array_map(function ($pivotEntity) {
                 return ArrayHelper::get($pivotEntity, $this->guestField);
             }, $pivotEntities)
-        );
+        ));
 
         // Fetch guest entities
         $statement = $this->applyConditionIfExisted(
