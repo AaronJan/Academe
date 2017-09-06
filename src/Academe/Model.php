@@ -39,4 +39,17 @@ class Model extends \ArrayObject implements \JsonSerializable
         return (array) $this;
     }
 
+    /**
+     * @param mixed $index
+     * @return mixed|null
+     */
+    function offsetGet($index)
+    {
+        if ($this->offsetExists($index)) {
+            return parent::offsetGet($index);
+        }
+
+        return null;
+    }
+
 }
