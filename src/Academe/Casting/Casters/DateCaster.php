@@ -67,7 +67,7 @@ class DateCaster extends BaseCaster
      */
     protected function castOutMongoDB($connectionType, $mongoDate)
     {
-        return empty($mongoDate) ? $mongoDate : Carbon::instance($mongoDate->toDateTime());
+        return empty($mongoDate) ? $mongoDate : Carbon::createFromTimestamp($mongoDate->toDateTime()->getTimestamp());
     }
 }
 
