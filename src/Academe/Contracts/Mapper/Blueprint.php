@@ -17,6 +17,11 @@ interface Blueprint
     public function primaryKey();
 
     /**
+     * @return null|mixed
+     */
+    public function generatePrimaryKey();
+
+    /**
      * @return string
      */
     public function subject();

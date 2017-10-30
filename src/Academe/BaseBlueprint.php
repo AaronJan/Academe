@@ -15,6 +15,14 @@ abstract class BaseBlueprint implements BlueprintContract
     }
 
     /**
+     * @return null|mixed
+     */
+    public function generatePrimaryKey()
+    {
+        return null;
+    }
+
+    /**
      * @return array
      */
     public function relations()

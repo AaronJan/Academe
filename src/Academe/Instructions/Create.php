@@ -65,6 +65,14 @@ class Create extends WriteType implements CreateContract
                                  Mapper $mapper,
                                  array $attributes)
     {
+        // If primary key doesn't existed, try to generate one, if it isn't an null, use it.
+        if (array_key_exists($mapper->getPrimaryKey(), $attributes) === false) {
+            $primaryKey = $mapper->getBlueprint()->generatePrimaryKey();
+            if ($primaryKey !== null) {
+                $attributes[$mapper->getPrimaryKey()] = $primaryKey;
+            }
+        }
+
         $action = new Insert($attributes);
 
         return $connection->makeBuilder()
