@@ -15,6 +15,14 @@ abstract class BaseBond implements BondContract
     }
 
     /**
+     * @return null|mixed
+     */
+    public function generatePrimaryKey()
+    {
+        return null;
+    }
+
+    /**
      * @return array
      */
     public function relations()
