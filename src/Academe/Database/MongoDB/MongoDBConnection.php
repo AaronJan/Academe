@@ -68,6 +68,10 @@ class MongoDBConnection extends BaseConnection
         $DSN     = $this->getMongoDBConnectionDSN($config);
         $options = isset($config['options']) ? $config['options'] : [];
 
+        if (is_string($config['replica']) && $config['replica'] !== '') {
+            $options['replicaSet'] = $config['replica'];
+        }
+
         return new \MongoDB\Client($DSN, $options);
     }
 

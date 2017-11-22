@@ -35,6 +35,7 @@ return [
                 'password' => 'password',
             ],
             'database'       => 'mongodb',
+            'replica'        => '',
             'options'        => [
 //                'replicaSet' => 'my_replica',
 //                'w'          => 2, // 'majority'
