@@ -89,6 +89,34 @@ interface Writer
     public function mod($field, $divisor, $remainder);
 
     /**
+     * @param $field
+     * @param $size
+     * @return \Academe\Statement\ConditionStatement
+     */
+    public function sizeIs($field, $size);
+
+    /**
+     * @param      $field
+     * @param bool $isExists
+     * @return \Academe\Statement\ConditionStatement
+     */
+    public function fieldExists($field, $isExists);
+
+    /**
+     * @param $field
+     * @param $typeAlias
+     * @return \Academe\Statement\ConditionStatement
+     */
+    public function typeIs($field, $typeAlias);
+
+    /**
+     * @param $field
+     * @param $values
+     * @return \Academe\Statement\ConditionStatement
+     */
+    public function containsAll($field, $values);
+
+    /**
      * @param \Academe\Contracts\Connection\Condition|\Academe\Contracts\Connection\ConditionGroup|\Academe\Contracts\Connection\Condition[]|\Academe\Contracts\Connection\ConditionGroup[] $conditions
      * @return \Academe\Statement\ConditionStatement
      */
@@ -104,4 +132,9 @@ interface Writer
      * @return \Academe\Statement\InstructionStatement
      */
     public function query();
+
+    /**
+     * @return \Academe\MongoDB\Statement\InstructionStatement
+     */
+    public function queryAsMongoDB();
 }

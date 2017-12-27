@@ -204,7 +204,7 @@ class Mapper implements MapperContract
     protected function throwIfConnectionNotCapable($connetionType)
     {
         if ($connetionType != $this->getConnection()->getType()) {
-            throw new BadMethodCallException("Mapper doesn't support MongoDB");
+            throw new BadMethodCallException("Mapper doesn't support this type of connection");
         }
     }
 

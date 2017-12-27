@@ -21,11 +21,6 @@ trait InstructionBuilder
     abstract public function compileConditionGroup();
 
     /**
-     * @return \Academe\Contracts\Mapper\Mapper
-     */
-    abstract protected function getMapper();
-
-    /**
      * @return \Academe\MongoDB\Statement\MongoDBManualUpdate
      */
     protected function makeMongoDBManualUpdate()

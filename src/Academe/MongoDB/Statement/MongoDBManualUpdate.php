@@ -24,12 +24,6 @@ class MongoDBManualUpdate
     protected $useUpsert = false;
 
     /**
-     * 职责：
-     * 增加条件，并保存
-     * compile交给DB Compiler，调用AdvanceUpdateOperation的compile方法
-     */
-
-    /**
      * @param \Academe\MongoDB\Contracts\Operation $operation
      */
     protected function addOperation(Operation $operation)

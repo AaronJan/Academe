@@ -7,5 +7,4 @@ use Academe\Statement\BaseInstructionStatement;
 class InstructionStatement extends BaseInstructionStatement
 {
     use Traits\ConditionBuilder, Traits\InstructionBuilder;
-
 }
