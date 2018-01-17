@@ -55,7 +55,7 @@ class DateCaster extends BaseCaster
             return $dateTime;
         }
 
-        $UTCMilliseconds = $dateTime->startOfDay()->timestamp * 1000;
+        $UTCMilliseconds = $dateTime->copy()->startOfDay()->timestamp * 1000;
 
         return new UTCDateTime($UTCMilliseconds);
     }
