@@ -176,7 +176,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             $this->compileFrom(($this->tablePrefix . $subject)),
         ]);
 
-        list($conditionSQL, $parameters) = $this->analyseConditionClause($conditionGroup);
+        list($conditionSQL, $parameters) = $this->analyseConditionClause($conditionGroup, $castManager);
 
         return new MySQLQuery(
             'delete',
@@ -246,7 +246,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             $columns[] = self::wrap($key) . ' = ?';
         }
 
-        list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup);
+        list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup, $castManager);
 
         $SQL = implode(' ', [
             'UPDATE',
@@ -282,7 +282,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             $this->compileFrom(($this->tablePrefix . $subject)),
         ]);
 
-        list($conditionSQL, $parameters) = $this->analyseConditionClause($conditionGroup);
+        list($conditionSQL, $parameters) = $this->analyseConditionClause($conditionGroup, $castManager);
 
         $lockSQL = $this->compileLockable($action);
 
@@ -352,9 +352,9 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action|Conditionable                $action
-     * @param                                     $subject
-     * @param \Academe\Contracts\CastManager|null $castManager
+     * @param Action|\Academe\Contracts\Action\Conditionable $action
+     * @param                                                $subject
+     * @param \Academe\Contracts\CastManager|null            $castManager
      * @return \Academe\Database\MySQL\MySQLQuery
      */
     protected function parseCalculate(Action $action, $subject, CastManager $castManager = null)
@@ -364,7 +364,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         $parameters = [$value];
         $setClause  = self::wrap($column) . ' = ?';
 
-        list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup);
+        list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup, $castManager);
 
         $SQL = implode(' ', [
             'UPDATE',
