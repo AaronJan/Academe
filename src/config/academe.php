@@ -23,20 +23,21 @@ return [
         ],
 
         'mongodb' => [
-            'type'           => 'mongodb',
-            'instances'      => [
+            'type'                   => 'mongodb',
+            'instances'              => [
                 [
                     'host' => '127.0.0.1',
                     'port' => 27017,
                 ],
             ],
-            'authentication' => [
+            'authentication'         => [
                 'username' => 'username',
                 'password' => 'password',
             ],
-            'database'       => 'mongodb',
-            'replica'        => '',
-            'options'        => [
+            'database'               => 'mongodb',
+//            'authenticationDatabase' => 'auth',
+            'replica'                => '',
+            'options'                => [
 //                'replicaSet' => 'my_replica',
 //                'w'          => 2, // 'majority'
 //                'j'          => true,

@@ -183,7 +183,9 @@ class MongoDBConnection extends BaseConnection
             $DSN = "{$authentication['username']}:{$authentication['password']}@";
         }
 
-        if (isset($config['database'])) {
+        if (isset($config['authenticationDatabase'])) {
+            $database = $config['authenticationDatabase'];
+        } else {
             $database = $config['database'];
         }
 
