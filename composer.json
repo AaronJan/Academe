@@ -1,7 +1,7 @@
 {
   "name": "aaronjan/academe",
   "license": "Apache-2.0",
-  "description": "Academe is an unified ORM for MySQL & MongoDB (maybe more), support Laravel & natvie PHP project.",
+  "description": "Academe is an awesome data-mapper for MySQL & MongoDB (maybe more), support Laravel & natvie PHP project.",
   "keywords": [
     "ORM",
     "database",
@@ -9,14 +9,15 @@
   ],
   "type": "library",
   "require": {
-    "php": ">=7.1.0",
-    "doctrine/dbal": "^2.5",
-    "mongodb/mongodb": "^1.2",
-    "nesbot/carbon": "^1.21",
-    "brick/math": "0.5.*"
+    "php": ">=7.0.0",
+    "doctrine/dbal": "~2.5",
+    "mongodb/mongodb": ">=1.3,<1.5",
+    "nesbot/carbon": "~1.0",
+    "brick/math": ">=0.5,<0.8"
   },
   "require-dev": {
-    "phpunit/phpunit": "~5.0",
+    "illuminate/support": "~5.0",
+    "phpunit/phpunit": ">=5.0,<7.0",
     "mockery/mockery": "^0.9"
   },
   "authors": [
@@ -28,7 +29,23 @@
   "autoload": {
     "psr-4": {
       "Academe\\": "src/Academe/"
+    },
+    "exclude-from-classmap": ["/tests/", "phpunit.xml"]
+  },
+  "archive": {
+    "exclude": ["/tests/", "phpunit.xml"]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Academe\\Laravel\\AcademeServiceProvider"
+      ],
+      "aliases": {
+        "Writer": "Academe\\Laravel\\Facades\\Writer"
+      }
     }
   },
-  "minimum-stability": "stable"
+  "script": {
+    "test": "phpunit"
+  }
 }

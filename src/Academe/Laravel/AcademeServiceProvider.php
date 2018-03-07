@@ -41,6 +41,8 @@ class AcademeServiceProvider extends ServiceProvider
 
             return $academe->getWriter();
         });
+
+        $this->app->bind('academe.writer', Writer::class);
     }
 }
 
