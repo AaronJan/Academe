@@ -5,12 +5,11 @@ namespace Academe\Casting\Casters;
 use Academe\Constant\ConnectionConstant;
 
 /**
- * Class JSONCaster
+ * Class JsonAsArrayCaster
  *
  * @package Academe\Casting\Casters
- * @deprecated Use JsonAsArray instead.
  */
-class JSONCaster extends BaseCaster
+class JsonAsArrayCaster extends BaseCaster
 {
     /**
      * @var array
@@ -29,13 +28,35 @@ class JSONCaster extends BaseCaster
     ];
 
     /**
+     * @var int
+     */
+    protected $encodeOption;
+
+    /**
+     * @var int
+     */
+    protected $decodeOption;
+
+    /**
+     * JsonAsArrayCaster constructor.
+     *
+     * @param int $encodeOption
+     * @param int $decodeOption
+     */
+    public function __construct($encodeOption = 0, $decodeOption = 0)
+    {
+        $this->encodeOption = $encodeOption;
+        $this->decodeOption = $decodeOption;
+    }
+
+    /**
      * @param $connectionType
      * @param $value
      * @return string
      */
-    static protected function castInPDO($connectionType, $value)
+    protected function castInPDO($connectionType, $value)
     {
-        return json_encode($value, JSON_UNESCAPED_UNICODE);
+        return json_encode($value, $this->encodeOption);
     }
 
     /**
@@ -43,9 +64,9 @@ class JSONCaster extends BaseCaster
      * @param $value
      * @return array
      */
-    static protected function castOutPDO($connectionType, $value)
+    protected function castOutPDO($connectionType, $value)
     {
-        return json_decode($value, true);
+        return json_decode($value, true, $this->decodeOption);
     }
 
     /**
@@ -53,7 +74,7 @@ class JSONCaster extends BaseCaster
      * @param $value
      * @return string
      */
-    static protected function castInMongoDB($connectionType, $value)
+    protected function castInMongoDB($connectionType, $value)
     {
         return $value;
     }
@@ -63,7 +84,7 @@ class JSONCaster extends BaseCaster
      * @param $value
      * @return array
      */
-    static protected function castOutMongoDB($connectionType, $value)
+    protected function castOutMongoDB($connectionType, $value)
     {
         return (array) $value;
     }

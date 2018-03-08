@@ -6,7 +6,12 @@ use Academe\Constant\ConnectionConstant;
 use Academe\Exceptions\BadMethodCallException;
 use MongoDB\BSON\ObjectID;
 
-class MongoDBObjectIDCaster extends BaseCaster
+/**
+ * Class MongodbObjectIdAsStringCaster
+ *
+ * @package Academe\Casting\Casters
+ */
+class MongodbObjectIdAsStringCaster extends BaseCaster
 {
     /**
      * @var array
@@ -29,7 +34,7 @@ class MongoDBObjectIDCaster extends BaseCaster
      */
     protected function throwUnsupportException()
     {
-        $message = "MongoDBObjectIDCaster can't be used with Database other than MongoDB.";
+        $message = "MongodbObjectIdAsStringCaster can't be used with Database other than MongoDB.";
         throw new BadMethodCallException($message);
     }
 

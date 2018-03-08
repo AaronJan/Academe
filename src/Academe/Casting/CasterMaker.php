@@ -11,9 +11,11 @@ use Academe\Casting\Casters\FloatCaster;
 use Academe\Casting\Casters\GroupCaster;
 use Academe\Casting\Casters\IntegerAsBooleanCaster;
 use Academe\Casting\Casters\IntegerCaster;
+use Academe\Casting\Casters\JsonAsArrayCaster;
 use Academe\Casting\Casters\JSONCaster;
 use Academe\Casting\Casters\ListCaster;
 use Academe\Casting\Casters\MongoDBObjectIDCaster;
+use Academe\Casting\Casters\MongodbObjectIdAsStringCaster;
 use Academe\Casting\Casters\SetCaster;
 use Academe\Casting\Casters\StringCaster;
 use Academe\Contracts\Caster;
@@ -89,17 +91,28 @@ class CasterMaker
     /**
      * @return \Academe\Casting\Casters\IntegerCaster
      */
-    static public function integer()
+    public static function integer()
     {
         return new IntegerCaster();
     }
 
     /**
      * @return \Academe\Casting\Casters\JSONCaster
+     * @deprecated Use #JsonAsArray instead.
      */
-    static public function JSON()
+    public static function JSON()
     {
         return new JSONCaster();
+    }
+
+    /**
+     * @param int $encodeOption
+     * @param int $decodeOption
+     * @return \Academe\Casting\Casters\JsonAsArrayCaster
+     */
+    public static function jsonAsArray($encodeOption = 0, $decodeOption = 0)
+    {
+        return new JsonAsArrayCaster($encodeOption, $decodeOption);
     }
 
     /**
@@ -112,11 +125,28 @@ class CasterMaker
     }
 
     /**
-     * @return \Academe\Casting\Casters\MongoDBObjectIDCaster
+     * @return \Academe\Casting\Casters\MongodbObjectIdAsStringCaster
+     * @deprecated Use #mongodbObjectIdAsString objectId instead.
      */
-    static public function ObjectID()
+    public static function ObjectID()
     {
-        return new MongoDBObjectIDCaster();
+        return new MongodbObjectIdAsStringCaster();
+    }
+
+    /**
+     * @return \Academe\Casting\Casters\MongodbObjectIdCaster
+     */
+    public static function mongodbObjectId()
+    {
+        return new MongodbObjectIdCaster();
+    }
+
+    /**
+     * @return \Academe\Casting\Casters\MongodbObjectIdAsStringCaster
+     */
+    public static function mongodbObjectIdAsString()
+    {
+        return new MongodbObjectIdAsStringCaster();
     }
 
     /**
@@ -134,5 +164,5 @@ class CasterMaker
     {
         return new DecimalCaster();
     }
-    
+
 }
