@@ -17,6 +17,7 @@
   },
   "require-dev": {
     "illuminate/support": "~5.0",
+    "illuminate/console": "~5.0",
     "phpunit/phpunit": ">=5.0,<7.0",
     "mockery/mockery": "^0.9"
   },
@@ -41,7 +42,8 @@
         "Academe\\Laravel\\AcademeServiceProvider"
       ],
       "aliases": {
-        "Writer": "Academe\\Laravel\\Facades\\Writer"
+        "Writer": "Academe\\Laravel\\Facades\\Writer",
+        "Academe": "Academe\\Laravel\\Facades\\Academe"
       }
     }
   },

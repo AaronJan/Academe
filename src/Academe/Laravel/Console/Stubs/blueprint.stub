@@ -1,0 +1,34 @@
+<?php
+
+namespace DummyNamespace;
+
+use Academe\BaseBlueprint;
+
+class DummyClass extends BaseBlueprint
+{
+    /**
+     * @return string
+     */
+    public function primaryKey()
+    {
+        return 'DummyPrimaryKey';
+    }
+
+    /**
+     * @return string
+     */
+    public function subject()
+    {
+        return 'DummySubject';
+    }
+
+    /**
+     * @return array
+     */
+    public function castRules()
+    {
+        return [
+            //
+        ];
+    }
+}

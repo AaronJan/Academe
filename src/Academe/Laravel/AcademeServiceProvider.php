@@ -5,6 +5,7 @@ namespace Academe\Laravel;
 use Academe\Contracts\Academe;
 use Academe\Contracts\Writer;
 use Illuminate\Support\ServiceProvider;
+use Academe\Laravel\Console as AcademeConsole;
 
 class AcademeServiceProvider extends ServiceProvider
 {
@@ -28,21 +29,39 @@ class AcademeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $configPath = __DIR__ . '/../../config/academe.php';
-
-        $this->mergeConfigFrom($configPath, 'academe');
+        $this->mergeConfig();
+        $this->registerCommands();
 
         $this->app->singleton(Academe::class, function ($app) {
             return \Academe\Academe::initialize($app->config['academe']);
         });
 
         $this->app->singleton(Writer::class, function ($app) {
-            $academe = $app->make(Academe::class);
-
-            return $academe->getWriter();
+            return $app->make(Academe::class)->getWriter();
         });
 
+        $this->app->bind('academe', Academe::class);
         $this->app->bind('academe.writer', Writer::class);
+    }
+
+    /**
+     *
+     */
+    protected function mergeConfig()
+    {
+        $configPath = __DIR__ . '/../../config/academe.php';
+
+        $this->mergeConfigFrom($configPath, 'academe');
+    }
+
+    /**
+     * Register all custom commands.
+     */
+    protected function registerCommands()
+    {
+        $this->commands([
+            AcademeConsole\BlueprintMakeCommand::class,
+        ]);
     }
 }
 

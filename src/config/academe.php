@@ -61,6 +61,7 @@ return [
 
     // Configs that only take effects when you use with Laravel framework.
     'laravel' => [
-        'blueprint_directory' => 'app/Blueprints',
+        // Relative to app_path()
+        'blueprint_directory' => 'Blueprints',
     ],
 ];
