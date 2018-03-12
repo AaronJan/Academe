@@ -60,7 +60,7 @@ class MySQLQuery implements MySQLQueryContract
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getSQL()
     {
