@@ -8,6 +8,7 @@ use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Blueprint;
 use Academe\Relation\BelongsToMany;
 use Academe\Support\ArrayHelper;
+use Academe\Model;
 
 class BelongsToManyRelationHandler extends BaseRelationHandler
 {
@@ -129,9 +130,9 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param array $hostEntities
-     * @param       $guestDictionary
-     * @param       $pivotDictionary
+     * @param Model[] $hostEntities
+     * @param         $guestDictionary
+     * @param         $pivotDictionary
      * @return array
      */
     protected function attachRelations(array $hostEntities, $guestDictionary, $pivotDictionary)
@@ -145,14 +146,19 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             $pivotDictionary,
             $relationName
         ) {
+            /* @var $entity Model */
+
             $hostPrimaryValue = ArrayHelper::get($entity, $hostPrimaryKey);
 
-            $entity[$relationName] = $this->attachPivotEntityToRelation(
-                $this->cloneEntities(
-                    $this->getRelationResult($guestDictionary, $hostPrimaryValue)
-                ),
-                $pivotDictionary,
-                $hostPrimaryValue
+            $entity->setRelation(
+                $relationName,
+                $this->attachPivotEntityToRelation(
+                    $this->cloneEntities(
+                        $this->getRelationResult($guestDictionary, $hostPrimaryValue)
+                    ),
+                    $pivotDictionary,
+                    $hostPrimaryValue
+                )
             );
 
             return $entity;

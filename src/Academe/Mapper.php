@@ -217,7 +217,7 @@ class Mapper implements MapperContract
         $model = $this->getBlueprint()->model();
 
         return array_map(function ($record) use ($model) {
-            return $model->newInstance($record);
+            return $model->newInstance($record, $this->primaryKey);
         }, $records);
     }
 
@@ -227,7 +227,7 @@ class Mapper implements MapperContract
      */
     public function convertRecord($record)
     {
-        return $this->getBlueprint()->model()->newInstance($record);
+        return $this->getBlueprint()->model()->newInstance($record, $this->primaryKey);
     }
 
     /**

@@ -7,6 +7,7 @@ use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\WithMany;
 use Academe\Contracts\Academe;
 use Academe\Support\ArrayHelper;
+use Academe\Model;
 
 class WithManyRelationHandler extends BaseRelationHandler
 {
@@ -57,8 +58,8 @@ class WithManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param array[]|mixed $entities
-     * @return array[]|mixed
+     * @param Model[] $entities
+     * @return Model[]
      */
     public function associate($entities)
     {
@@ -73,7 +74,7 @@ class WithManyRelationHandler extends BaseRelationHandler
                 }
             }
 
-            $entity[$this->relationName] = $children;
+            $entity->setRelation($this->relationName, $children);
         }
 
         return $entities;

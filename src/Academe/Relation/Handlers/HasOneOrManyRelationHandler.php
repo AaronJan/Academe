@@ -9,6 +9,7 @@ use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\HasMany;
 use Academe\Relation\HasOne;
 use Academe\Support\ArrayHelper;
+use Academe\Model;
 
 /**
  * Class HasOneOrManyRelationHandler
@@ -110,17 +111,20 @@ abstract class HasOneOrManyRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param array[]|mixed  $entities
-     * @param                $type
-     * @return array[]|mixed
+     * @param Model[] $entities
+     * @param         $type
+     * @return Model[]
      */
     public function associateByType($entities, $type)
     {
         $dictionary = $this->buildDictionaryForGroup();
 
         foreach ($entities as $entity) {
-            $key                         = ArrayHelper::get($entity, $this->localKey);
-            $entity[$this->relationName] = $this->getRelationResult($dictionary, $key, $type);
+            $key = ArrayHelper::get($entity, $this->localKey);
+            $entity->setRelation(
+                $this->relationName,
+                $this->getRelationResult($dictionary, $key, $type)
+            );
         }
 
         return $entities;

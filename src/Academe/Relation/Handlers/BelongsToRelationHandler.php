@@ -8,6 +8,7 @@ use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Relation\BelongsTo;
 use Academe\Support\ArrayHelper;
+use Academe\Model;
 
 class BelongsToRelationHandler extends BaseRelationHandler
 {
@@ -68,12 +69,15 @@ class BelongsToRelationHandler extends BaseRelationHandler
     }
 
     /**
-     * @param array[]|mixed $entities
+     * @param Model[] $entities
      */
     public function associate($entities)
     {
         foreach ($entities as $entity) {
-            $entity[$this->relationName] = $this->getAssociatedResult(ArrayHelper::get($entity, $this->foreignKey));
+            $entity->setRelation(
+                $this->relationName,
+                $this->getAssociatedResult(ArrayHelper::get($entity, $this->foreignKey))
+            );
         }
     }
 
