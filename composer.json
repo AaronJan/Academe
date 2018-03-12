@@ -4,6 +4,7 @@
   "description": "Academe is an awesome data-mapper for MySQL & MongoDB (maybe more), support Laravel & natvie PHP project.",
   "keywords": [
     "ORM",
+    "datamapper",
     "database",
     "Laravel"
   ],
@@ -16,10 +17,10 @@
     "brick/math": ">=0.5,<0.8"
   },
   "require-dev": {
-    "illuminate/support": "~5.0",
-    "illuminate/console": "~5.0",
+    "illuminate/support": ">=5.4",
+    "illuminate/console": ">=5.4",
     "phpunit/phpunit": ">=5.0,<7.0",
-    "mockery/mockery": "^0.9"
+    "mockery/mockery": "~0.9"
   },
   "authors": [
     {
