@@ -18,6 +18,7 @@ use Academe\Casting\Casters\MongoDBObjectIDCaster;
 use Academe\Casting\Casters\MongodbObjectIdAsStringCaster;
 use Academe\Casting\Casters\SetCaster;
 use Academe\Casting\Casters\StringCaster;
+use Academe\Casting\Casters\VersionCaster;
 use Academe\Contracts\Caster;
 
 class CasterMaker
@@ -163,6 +164,14 @@ class CasterMaker
     static public function decimal()
     {
         return new DecimalCaster();
+    }
+
+    /**
+     * @return \Academe\Casting\Casters\VersionCaster
+     */
+    public static function version()
+    {
+        return new VersionCaster();
     }
 
 }
