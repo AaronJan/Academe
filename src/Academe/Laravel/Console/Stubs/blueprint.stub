@@ -3,6 +3,8 @@
 namespace DummyNamespace;
 
 use Academe\BaseBlueprint;
+use Academe\Casting\CasterMaker;
+use Academe\Relation;
 
 class DummyClass extends BaseBlueprint
 {
@@ -24,11 +26,21 @@ class DummyClass extends BaseBlueprint
 
     /**
      * @return array
+     **/
+    public function relations()
+    {
+        return [
+            //
+        ];
+    }
+
+    /**
+     * @return array
      */
     public function castRules()
     {
         return [
-            //
+            // eg: 'name' => CasterMaker::string()
         ];
     }
 }
