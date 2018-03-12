@@ -61,6 +61,7 @@ class AcademeServiceProvider extends ServiceProvider
     {
         $this->commands([
             AcademeConsole\BlueprintMakeCommand::class,
+            AcademeConsole\BondMakeCommand::class,
         ]);
     }
 }

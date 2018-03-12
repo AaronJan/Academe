@@ -2,7 +2,7 @@
 
 return [
     // If a Blueprint doesn't specified a connection, this connection will be used.
-    'default_connection' => 'mysql',
+    'default_connection' => env('DB_CONNECTION', 'mysql'),
 
     'connections' => [
         // MySQL connection config.
@@ -62,6 +62,8 @@ return [
     // Configs that only take effects when you use with Laravel framework.
     'laravel' => [
         // Relative to app_path()
-        'blueprint_directory' => 'Blueprints',
+        'blueprint_directory' => 'Academe/Blueprints',
+        // Relative to app_path()
+        'bond_directory' => 'Academe/Bonds',
     ],
 ];

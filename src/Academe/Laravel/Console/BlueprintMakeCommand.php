@@ -2,12 +2,15 @@
 
 namespace Academe\Laravel\Console;
 
+use Academe\Laravel\Console\Traits\MakeCommandHelper;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 
 class BlueprintMakeCommand extends GeneratorCommand
 {
+    use MakeCommandHelper;
+
     /**
      * The console command name.
      *

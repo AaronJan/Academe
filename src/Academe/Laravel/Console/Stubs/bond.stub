@@ -1,0 +1,68 @@
+<?php
+
+namespace DummyNamespace;
+
+use Academe\BaseBond;
+use Academe\Casting\CasterMaker;
+use Academe\Relation;DummyBlueprintImport;
+
+class DummyClass extends BaseBond
+{
+    /**
+     * @return string
+     */
+    public function primaryKey()
+    {
+        return 'DummyPrimaryKey';
+    }
+
+    /**
+     * @return string
+     */
+    public function subject()
+    {
+        return 'DummySubject';
+    }
+
+    /**
+     * @return string
+     **/
+    public function hostBlueprintClass()
+    {
+        return DummyHostBlueprintClass;
+    }
+
+    /**
+     * @return string
+     **/
+    public function hostKeyField()
+    {
+        return 'DummyHostKeyField';
+    }
+
+    /**
+     * @return string
+     **/
+    public function guestBlueprintClass()
+    {
+        return DummyGuestBlueprintClass;
+    }
+
+    /**
+     * @return string
+     **/
+    public function guestKeyField()
+    {
+        return 'DummyGuestKeyField';
+    }
+
+    /**
+     * @return array
+     */
+    public function castRules()
+    {
+        return [
+            // eg: 'name' => CasterMaker::string()
+        ];
+    }
+}
