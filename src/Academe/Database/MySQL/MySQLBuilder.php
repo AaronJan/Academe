@@ -271,14 +271,14 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
      */
     protected function parseAggregate(Action $action, $subject, CastManager $castManager = null)
     {
-        list($method, $column) = $action->getParameters();
+        list($method, $field) = $action->getParameters();
 
         $conditionGroup = $action->getConditionGroup();
         $function       = $this->getAggregateSQLFunction($action);
-        $countColumn    = static::wrap($column);
+        $aggregateField    = static::wrap($field);
 
         $SQL = implode(' ', [
-            "SELECT {$function}({$countColumn}) as `aggregation`",
+            "SELECT {$function}({$aggregateField}) as `aggregation`",
             $this->compileFrom(($this->tablePrefix . $subject)),
         ]);
 
@@ -290,7 +290,10 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             'aggregate',
             "{$SQL}{$conditionSQL}{$lockSQL}",
             $parameters,
-            false
+            false,
+            [
+                'field' => $field,
+            ]
         );
     }
 

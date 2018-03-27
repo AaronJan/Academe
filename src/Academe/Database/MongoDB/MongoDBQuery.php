@@ -28,19 +28,26 @@ class MongoDBQuery implements MongoDBQueryContract
     protected $hasChange;
 
     /**
+     * @var array
+     */
+    protected $hint;
+
+    /**
      * MongoDBQuery constructor.
      *
-     * @param      $operation
-     * @param      $collection
-     * @param      $parameters
-     * @param      $hasChange
+     * @param $operation
+     * @param $collection
+     * @param $parameters
+     * @param $hasChange
+     * @param array $hint
      */
-    public function __construct($operation, $collection, $parameters, $hasChange)
+    public function __construct($operation, $collection, $parameters, $hasChange, $hint = [])
     {
         $this->collection = $collection;
-        $this->operation  = $operation;
+        $this->operation = $operation;
         $this->parameters = $parameters;
-        $this->hasChange  = $hasChange;
+        $this->hasChange = $hasChange;
+        $this->hint = $hint;
     }
 
     /**
@@ -52,7 +59,7 @@ class MongoDBQuery implements MongoDBQueryContract
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getOperation()
     {
@@ -77,4 +84,11 @@ class MongoDBQuery implements MongoDBQueryContract
         return $this->hasChange;
     }
 
+    /**
+     * @return array
+     */
+    public function getHint()
+    {
+        return $this->hint;
+    }
 }

@@ -11,4 +11,9 @@ interface MongoDBQuery extends Query
     public function getCollection();
 
     public function getParameters();
+
+    /**
+     * @return array
+     */
+    public function getHint();
 }

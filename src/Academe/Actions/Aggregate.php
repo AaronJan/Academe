@@ -42,15 +42,15 @@ class Aggregate implements Action, Conditionable
     /**
      * Aggregate constructor.
      *
-     * @param        $method
+     * @param string $method
      * @param string $field
      */
-    public function __construct($method, $field = '*')
+    public function __construct($method, $field)
     {
         $this->validateMethod($method);
 
         $this->method = $method;
-        $this->field  = $field;
+        $this->field = $field;
     }
 
     /**

@@ -6,6 +6,7 @@ use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Contracts\Receipt;
 use Academe\Support\Pagination;
+use Academe\Aggregation;
 
 /**
  * Class BaseMapperStatement
@@ -22,12 +23,12 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
     /**
      * MapperStatement constructor.
      *
-     * @param \Academe\Contracts\Mapper\Mapper  $mapper
+     * @param \Academe\Contracts\Mapper\Mapper $mapper
      * @param \Academe\Contracts\ConditionMaker $conditionMaker
      */
     public function __construct(Mapper $mapper,
-                                ConditionMaker $conditionMaker)
-    {
+                                ConditionMaker $conditionMaker
+    ) {
         parent::__construct($conditionMaker);
 
         $this->setMapper($mapper);
@@ -115,7 +116,7 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
 
     /**
      * @param            $page
-     * @param int        $perPage
+     * @param int $perPage
      * @param array|null $attributes
      * @return Pagination
      */
@@ -129,7 +130,7 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
     /**
      * @param            $limit
      * @param array|null $attributes
-     * @param null       $offset
+     * @param null $offset
      * @return array
      */
     public function segment($limit, array $attributes = null, $offset = null)
@@ -150,4 +151,14 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
         return $this->getMapper()->execute($executable);
     }
 
+    /**
+     * @param $field
+     * @return Aggregation
+     */
+    public function sum($field)
+    {
+        $executable = parent::sum($field);
+
+        return $this->getMapper()->execute($executable);
+    }
 }

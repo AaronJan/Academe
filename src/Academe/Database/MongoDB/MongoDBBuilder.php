@@ -173,6 +173,8 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $operation      = 'aggregate';
         $collection     = $subject;
 
+        list($method, $field) = $action->getParameters();
+
         // Match State，filter result
         $matchStage = $this->resolveConditionGroup($conditionGroup, $castManager);
         if (! empty($matchStage)) {
@@ -185,7 +187,10 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             $operation,
             $collection,
             [$pipeline],
-            false
+            false,
+            [
+                'field' => $field,
+            ]
         );
     }
 

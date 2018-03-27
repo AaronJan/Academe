@@ -5,17 +5,7 @@ namespace Academe\Statement;
 use Academe\Instructions\Traits\Lockable;
 use Academe\Instructions\Traits\Sortable;
 use Academe\Instructions\Traits\WithRelation;
-
-use Academe\Instructions\All;
-use Academe\Instructions\Count;
-use Academe\Instructions\Create;
-use Academe\Instructions\Delete;
-use Academe\Instructions\Exists;
-use Academe\Instructions\First;
-use Academe\Instructions\Paginate;
-use Academe\Instructions\Segment;
-use Academe\Instructions\Update;
-
+use Academe\Instructions;
 use Academe\Exceptions\BadMethodCallException;
 use Academe\Traits\ParseRelation;
 use Academe\Contracts\Mapper\Instruction;
@@ -137,7 +127,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         $attributes = $this->filterFields($attributes);
 
         return $this->makeTerminatedStatement(
-            All::class,
+            Instructions\All::class,
             [$attributes, $this->compileConditionGroup()]
         );
     }
@@ -149,7 +139,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
     public function count($attribute = '*')
     {
         return $this->makeTerminatedStatement(
-            Count::class,
+            Instructions\Count::class,
             [$attribute, $this->compileConditionGroup()]
         );
     }
@@ -165,7 +155,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         }
 
         return $this->makeTerminatedStatement(
-            Create::class,
+            Instructions\Create::class,
             [$attributes]
         );
     }
@@ -176,7 +166,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
     public function delete()
     {
         return $this->makeTerminatedStatement(
-            Delete::class,
+            Instructions\Delete::class,
             [$this->compileConditionGroup()]
         );
     }
@@ -187,7 +177,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
     public function exists()
     {
         return $this->makeTerminatedStatement(
-            Exists::class,
+            Instructions\Exists::class,
             [$this->compileConditionGroup()]
         );
     }
@@ -201,7 +191,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         $fields = $this->filterFields($fields);
 
         return $this->makeTerminatedStatement(
-            First::class,
+            Instructions\First::class,
             [$fields, $this->compileConditionGroup()]
         );
     }
@@ -217,7 +207,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         $attributes = $this->filterFields($attributes);
 
         return $this->makeTerminatedStatement(
-            Paginate::class,
+            Instructions\Paginate::class,
             [$page, $perPage, $attributes, $this->compileConditionGroup()]
         );
     }
@@ -233,7 +223,7 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
         $attributes = $this->filterFields($attributes);
 
         return $this->makeTerminatedStatement(
-            Segment::class,
+            Instructions\Segment::class,
             [$limit, $attributes, $offset, $this->compileConditionGroup()]
         );
     }
@@ -245,9 +235,20 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
     public function update(array $attributes)
     {
         return $this->makeTerminatedStatement(
-            Update::class,
+            Instructions\Update::class,
             [$this->compileConditionGroup(), $attributes]
         );
     }
-}
 
+    /**
+     * @param $field
+     * @return \Academe\Statement\TerminatedStatement
+     */
+    public function sum($field)
+    {
+        return $this->makeTerminatedStatement(
+            Instructions\Sum::class,
+            [$field, $this->compileConditionGroup()]
+        );
+    }
+}

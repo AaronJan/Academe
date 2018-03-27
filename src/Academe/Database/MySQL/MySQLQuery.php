@@ -28,19 +28,26 @@ class MySQLQuery implements MySQLQueryContract
     protected $hasChange;
 
     /**
+     * @var array
+     */
+    protected $hint;
+
+    /**
      * MySQLQuery constructor.
      *
-     * @param       $operation
-     * @param       $SQL
-     * @param array $params
-     * @param       $hasChange
+     * @param $operation
+     * @param $SQL
+     * @param array $parameters
+     * @param $hasChange
+     * @param array $hint
      */
-    public function __construct($operation, $SQL, array $params, $hasChange)
+    public function __construct($operation, $SQL, array $parameters, $hasChange, $hint = [])
     {
-        $this->operation  = $operation;
-        $this->SQL        = $SQL;
-        $this->parameters = $params;
-        $this->hasChange  = $hasChange;
+        $this->operation = $operation;
+        $this->SQL = $SQL;
+        $this->parameters = $parameters;
+        $this->hasChange = $hasChange;
+        $this->hint = $hint;
     }
 
     /**
@@ -81,5 +88,13 @@ class MySQLQuery implements MySQLQueryContract
     public function hasChange()
     {
         return $this->hasChange;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHint()
+    {
+        return $this->hint;
     }
 }

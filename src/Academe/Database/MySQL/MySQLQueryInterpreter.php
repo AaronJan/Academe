@@ -5,6 +5,7 @@ namespace Academe\Database\MySQL;
 use Academe\Contracts\Receipt;
 use Academe\Database\BaseQueryInterpreter;
 use Academe\Database\MySQL\Contracts\MySQLQuery as MySQLQueryContract;
+use Academe\Exceptions\LogicException;
 
 /**
  * Class MySQLOperator
@@ -22,7 +23,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     ];
 
     /**
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return array
      * @throws \Doctrine\DBAL\DBALException
@@ -33,8 +34,8 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
 
         $connection->connectIfMissingConnection();
 
-        $startTime   = microtime(true);
-        $result      = static::getQueryResult($method, $connection, $query);
+        $startTime = microtime(true);
+        $result = static::getQueryResult($method, $connection, $query);
         $elapsedTime = static::getElapsedTime($startTime);
 
         return [
@@ -45,15 +46,15 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
 
     /**
      * @param                                              $method
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return mixed
      * @throws \Doctrine\DBAL\DBALException
      */
     static protected function getQueryResult($method,
                                              MySQLConnection $connection,
-                                             MySQLQueryContract $query)
-    {
+                                             MySQLQueryContract $query
+    ) {
         try {
             $result = static::performDatabaseQuery($method, $connection, $query);
         } catch (\Doctrine\DBAL\DBALException $e) {
@@ -70,18 +71,18 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Doctrine\DBAL\DBALException                 $e
+     * @param \Doctrine\DBAL\DBALException $e
      * @param                                              $method
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return mixed
      * @throws \Doctrine\DBAL\DBALException
      */
     static protected function tryAgainIfCausedByLostConnection(\Doctrine\DBAL\DBALException $e,
-                                                        $method,
-                                                        MySQLConnection $connection,
-                                                        MySQLQueryContract $query)
-    {
+                                                               $method,
+                                                               MySQLConnection $connection,
+                                                               MySQLQueryContract $query
+    ) {
         if (static::isCausedByLostConnection($e->getPrevious())) {
             $connection->reconnect();
 
@@ -125,14 +126,14 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
 
     /**
      * @param                                              $method
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return mixed
      */
     static protected function performDatabaseQuery($method,
                                                    MySQLConnection $connection,
-                                                   MySQLQueryContract $query)
-    {
+                                                   MySQLQueryContract $query
+    ) {
         return call_user_func(
             [__CLASS__, $method],
             $connection, $query
@@ -140,7 +141,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return array
      */
@@ -156,25 +157,29 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
-     * @return int
+     * @return array
      */
     static public function runAggregate(MySQLConnection $connection, MySQLQueryContract $query)
     {
         $DBALConnection = $connection->getDBALConnection();
 
+        $queryHint = $query->getHint();
+
+        if (! isset($queryHint['field'])) {
+            throw new LogicException('[Internal Error] Aggregate action must contain a `field` hint.');
+        }
+
         $result = $DBALConnection
             ->executeQuery($query->getSQL(), $query->getParameters())
             ->fetch();
 
-        return is_numeric($result['aggregation']) ?
-            (1 * $result['aggregation']) :
-            $result['aggregation'];
+        return [$queryHint['field'] => $result['aggregation']];
     }
 
     /**
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return Receipt
      */
@@ -189,7 +194,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
      * @return mixed
      */
@@ -204,7 +209,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MySQL\MySQLConnection      $connection
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
      * @param \Academe\Database\MySQL\Contracts\MySQLQuery $command
      * @return mixed
      */

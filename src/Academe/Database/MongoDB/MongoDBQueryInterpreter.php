@@ -5,6 +5,7 @@ namespace Academe\Database\MongoDB;
 use Academe\Contracts\Receipt;
 use Academe\Database\BaseQueryInterpreter;
 use Academe\Database\MongoDB\Contracts\MongoDBQuery as MongoDBQueryContract;
+use Academe\Exceptions\LogicException;
 use MongoDB\Driver\Exception\ConnectionTimeoutException;
 
 /**
@@ -25,7 +26,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
     /**
      * @param \Academe\Database\MongoDB\MongoDBConnection $connection
-     * @param MongoDBQueryContract                        $query
+     * @param MongoDBQueryContract $query
      * @return array
      */
     static public function run(MongoDBConnection $connection, MongoDBQueryContract $query)
@@ -34,8 +35,8 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
         $connection->connectIfMissingConnection();
 
-        $startTime   = microtime(true);
-        $result      = static::getQueryResult($method, $connection, $query);
+        $startTime = microtime(true);
+        $result = static::getQueryResult($method, $connection, $query);
         $elapsedTime = static::getElapsedTime($startTime);
 
         return [
@@ -46,14 +47,14 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
     /**
      * @param                                                  $method
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return mixed
      */
     static protected function getQueryResult($method,
                                              MongoDBConnection $connection,
-                                             MongoDBQueryContract $query)
-    {
+                                             MongoDBQueryContract $query
+    ) {
         try {
             $result = static::performDatabaseQuery($method, $connection, $query);
         } catch (ConnectionTimeoutException $e) {
@@ -72,14 +73,14 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
     /**
      * @param                                                  $method
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return mixed
      */
     static protected function performDatabaseQuery($method,
                                                    MongoDBConnection $connection,
-                                                   MongoDBQueryContract $query)
-    {
+                                                   MongoDBQueryContract $query
+    ) {
         return call_user_func(
             [__CLASS__, $method],
             $connection, $query
@@ -87,7 +88,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return mixed
      */
@@ -103,13 +104,18 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
-     * @return number
+     * @return array
      */
     static public function runAggregate(MongoDBConnection $connection, MongoDBQueryContract $query)
     {
         $databaseHandler = $connection->getDatabaseHandler();
+
+        $queryHint = $query->getHint();
+        if (! isset($queryHint['field'])) {
+            throw new LogicException('[Internal Error] Aggregate action must contain a `field` hint.');
+        }
 
         $collection = $databaseHandler->selectCollection($query->getCollection());
 
@@ -117,11 +123,13 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
         $result = $cursor->toArray();
 
-        return empty($result) ? 0 : $result[0]->value;
+        return [
+            $queryHint['field'] => empty($result) ? null : $result[0]->value,
+        ];
     }
 
     /**
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return Receipt
      */
@@ -137,7 +145,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return int
      */
@@ -153,7 +161,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return int
      */
@@ -169,7 +177,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     }
 
     /**
-     * @param \Academe\Database\MongoDB\MongoDBConnection      $connection
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return int
      */
