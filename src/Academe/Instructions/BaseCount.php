@@ -57,7 +57,7 @@ class BaseCount extends BaseExecutable implements CountContract
 
         $count = $connection->run($query);
 
-        return $count ? (int)array_first($count) : 0;
+        return $count ? (int)reset($count) : 0;
     }
 
     /**

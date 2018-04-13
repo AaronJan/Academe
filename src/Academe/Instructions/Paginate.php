@@ -26,9 +26,9 @@ class Paginate extends Segment implements PaginateContract
     /**
      * Paginate constructor.
      *
-     * @param array                          $page
-     * @param int                            $perPage
-     * @param array                          $fields
+     * @param array $page
+     * @param int $perPage
+     * @param array $fields
      * @param Connection\ConditionGroup|null $conditionGroup
      */
     public function __construct($page,
@@ -40,7 +40,7 @@ class Paginate extends Segment implements PaginateContract
 
         parent::__construct($perPage, $fields, $offset, $conditionGroup);
 
-        $this->page    = $page;
+        $this->page = $page;
         $this->perPage = $perPage;
     }
 
@@ -50,7 +50,7 @@ class Paginate extends Segment implements PaginateContract
      */
     public function execute(Mapper $mapper)
     {
-        $total    = $this->getCountForPagination($mapper);
+        $total = $this->getCountForPagination($mapper);
         $entities = $this->getPaginationEntities($mapper, $total);
 
         return new Pagination($entities, $total, $this->perPage, $this->page);
@@ -71,7 +71,7 @@ class Paginate extends Segment implements PaginateContract
 
         $loadedRelations = $this->getLoadedRelations($entities, $mapper, $this->getLockLevel());
 
-        if (! empty($loadedRelations)) {
+        if (!empty($loadedRelations)) {
             $this->associateRelations($entities, $loadedRelations);
         }
 
@@ -85,13 +85,15 @@ class Paginate extends Segment implements PaginateContract
     protected function getCountForPagination(Mapper $mapper)
     {
         $connection = $mapper->getConnection();
-        $query      = $this->makeCountForPaginationQuery($connection, $mapper);
+        $query = $this->makeCountForPaginationQuery($connection, $mapper);
 
-        return $connection->run($query);
+        $count = $connection->run($query);
+
+        return $count ? (int)reset($count) : 0;
     }
 
     /**
-     * @param Connection\Connection            $connection
+     * @param Connection\Connection $connection
      * @param \Academe\Contracts\Mapper\Mapper $mapper
      * @return \Academe\Contracts\Connection\Query
      */
@@ -115,7 +117,7 @@ class Paginate extends Segment implements PaginateContract
      */
     protected function makeCountAggregateAction()
     {
-        $action = new Aggregate('count');
+        $action = new Aggregate('count', '*');
 
         $action->setLock($this->lockLevel);
 
