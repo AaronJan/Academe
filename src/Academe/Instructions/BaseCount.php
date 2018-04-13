@@ -25,12 +25,12 @@ class BaseCount extends BaseExecutable implements CountContract
     /**
      * Count constructor.
      *
-     * @param string                         $field
+     * @param string $field
      * @param Connection\ConditionGroup|null $conditionGroup
      */
     public function __construct($field = '*',
-                                Connection\ConditionGroup $conditionGroup = null)
-    {
+                                Connection\ConditionGroup $conditionGroup = null
+    ) {
         $this->field = $field;
 
         if ($conditionGroup) {
@@ -53,16 +53,16 @@ class BaseCount extends BaseExecutable implements CountContract
     public function execute(Mapper $mapper)
     {
         $connection = $mapper->getConnection();
-        $query      = $this->makeQuery($connection, $mapper);
+        $query = $this->makeQuery($connection, $mapper);
 
         $count = $connection->run($query);
 
-        return $count;
+        return $count ? (int)array_first($count) : 0;
     }
 
     /**
      * @param \Academe\Contracts\Connection\Connection $connection
-     * @param \Academe\Contracts\Mapper\Mapper         $mapper
+     * @param \Academe\Contracts\Mapper\Mapper $mapper
      * @return \Academe\Contracts\Connection\Query
      */
     protected function makeQuery(Connection\Connection $connection, Mapper $mapper)
