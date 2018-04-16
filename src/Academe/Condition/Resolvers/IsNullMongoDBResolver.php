@@ -17,6 +17,6 @@ class IsNullMongoDBResolver
     {
         list($name) = $isNull->getParameters();
 
-        return [$name => null]; // `$eq` needs MongoDB >= `3`
+        return [$name => ['$eq' => null]];
     }
 }

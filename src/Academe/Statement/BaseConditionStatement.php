@@ -86,12 +86,23 @@ abstract class BaseConditionStatement
     }
 
     /**
-     * @param $field
+     * @param string $field
      * @return $this
      */
     public function isNull($field)
     {
         $this->addCondition($this->conditionMaker->isNull($field));
+
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     * @return $this
+     */
+    public function notNull($field)
+    {
+        $this->addCondition($this->conditionMaker->notNull($field));
 
         return $this;
     }

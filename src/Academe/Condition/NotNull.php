@@ -7,7 +7,7 @@ use Academe\Condition\Resolvers\IsNullPDOResolver;
 use Academe\Contracts\Connection\Condition as ConditionContract;
 use Academe\Constant\ConnectionConstant;
 
-class IsNull extends BaseCondition implements ConditionContract
+class NotNull extends BaseCondition implements ConditionContract
 {
     /**
      * @var array
@@ -25,7 +25,7 @@ class IsNull extends BaseCondition implements ConditionContract
     /**
      * Equal constructor.
      *
-     * @param $field
+     * @param string $field
      */
     public function __construct($field)
     {
