@@ -128,11 +128,14 @@ class MyController {
     public function index(Academe $academe) {
         $userMapper = $academe->getMapper(User::class);
 
-        // 查询所有数据
-        $userMapper->query()->all();
+        // 查询所有数据，按年龄正序排列
+        $userMapper->query()->sort('age', 'asc')->all();
 
         // 条件查询并指定字段
         $userMapper->query()->equal('id', 1)->first(['name']);
+
+        // 查询null值
+        $userMapper->query()->isNull('money')->notNull('mortgage')->all();
 
         // 新增数据
         $userMapper->query()->create([
