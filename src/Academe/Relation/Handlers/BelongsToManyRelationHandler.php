@@ -150,7 +150,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             $this->results,
             $this->hostField,
             $this->guestField,
-            $this->guestBlueprint->primaryKey()
+            $this->getGuestForeignKey()
         );
         $pivotDictionary = $this->buildPivotDictionary($this->pivotResults, $this->hostField, $this->guestField);
 
