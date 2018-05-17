@@ -110,4 +110,12 @@ abstract class BaseConnection implements Connection
         unset($this->transactions[$id]);
     }
 
+    /**
+     * @return string
+     */
+    public function getSubjectPrefix()
+    {
+        return '';
+    }
+
 }
