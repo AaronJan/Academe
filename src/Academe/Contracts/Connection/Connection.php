@@ -104,4 +104,9 @@ interface Connection
      */
     public function forgetTransaction($id);
 
+    /**
+     * @return string
+     */
+    public function getSubjectPrefix();
+
 }

@@ -28,6 +28,16 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     protected $relationName;
 
     /**
+     * @var null|string
+     */
+    protected $hostForeignKey;
+
+    /**
+     * @var null|string
+     */
+    protected $guestForeignKey;
+
+    /**
      * @var array
      */
     protected $results = [];
@@ -77,11 +87,15 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      *
      * @param \Academe\Relation\BelongsToMany $relation
      * @param                                 $relationName
+     * @param null|string $hostForeignKey
+     * @param null|string $guestForeignKey
      */
-    public function __construct(BelongsToMany $relation, $relationName)
+    public function __construct(BelongsToMany $relation, $relationName, $hostForeignKey, $guestForeignKey)
     {
-        $this->relation     = $relation;
+        $this->relation = $relation;
         $this->relationName = $relationName;
+        $this->hostForeignKey = $hostForeignKey;
+        $this->guestForeignKey = $guestForeignKey;
 
         $this->setupBlueprintClasses($relation);
     }
@@ -92,21 +106,37 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
     protected function setupBlueprintClasses(BelongsToMany $relation)
     {
         $academe = $this->getAcademe();
-        $bond    = $academe->getBond($this->relation->getBondClass());
+        $bond = $academe->getBond($this->relation->getBondClass());
 
         $this->pivotField = $bond->pivotField();
 
         if ($relation->isHost()) {
-            $this->hostField      = $bond->hostKeyField();
-            $this->guestField     = $bond->guestKeyField();
-            $this->hostBlueprint  = $academe->getBlueprint($bond->hostBlueprintClass());
+            $this->hostField = $bond->hostKeyField();
+            $this->guestField = $bond->guestKeyField();
+            $this->hostBlueprint = $academe->getBlueprint($bond->hostBlueprintClass());
             $this->guestBlueprint = $academe->getBlueprint($bond->guestBlueprintClass());
         } else {
-            $this->hostField      = $bond->guestKeyField();
-            $this->guestField     = $bond->hostKeyField();
-            $this->hostBlueprint  = $academe->getBlueprint($bond->guestBlueprintClass());
+            $this->hostField = $bond->guestKeyField();
+            $this->guestField = $bond->hostKeyField();
+            $this->hostBlueprint = $academe->getBlueprint($bond->guestBlueprintClass());
             $this->guestBlueprint = $academe->getBlueprint($bond->hostBlueprintClass());
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getHostForeignKey()
+    {
+        return $this->hostForeignKey ?? $this->hostBlueprint->primaryKey();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getGuestForeignKey()
+    {
+        return $this->guestForeignKey ?? $this->guestBlueprint->primaryKey();
     }
 
     /**
@@ -115,12 +145,12 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      */
     public function associate($entities)
     {
-        $dictionary      = $this->buildPivotedDictionary(
+        $dictionary = $this->buildPivotedDictionary(
             $this->pivotResults,
             $this->results,
             $this->hostField,
             $this->guestField,
-            $this->guestBlueprint->primaryKey()
+            $this->getGuestForeignKey()
         );
         $pivotDictionary = $this->buildPivotDictionary($this->pivotResults, $this->hostField, $this->guestField);
 
@@ -137,8 +167,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      */
     protected function attachRelations(array $hostEntities, $guestDictionary, $pivotDictionary)
     {
-        $relationName   = $this->relationName;
-        $hostPrimaryKey = $this->hostBlueprint->primaryKey();
+        $relationName = $this->relationName;
+        $hostPrimaryKey = $this->getHostForeignKey();
 
         return array_map(function ($entity) use (
             $hostPrimaryKey,
@@ -184,10 +214,10 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
      */
     protected function attachPivotEntityToRelation(array $relationEntities,
                                                    $pivotDictionary,
-                                                   $hostPrimaryValue)
-    {
-        $pivotField      = $this->pivotField;
-        $guestPrimaryKey = $this->guestBlueprint->primaryKey();
+                                                   $hostPrimaryValue
+    ) {
+        $pivotField = $this->pivotField;
+        $guestPrimaryKey = $this->getGuestForeignKey();
 
         return array_map(function ($relationEntity) use (
             $pivotDictionary,
@@ -217,9 +247,9 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         array $entities,
         $hostField,
         $guestField,
-        $guestPrimaryKey)
-    {
-        $dictionary         = [];
+        $guestPrimaryKey
+    ) {
+        $dictionary = [];
         $pivotMapDictionary = $this->buildDictionaryForGroup($pivotEntities, $guestField);
 
 
@@ -262,18 +292,18 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
 
     /**
      * @param                            $entities
-     * @param \Closure                   $constrain
+     * @param \Closure $constrain
      * @param \Academe\Contracts\Academe $academe
-     * @param array                      $nestedRelations
-     * @param int|null                   $lockLevel
+     * @param array $nestedRelations
+     * @param int|null $lockLevel
      * @return $this
      */
     public function loadResults($entities,
                                 \Closure $constrain,
                                 Academe $academe,
                                 array $nestedRelations,
-                                $lockLevel = TransactionConstant::LOCK_UNSET)
-    {
+                                $lockLevel = TransactionConstant::LOCK_UNSET
+    ) {
         if ($this->loaded) {
             return $this;
         }
@@ -281,8 +311,8 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $pivotMapper = $academe->getMapper($this->relation->getBondClass());
         $guestMapper = $academe->getMapper(get_class($this->guestBlueprint));
 
-        $hostPrimaryKey  = $this->hostBlueprint->primaryKey();
-        $guestPrimaryKey = $guestMapper->getPrimaryKey();
+        $hostPrimaryKey = $this->getHostForeignKey();
+        $guestPrimaryKey = $this->getGuestForeignKey();
 
         $hostPrimaryKeyValues = array_map(function ($entity) use ($hostPrimaryKey) {
             return ArrayHelper::get($entity, $hostPrimaryKey);
@@ -319,9 +349,9 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
             ->with($nestedRelations)
             ->all();
 
-        $this->results      = $guestEntities;
+        $this->results = $guestEntities;
         $this->pivotResults = $pivotEntities;
-        $this->loaded       = true;
+        $this->loaded = true;
 
         return $this;
     }
@@ -347,7 +377,7 @@ class BelongsToManyRelationHandler extends BaseRelationHandler
         $dictionary = [];
 
         foreach ($pivotEntities as $pivotEntity) {
-            $key              = $this->getPivotDictionaryKey(
+            $key = $this->getPivotDictionaryKey(
                 $pivotEntity[$hostField],
                 $pivotEntity[$guestField]
             );

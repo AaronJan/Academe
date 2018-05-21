@@ -317,4 +317,13 @@ class MySQLConnection extends BaseConnection
 
         $this->getDBALConnection()->rollBack();
     }
+
+    /**
+     * @return string
+     */
+    public function getSubjectPrefix()
+    {
+        return $this->tablePrefix;
+    }
+
 }

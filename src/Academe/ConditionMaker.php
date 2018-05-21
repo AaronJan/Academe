@@ -2,21 +2,7 @@
 
 namespace Academe;
 
-use Academe\Condition\ContainsAll;
-use Academe\Condition\Equal;
-use Academe\Condition\FieldExists;
-use Academe\Condition\GreaterThan;
-use Academe\Condition\GreaterThanOrEqual;
-use Academe\Condition\In;
-use Academe\Condition\IsNull;
-use Academe\Condition\LessThan;
-use Academe\Condition\LessThanOrEqual;
-use Academe\Condition\Like;
-use Academe\Condition\Mod;
-use Academe\Condition\NotEqual;
-use Academe\Condition\NotIn;
-use Academe\Condition\SizeIs;
-use Academe\Condition\TypeIs;
+use Academe\Condition as AcademeConditions;
 use Academe\Contracts\Academe as AcademeContract;
 use Academe\Contracts\ConditionMaker as ConditionMakerContract;
 
@@ -54,11 +40,11 @@ class ConditionMaker implements ConditionMakerContract
     /**
      * @param $attribute
      * @param $value
-     * @return Equal
+     * @return AcademeConditions\Equal
      */
     public function equal($attribute, $value)
     {
-        return new Equal($attribute, $value);
+        return new AcademeConditions\Equal($attribute, $value);
     }
 
     /**
@@ -67,102 +53,109 @@ class ConditionMaker implements ConditionMakerContract
      */
     public function isNull($field)
     {
-        return new IsNull($field);
+        return new AcademeConditions\IsNull($field);
+    }
+
+    /**
+     * @param $field
+     * @return \Academe\Condition\NotNull
+     */
+    public function notNull($field)
+    {
+        return new AcademeConditions\NotNull($field);
     }
 
     /**
      * @param $attribute
      * @param $value
-     * @return GreaterThan
+     * @return \Academe\Condition\GreaterThan
      */
     public function greaterThan($attribute, $value)
     {
-        return new GreaterThan($attribute, $value);
+        return new AcademeConditions\GreaterThan($attribute, $value);
     }
 
     /**
      * @param $attribute
      * @param $value
-     * @return GreaterThanOrEqual
+     * @return \Academe\Condition\GreaterThanOrEqual
      */
     public function greaterThanOrEqual($attribute, $value)
     {
-        return new GreaterThanOrEqual($attribute, $value);
+        return new AcademeConditions\GreaterThanOrEqual($attribute, $value);
     }
 
     /**
      * @param $attribute
      * @param $value
-     * @return LessThan
+     * @return \Academe\Condition\LessThan
      */
     public function lessThan($attribute, $value)
     {
-        return new LessThan($attribute, $value);
+        return new AcademeConditions\LessThan($attribute, $value);
     }
 
     /**
      * @param $attribute
      * @param $value
-     * @return LessThanOrEqual
+     * @return \Academe\Condition\LessThanOrEqual
      */
     public function lessThanOrEqual($attribute, $value)
     {
-        return new LessThanOrEqual($attribute, $value);
+        return new AcademeConditions\LessThanOrEqual($attribute, $value);
     }
 
     /**
      * @param $attribute
      * @param $values
-     * @return In
+     * @return \Academe\Condition\In
      */
     public function in($attribute, $values)
     {
-        return new In($attribute, $values);
+        return new AcademeConditions\In($attribute, $values);
     }
 
     /**
      * @param $attribute
      * @param $value
      * @param $matchMode
-     * @return Like
+     * @return \Academe\Condition\Like
      */
     public function like($attribute, $value, $matchMode)
     {
-        return new Like($attribute, $value, $matchMode);
+        return new AcademeConditions\Like($attribute, $value, $matchMode);
     }
 
     /**
      * @param $attribute
      * @param $divisor
      * @param $remainder
-     * @return Mod
+     * @return \Academe\Condition\Mod
      */
     public function mod($attribute, $divisor, $remainder)
     {
-        return new Mod($attribute, $divisor, $remainder);
+        return new AcademeConditions\Mod($attribute, $divisor, $remainder);
     }
 
     /**
      * @param $attribute
      * @param $value
-     * @return NotEqual
+     * @return \Academe\Condition\NotEqual
      */
     public function notEqual($attribute, $value)
     {
-        return new NotEqual($attribute, $value);
+        return new AcademeConditions\NotEqual($attribute, $value);
     }
 
     /**
      * @param $attribute
      * @param $values
-     * @return NotIn
+     * @return \Academe\Condition\NotIn
      */
     public function notIn($attribute, $values)
     {
-        return new NotIn($attribute, $values);
+        return new AcademeConditions\NotIn($attribute, $values);
     }
-
-    //todo MongoDB methods
 
     /**
      * @param $field
@@ -171,7 +164,7 @@ class ConditionMaker implements ConditionMakerContract
      */
     public function sizeIs($field, $size)
     {
-        return new SizeIs($field, $size);
+        return new AcademeConditions\SizeIs($field, $size);
     }
 
     /**
@@ -181,7 +174,7 @@ class ConditionMaker implements ConditionMakerContract
      */
     public function fieldExists($field, $isExists)
     {
-        return new FieldExists($field, $isExists);
+        return new AcademeConditions\FieldExists($field, $isExists);
     }
 
     /**
@@ -191,7 +184,7 @@ class ConditionMaker implements ConditionMakerContract
      */
     public function typeIs($field, $typeAlias)
     {
-        return new TypeIs($field, $typeAlias);
+        return new AcademeConditions\TypeIs($field, $typeAlias);
     }
 
     /**
@@ -201,7 +194,7 @@ class ConditionMaker implements ConditionMakerContract
      */
     public function containsAll($field, $values)
     {
-        return new ContainsAll($field, $values);
+        return new AcademeConditions\ContainsAll($field, $values);
     }
 
 }

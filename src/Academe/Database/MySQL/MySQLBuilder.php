@@ -429,7 +429,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
                 list($SQL, $parameters) = $this->resolveConditionGroup(
                     $condition,
-                    $needParentheses
+                    $needParentheses,
+                    $castManager
                 );
             } else {
                 list($SQL, $parameters) = $condition->parse(

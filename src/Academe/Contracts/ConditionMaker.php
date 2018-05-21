@@ -37,6 +37,12 @@ interface ConditionMaker
     public function isNull($field);
 
     /**
+     * @param $field
+     * @return \Academe\Condition\NotNull
+     */
+    public function notNull($field);
+
+    /**
      * @param $attribute
      * @param $value
      * @return GreaterThan

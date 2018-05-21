@@ -76,6 +76,15 @@ class Writer implements WriterContract
 
     /**
      * @param $field
+     * @return \Academe\Statement\ConditionStatement
+     */
+    public function notNull($field)
+    {
+        return $this->makeConditionStatement('notNull', func_get_args());
+    }
+
+    /**
+     * @param $field
      * @param $value
      * @return \Academe\Statement\ConditionStatement
      */
