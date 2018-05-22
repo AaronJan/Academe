@@ -9,7 +9,7 @@ class EqualMongoDBResolver
 {
     /**
      * @param                                     $connectionType
-     * @param Equal                               $equal
+     * @param Equal $equal
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
@@ -21,6 +21,6 @@ class EqualMongoDBResolver
             $expect = $castManager->castIn($name, $expect, $connectionType);
         }
 
-        return [$name => $expect]; // `$eq` needs MongoDB >= `3`
+        return [$name => ['$eq' => $expect]];
     }
 }
