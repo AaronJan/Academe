@@ -13,6 +13,7 @@ use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
 use Academe\Database\BaseBuilder;
 use Academe\MongoDB\Statement\MongoDBManualUpdate;
+use Academe\Support\ArrayHelper;
 
 class MongoDBBuilder extends BaseBuilder implements BuilderContract
 {
@@ -32,7 +33,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     /**
      * @param                                      $subject
      * @param \Academe\Contracts\Connection\Action $action
-     * @param \Academe\Contracts\CastManager|null  $castManager
+     * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Contracts\Connection\Query|\Academe\Database\MongoDB\MongoDBQuery
      */
     public function parse($subject, Action $action, CastManager $castManager = null)
@@ -44,18 +45,18 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action|Conditionable|Directable     $action
+     * @param Action|Conditionable|Directable $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Contracts\Connection\Query|\Academe\Database\MongoDB\MongoDBQuery
      */
     protected function parseSelect(Action $action, $subject, CastManager $castManager = null)
     {
-        $formation      = $action->getFormation();
+        $formation = $action->getFormation();
         $conditionGroup = $action->getConditionGroup();
-        $projections    = $this->fieldsToProjections($action->getParameters());
-        $operation      = 'find';
-        $collection     = $subject;
+        $projections = $this->fieldsToProjections($action->getParameters());
+        $operation = 'find';
+        $collection = $subject;
 
         $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
 
@@ -127,7 +128,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             foreach ($orders as $order) {
                 list($field, $direction) = $order;
 
-                $sort[$field] = $direction === 'desc' ? - 1 : 1;
+                $sort[$field] = $direction === 'desc' ? -1 : 1;
             }
 
             $options['sort'] = $sort;
@@ -137,7 +138,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MongoDB\MongoDBQuery
@@ -146,7 +147,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     {
         list($conditionGroup) = $action->getParameters();
 
-        $operation  = 'deletemany';
+        $operation = 'deletemany';
         $collection = $subject;
 
         $filters = $this->resolveConditionGroup($conditionGroup, $castManager);
@@ -162,7 +163,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     /**
      * @param \Academe\Contracts\Connection\Action|Conditionable $action
      * @param                                                    $subject
-     * @param \Academe\Contracts\CastManager|null                $castManager
+     * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Contracts\Connection\Query|\Academe\Database\MongoDB\MongoDBQuery
      */
     protected function parseAggregate(Action $action, $subject, CastManager $castManager = null)
@@ -170,8 +171,8 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $pipeline = [];
 
         $conditionGroup = $action->getConditionGroup();
-        $operation      = 'aggregate';
-        $collection     = $subject;
+        $operation = 'aggregate';
+        $collection = $subject;
 
         list($method, $field) = $action->getParameters();
 
@@ -195,7 +196,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MongoDB\MongoDBQuery
@@ -212,7 +213,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             );
         }
 
-        $operation  = 'insertone';
+        $operation = 'insertone';
         $collection = $subject;
 
         return new MongoDBQuery(
@@ -224,7 +225,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MongoDB\MongoDBQuery
@@ -241,7 +242,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             );
         }
 
-        $operation  = 'updatemany';
+        $operation = 'updatemany';
         $collection = $subject;
 
         // 将条件解析为filters
@@ -256,7 +257,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MongoDB\MongoDBQuery
@@ -274,7 +275,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             $castManager
         );
 
-        $operation  = 'update';
+        $operation = 'update';
         $collection = $subject;
 
         // 将条件解析为filters
@@ -336,7 +337,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action|Conditionable                $action
+     * @param Action|Conditionable $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MongoDB\MongoDBQuery
@@ -345,7 +346,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     {
         list($conditionGroup, $field, $operator, $value) = $action->getParameters();
 
-        $operation  = 'updatemany';
+        $operation = 'updatemany';
         $collection = $subject;
 
         // to Filters
@@ -369,7 +370,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
      */
     protected function getValueForIncOperation($operator, $value)
     {
-        return $operator === '+' ? $value : (- 1 * $value);
+        return $operator === '+' ? $value : (-1 * $value);
     }
 
     /**
@@ -390,13 +391,13 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param ConditionGroup|null                 $conditionGroup
+     * @param ConditionGroup|null $conditionGroup
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
     public function resolveConditionGroup(ConditionGroup $conditionGroup = null,
-                                          CastManager $castManager = null)
-    {
+                                          CastManager $castManager = null
+    ) {
         if (
             $conditionGroup === null ||
             $conditionGroup->getConditionCount() === 0
@@ -404,15 +405,16 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             return [];
         }
 
-        $useNested  = false;
+        // un-nest redundant ConditionGroup
+        if ($this->isRedundantConditionGroup($conditionGroup)) {
+            return $this->resolveConditionGroup(ArrayHelper::first($conditionGroup->getConditions()));
+        }
+
+        $useNested = $conditionGroup->getConditionCount() > 1;
         $subQueries = [];
 
         foreach ($conditionGroup->getConditions() as $condition) {
             if ($condition instanceof ConditionGroup) {
-                if ($condition->getConditionCount() > 1) {
-                    $useNested = true;
-                }
-
                 $child = $this->resolveConditionGroup($condition, $castManager);
                 if (! empty($child)) {
                     $subQueries[] = $child;
@@ -432,27 +434,35 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
+     * @param \Academe\Contracts\Connection\ConditionGroup $conditionGroup
+     * @return bool
+     */
+    protected function isRedundantConditionGroup(ConditionGroup $conditionGroup)
+    {
+        if ($conditionGroup->getConditionCount() != 1) {
+            return false;
+        }
+
+        $first = ArrayHelper::first($conditionGroup->getConditions());
+
+        return $first instanceof ConditionGroup;
+    }
+
+    /**
      * @param array $queries
      * @return array mixed
      */
     static public function collapseQueries(array $queries)
     {
-        $collapsed = [];
-
-        foreach ($queries as $query) {
+        return array_reduce($queries, function ($collapsed, $query) {
             reset($query);
-
-            $field    = key($query);
+            $field = key($query);
             $criteria = $query[$field];
 
-            if (isset($collapsed[$field])) {
-                $collapsed[$field] = array_merge($collapsed[$field], $criteria);
-            } else {
-                $collapsed[$field] = $criteria;
-            }
-        }
+            $collapsed[$field] = $criteria;
 
-        return $collapsed;
+            return $collapsed;
+        }, []);
     }
 
 }
