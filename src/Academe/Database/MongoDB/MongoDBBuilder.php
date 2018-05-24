@@ -407,7 +407,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
         // un-nest redundant ConditionGroup
         if ($this->isRedundantConditionGroup($conditionGroup)) {
-            return $this->resolveConditionGroup(ArrayHelper::first($conditionGroup->getConditions()));
+            return $this->resolveConditionGroup(ArrayHelper::first($conditionGroup->getConditions()), $castManager);
         }
 
         $useNested = $conditionGroup->getConditionCount() > 1;
