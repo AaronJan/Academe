@@ -66,7 +66,7 @@ class JsonAsArrayCaster extends BaseCaster
      */
     protected function castOutPDO($connectionType, $value)
     {
-        return json_decode($value, true, $this->decodeOption);
+        return json_decode($value, true, '512', $this->decodeOption);
     }
 
     /**
