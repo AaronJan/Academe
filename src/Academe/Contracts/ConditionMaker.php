@@ -135,4 +135,11 @@ interface ConditionMaker
      */
     public function containsAll($field, $values);
 
+    /**
+     * @param $field
+     * @param $condition
+     * @return \Academe\Condition\ElementMatch
+     */
+    public function elementMatch($field, $condition);
+
 }

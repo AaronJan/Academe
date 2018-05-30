@@ -448,6 +448,18 @@ class MyController {
 事务操作目前对 MongoDB 是无效的，等到 `MongoDB 4.0` 正式发布之后会考虑提供支持。
 
 
+## MongoDB
+
+### `$elemMatch`
+
+```php
+<?php
+
+$mapper->queryAsMongoDB()->elementMatch('array', $writer->query()->equal('inner_field', 'value'))->all();
+
+```
+
+
 ## TODOs
 
 * 单元测试

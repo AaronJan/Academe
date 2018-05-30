@@ -197,5 +197,15 @@ class ConditionMaker implements ConditionMakerContract
         return new AcademeConditions\ContainsAll($field, $values);
     }
 
+    /**
+     * @param $field
+     * @param $condition
+     * @return \Academe\Condition\ElementMatch
+     */
+    public function elementMatch($field, $condition)
+    {
+        return new AcademeConditions\ElementMatch($field, $condition);
+    }
+
 }
 

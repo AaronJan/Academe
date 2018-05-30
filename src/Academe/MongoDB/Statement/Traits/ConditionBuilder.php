@@ -64,4 +64,17 @@ trait ConditionBuilder
 
         return $this;
     }
+
+    /**
+     * @param $field
+     * @param $condition
+     * @return $this
+     */
+    public function elementMatch($field, $condition)
+    {
+        $this->addCondition($this->getConditionMaker()->elementMatch($field, $condition));
+
+        return $this;
+    }
+
 }
