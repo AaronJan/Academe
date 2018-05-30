@@ -3,7 +3,7 @@
 namespace Academe\Condition;
 
 use Academe\Contracts\CastManager;
-use Academe\Exceptions\UnsupportedConnectionException;
+use Academe\Exceptions\UnsupportedConnectionTypeException;
 
 abstract class BaseCondition
 {
@@ -26,7 +26,7 @@ abstract class BaseCondition
         if ($resolverClass === null) {
             $message = "This condition doesn't support connection type [{$connectionType}]";
 
-            throw new UnsupportedConnectionException($message);
+            throw new UnsupportedConnectionTypeException($message);
         }
 
         return call_user_func_array(
