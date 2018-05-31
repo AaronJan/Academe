@@ -6,6 +6,12 @@ interface CastManager
 {
     /**
      * @param string $field
+     * @return \Academe\Contracts\Caster|null
+     */
+    public function getCaster($field);
+
+    /**
+     * @param string $field
      * @param mixed  $value
      * @param int    $connectionType
      * @return mixed

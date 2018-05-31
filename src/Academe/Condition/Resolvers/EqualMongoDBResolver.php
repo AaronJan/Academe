@@ -2,6 +2,7 @@
 
 namespace Academe\Condition\Resolvers;
 
+use Academe\Casting\Casters\GroupCaster;
 use Academe\Condition\Equal;
 use Academe\Contracts\CastManager;
 
@@ -17,10 +18,17 @@ class EqualMongoDBResolver
     {
         list($name, $expect) = $equal->getParameters();
 
-        if ($castManager) {
-            $expect = $castManager->castIn($name, $expect, $connectionType);
+        $fieldCaster = $castManager === null ? null : $castManager->getCaster($name);
+        if ($fieldCaster === null) {
+            return [$name => ['$eq' => $expect]];
         }
 
-        return [$name => ['$eq' => $expect]];
+        return [
+            $name => [
+                '$eq' => $fieldCaster instanceof GroupCaster ?
+                    $fieldCaster->getCaster()->castIn($expect, $connectionType) :
+                    $fieldCaster->castIn($expect, $connectionType)
+            ]
+        ];
     }
 }

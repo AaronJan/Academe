@@ -2,14 +2,16 @@
 
 namespace Academe\Condition\Resolvers;
 
+use Academe\Casting\Casters\GroupCaster;
 use Academe\Condition\In;
+use Academe\Contracts\Caster;
 use Academe\Contracts\CastManager;
 
 class InMongoDBResolver
 {
     /**
-     * @param                                     $connectionType
-     * @param In                                  $in
+     * @param $connectionType
+     * @param In $in
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
@@ -19,12 +21,38 @@ class InMongoDBResolver
     {
         list($name, $values) = $in->getParameters();
 
-        if ($castManager) {
-            $values = array_map(function ($value) use ($name, $connectionType, $castManager) {
-                return $castManager->castIn($name, $value, $connectionType);
-            }, $values);
+        /* @var $fieldCaster Caster|GroupCaster */
+        $fieldCaster = $castManager === null ? null : $castManager->getCaster($name);
+        if ($fieldCaster === null) {
+            return [$name => ['$in' => $values]];
         }
 
-        return [$name => ['$in' => $values]];
+        return [
+            $name => [
+                '$in' => static::castValues(
+                    (
+                    $fieldCaster instanceof GroupCaster ?
+                        $fieldCaster->getCaster() :
+                        $fieldCaster
+                    ),
+                    $connectionType,
+                    $values
+                )
+            ]
+        ];
     }
+
+    /**
+     * @param \Academe\Contracts\Caster $caster
+     * @param $connectionType
+     * @param array $values
+     * @return array
+     */
+    protected static function castValues(Caster $caster, $connectionType, array $values)
+    {
+        return array_map(function ($value) use ($caster, $connectionType) {
+            return $caster->castIn($value, $connectionType);
+        }, $values);
+    }
+
 }

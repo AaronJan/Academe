@@ -41,7 +41,7 @@ class GroupCaster extends BaseCaster
     /**
      * @return \Academe\Contracts\Caster|null
      */
-    protected function getCaster()
+    public function getCaster()
     {
         return $this->caster;
     }
