@@ -24,6 +24,10 @@ class EqualPDOResolver
             $expect = $castManager->castIn($name, $expect, $connectionType);
         }
 
+        if ($expect === null) {
+            return [(static::wrap($name) . ' IS NULL'), []];
+        }
+
         return [(static::wrap($name) . ' = ?'), [$expect]];
     }
 }

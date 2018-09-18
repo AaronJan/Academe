@@ -11,19 +11,23 @@ class NotEqualPDOResolver
     use SQLValueWrapper;
 
     /**
-     * @param                                     $connectionType
-     * @param NotEqual                            $notEqual
+     * @param $connectionType
+     * @param NotEqual $notEqual
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
     static public function resolve($connectionType,
                                    NotEqual $notEqual,
-                                   CastManager $castManager = null)
-    {
+                                   CastManager $castManager = null
+    ) {
         list($name, $notExpect) = $notEqual->getParameters();
 
         if ($castManager) {
             $notExpect = $castManager->castIn($name, $notExpect, $connectionType);
+        }
+
+        if ($notExpect === null) {
+            return [(static::wrap($name) . ' IS NOT NULL'), []];
         }
 
         return [(static::wrap($name) . ' != ?'), [$notExpect]];
