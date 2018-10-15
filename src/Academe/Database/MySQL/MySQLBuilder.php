@@ -62,14 +62,14 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         ]);
 
         list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup, $castManager);
-
         list($formationSQL, $formationParameters) = $this->analyseFormationClause($formation);
+        $blankBetweenConditionAndFormation = (mb_strlen($conditionSQL) > 0 && mb_strlen($formationSQL) > 0) ? ' ' : '';
 
         $lockSQL = $this->compileLockable($action);
 
         return new MySQLQuery(
             'select',
-            "{$SQL}{$conditionSQL}{$formationSQL}{$lockSQL}",
+            "{$SQL}{$conditionSQL}{$blankBetweenConditionAndFormation}{$formationSQL}{$lockSQL}",
             array_merge($conditionParameters, $formationParameters),
             false
         );
@@ -142,7 +142,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                 $orderSQLs[] = $this->getOrderSQLPart($order);
             }
 
-            $SQL .= implode(' ,', $orderSQLs);
+            $SQL .= implode(', ', $orderSQLs);
         }
 
         return [$SQL, $parameters];
