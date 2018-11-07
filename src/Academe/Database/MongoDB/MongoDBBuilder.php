@@ -11,6 +11,7 @@ use Academe\Contracts\Action\Directable;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
+use Academe\Contracts\Raw;
 use Academe\Database\BaseBuilder;
 use Academe\MongoDB\Statement\MongoDBManualUpdate;
 use Academe\Support\ArrayHelper;
@@ -57,11 +58,11 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
      */
     protected function parseSelect(Action $action, $subject, CastManager $castManager = null)
     {
-        $formation      = $action->getFormation();
+        $formation = $action->getFormation();
         $conditionGroup = $action->getConditionGroup();
-        $projections    = $this->fieldsToProjections($action->getParameters());
-        $operation      = 'find';
-        $collection     = $subject;
+        $projections = $this->fieldsToProjections($action->getParameters());
+        $operation = 'find';
+        $collection = $subject;
 
         $filters = $this->conditionResolver->resolveConditionGroup($conditionGroup, $castManager);
 
@@ -133,7 +134,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             foreach ($orders as $order) {
                 list($field, $direction) = $order;
 
-                $sort[$field] = $direction === 'desc' ? - 1 : 1;
+                $sort[$field] = $direction === 'desc' ? -1 : 1;
             }
 
             $options['sort'] = $sort;
@@ -152,7 +153,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     {
         list($conditionGroup) = $action->getParameters();
 
-        $operation  = 'deletemany';
+        $operation = 'deletemany';
         $collection = $subject;
 
         $filters = $this->conditionResolver->resolveConditionGroup($conditionGroup, $castManager);
@@ -176,8 +177,8 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $pipeline = [];
 
         $conditionGroup = $action->getConditionGroup();
-        $operation      = 'aggregate';
-        $collection     = $subject;
+        $operation = 'aggregate';
+        $collection = $subject;
 
         list($method, $field) = $action->getParameters();
 
@@ -218,7 +219,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             );
         }
 
-        $operation  = 'insertone';
+        $operation = 'insertone';
         $collection = $subject;
 
         return new MongoDBQuery(
@@ -239,24 +240,22 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     {
         list($conditionGroup, $attributes) = $action->getParameters();
 
-        if ($castManager) {
-            $attributes = $this->castAttributes(
-                $castManager,
-                $attributes,
-                ConnectionConstant::TYPE_MONGODB
-            );
+        $castedAttributes = [];
+        foreach ($attributes as $field => $value) {
+            $castedAttributes[$field] = $value instanceof Raw ?
+                $value->getRaw() :
+                $castManager->castIn($field, $value, ConnectionConstant::TYPE_MONGODB);
         }
 
-        $operation  = 'updatemany';
+        $operation = 'updatemany';
         $collection = $subject;
 
-        // 将条件解析为filters
         $filters = $this->conditionResolver->resolveConditionGroup($conditionGroup, $castManager);
 
         return new MongoDBQuery(
             $operation,
             $collection,
-            [$filters, ['$set' => $attributes]],
+            [$filters, ['$set' => $castedAttributes]],
             false
         );
     }
@@ -280,7 +279,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
             $castManager
         );
 
-        $operation  = 'update';
+        $operation = 'update';
         $collection = $subject;
 
         // 将条件解析为filters
@@ -351,7 +350,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
     {
         list($conditionGroup, $field, $operator, $value) = $action->getParameters();
 
-        $operation  = 'updatemany';
+        $operation = 'updatemany';
         $collection = $subject;
 
         // to Filters
@@ -375,7 +374,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
      */
     protected function getValueForIncOperation($operator, $value)
     {
-        return $operator === '+' ? $value : (- 1 * $value);
+        return $operator === '+' ? $value : (-1 * $value);
     }
 
     /**

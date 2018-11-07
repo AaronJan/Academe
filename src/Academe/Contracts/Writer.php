@@ -143,4 +143,10 @@ interface Writer
      * @return \Academe\MongoDB\Statement\InstructionStatement
      */
     public function queryAsMongoDB();
+
+    /**
+     * @param mixed $rawQuery
+     * @return \Academe\Contracts\Raw
+     */
+    public function raw($rawQuery);
 }

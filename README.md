@@ -121,11 +121,12 @@ class User extends BaseBlueprint
 <?php
 
 use Academe\Contracts\Academe;
+use Academe\Contracts\Writer;
 use App\Academe\Blueprints\User;
 
 class MyController {
 
-    public function index(Academe $academe) {
+    public function index(Academe $academe, Writer $writer) {
         $userMapper = $academe->getMapper(User::class);
 
         // 查询所有数据，按年龄正序排列
@@ -140,6 +141,16 @@ class MyController {
         // 新增数据
         $userMapper->query()->create([
             'name' => 'John',
+        ]);
+
+        // 更新数据
+        $userMapper->query()->equal('id', 1)->update([
+            'score' => 100,
+        ]);
+
+        // 更新数据（更新值使用原生SQL，同样支持MongoDB）
+        $userMapper->query()->equal('id', 1)->update([
+            'score' => $writer->raw('`score` + 1'),
         ]);
 
         // 删除数据
