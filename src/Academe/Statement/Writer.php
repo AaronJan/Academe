@@ -4,6 +4,7 @@ namespace Academe\Statement;
 
 use Academe\Contracts\ConditionMaker;
 use Academe\Contracts\Writer as WriterContract;
+use Academe\Raw;
 use Academe\Transaction;
 use Academe\MongoDB\Statement\InstructionStatement as MongoDBInstructionStatement;
 
@@ -239,4 +240,12 @@ class Writer implements WriterContract
         return new MongoDBInstructionStatement($this->conditionMaker);
     }
 
+    /**
+     * @param mixed $raw
+     * @return \Academe\Contracts\Raw|\Academe\Raw
+     */
+    public function raw($raw)
+    {
+        return new Raw($raw);
+    }
 }

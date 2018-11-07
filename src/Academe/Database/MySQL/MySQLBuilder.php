@@ -10,6 +10,7 @@ use Academe\Contracts\Connection\Formation;
 use Academe\Contracts\Connection\ConditionGroup;
 use Academe\Contracts\Connection\Builder as BuilderContract;
 use Academe\Contracts\Connection\Action;
+use Academe\Contracts\Raw;
 use Academe\Database\BaseBuilder;
 use Academe\Traits\SQLValueWrapper;
 
@@ -35,7 +36,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     /**
      * @param                                      $subject
      * @param \Academe\Contracts\Connection\Action $action
-     * @param \Academe\Contracts\CastManager|null  $castManager
+     * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Contracts\Connection\Query|\Academe\Database\MySQL\MySQLQuery
      */
     public function parse($subject, Action $action, CastManager $castManager = null)
@@ -46,7 +47,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action|Select                       $action
+     * @param Action|Select $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Contracts\Connection\Query|\Academe\Database\MySQL\MySQLQuery
@@ -54,8 +55,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     protected function parseSelect(Action $action, $subject, CastManager $castManager = null)
     {
         $conditionGroup = $action->getConditionGroup();
-        $formation      = $action->getFormation();
-        $SQL            = implode(' ', [
+        $formation = $action->getFormation();
+        $SQL = implode(' ', [
             "SELECT",
             $this->columnize($action->getParameters()),
             $this->compileFrom(($this->tablePrefix . $subject)),
@@ -85,13 +86,13 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             return ['', []];
         }
 
-        $SQL        = '';
+        $SQL = '';
         $parameters = [];
 
         list($orderSQL, $orderParameters) = $this->resolveOrders($formation->getOrders());
         list($limitSQL, $limitParameters) = $this->resolveLimit($formation->getLimit());
 
-        $SQL        = implode(' ', [$orderSQL, $limitSQL]);
+        $SQL = implode(' ', [$orderSQL, $limitSQL]);
         $parameters = array_merge($parameters, $orderParameters, $limitParameters);
 
         return [$SQL, $parameters];
@@ -107,15 +108,15 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             return ['', []];
         }
 
-        $SQL        = '';
+        $SQL = '';
         $parameters = [];
 
         list($limitation, $offset) = $limit;
 
         if ($offset !== null) {
-            $SQL = 'LIMIT ' . ((int) $offset) . ', ' . ((int) $limitation);
+            $SQL = 'LIMIT ' . ((int)$offset) . ', ' . ((int)$limitation);
         } else {
-            $SQL = 'LIMIT ' . ((int) $limitation);
+            $SQL = 'LIMIT ' . ((int)$limitation);
         }
 
         return [$SQL, $parameters];
@@ -131,7 +132,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
             return ['', []];
         }
 
-        $SQL        = '';
+        $SQL = '';
         $parameters = [];
 
         if (! empty($orders)) {
@@ -156,14 +157,14 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     {
         list($field, $direction) = $order;
 
-        $fieldPart     = self::wrap($field);
+        $fieldPart = self::wrap($field);
         $directionPart = $direction === 'desc' ? 'DESC' : 'ASC';
 
         return "{$fieldPart} {$directionPart}";
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MySQL\MySQLQuery
@@ -187,7 +188,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MySQL\MySQLQuery
@@ -203,7 +204,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         }
 
         $attributeNameSQLPart = '(' . $this->columnize(array_keys($attributes)) . ')';
-        $valueSQLPart         = '(' . implode(', ', array_pad([], count($attributes), '?')) . ')';
+        $valueSQLPart = '(' . implode(', ', array_pad([], count($attributes), '?')) . ')';
 
         $SQL = implode(' ', [
             "INSERT INTO",
@@ -224,7 +225,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action                              $action
+     * @param Action $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MySQL\MySQLQuery
@@ -235,15 +236,15 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         ksort($attributes);
 
-        if ($castManager) {
-            $attributes = $this->castAttributes($castManager, $attributes, ConnectionConstant::TYPE_MYSQL);
-        }
-
-        $parameters = array_values($attributes);
-
         $columns = [];
+        $parameters = [];
         foreach ($attributes as $key => $value) {
-            $columns[] = self::wrap($key) . ' = ?';
+            if ($value instanceof Raw) {
+                $columns[] = self::wrap($key) . " = {$value->getRaw()}";
+            } else {
+                $columns[] = self::wrap($key) . ' = ?';
+                $parameters[] = $castManager->castIn($key, $value, ConnectionConstant::TYPE_MYSQL);
+            }
         }
 
         list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup, $castManager);
@@ -264,7 +265,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param Action|Aggregate                    $action
+     * @param Action|Aggregate $action
      * @param                                     $subject
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MySQL\MySQLQuery
@@ -274,8 +275,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         list($method, $field) = $action->getParameters();
 
         $conditionGroup = $action->getConditionGroup();
-        $function       = $this->getAggregateSQLFunction($action);
-        $aggregateField    = static::wrap($field);
+        $function = $this->getAggregateSQLFunction($action);
+        $aggregateField = static::wrap($field);
 
         $SQL = implode(' ', [
             "SELECT {$function}({$aggregateField}) as `aggregation`",
@@ -332,13 +333,13 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param ConditionGroup|null                 $conditionGroup
+     * @param ConditionGroup|null $conditionGroup
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
     protected function analyseConditionClause(ConditionGroup $conditionGroup = null,
-                                              CastManager $castManager = null)
-    {
+                                              CastManager $castManager = null
+    ) {
         // Every query have at least one ConditionGroup parameter, it's null at
         // default, should ignore it.
         if ($conditionGroup === null) {
@@ -357,7 +358,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     /**
      * @param Action|\Academe\Contracts\Action\Conditionable $action
      * @param                                                $subject
-     * @param \Academe\Contracts\CastManager|null            $castManager
+     * @param \Academe\Contracts\CastManager|null $castManager
      * @return \Academe\Database\MySQL\MySQLQuery
      */
     protected function parseCalculate(Action $action, $subject, CastManager $castManager = null)
@@ -365,7 +366,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         list($conditionGroup, $column, $operator, $value) = $action->getParameters();
 
         $parameters = [$value];
-        $setClause  = self::wrap($column) . ' = ?';
+        $setClause = self::wrap($column) . ' = ?';
 
         list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup, $castManager);
 
@@ -405,23 +406,23 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
-     * @param ConditionGroup|null                 $conditionGroup
-     * @param bool                                $withParentheses
+     * @param ConditionGroup|null $conditionGroup
+     * @param bool $withParentheses
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
     public function resolveConditionGroup(ConditionGroup $conditionGroup,
                                           $withParentheses = false,
-                                          CastManager $castManager = null)
-    {
+                                          CastManager $castManager = null
+    ) {
         // Ignore ConditionGroup that have no Condition in it.
         if ($conditionGroup->getConditionCount() === 0) {
             return ['', []];
         }
 
-        $SQLs            = [];
+        $SQLs = [];
         $paramtersArrays = [];
-        $conjunction     = $conditionGroup->isStrict() ? ' AND ' : ' OR ';
+        $conjunction = $conditionGroup->isStrict() ? ' AND ' : ' OR ';
 
         foreach ($conditionGroup->getConditions() as $condition) {
             if ($condition instanceof ConditionGroup) {
@@ -439,7 +440,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                 );
             }
 
-            $SQLs[]            = $SQL;
+            $SQLs[] = $SQL;
             $paramtersArrays[] = $parameters;
         }
 
