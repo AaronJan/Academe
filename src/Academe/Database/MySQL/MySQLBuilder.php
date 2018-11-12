@@ -440,8 +440,10 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                 );
             }
 
-            $SQLs[] = $SQL;
-            $paramtersArrays[] = $parameters;
+            if ($SQL !== '') {
+                $SQLs[] = $SQL;
+                $paramtersArrays[] = $parameters;
+            }
         }
 
         $SQL = implode($conjunction, $SQLs);
