@@ -25,6 +25,27 @@ trait Sortable
     }
 
     /**
+     * Undocumented function
+     *
+     * @param array $orders
+     * @return void
+     */
+    public function setOrders(array $orders)
+    {
+        $this->orders = $orders;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return array
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
      * @param \Academe\Contracts\Mapper\Instruction $instruction
      */
     protected function tweakOrder(Instruction $instruction)
@@ -32,7 +53,7 @@ trait Sortable
         /**
          * @var $instruction SortableInstruction
          */
-        if (! empty($this->orders)) {
+        if (!empty($this->orders)) {
             foreach ($this->orders as $order) {
                 list($field, $direction) = $order;
 

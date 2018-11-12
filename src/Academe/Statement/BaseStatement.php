@@ -2,12 +2,8 @@
 
 namespace Academe\Statement;
 
-use Academe\Statement\Traits\Sortable;
-
-class RelationSubStatement extends BaseStatement
+class BaseStatement extends ConditionStatement
 {
-    use Sortable;
-
     /**
      * @var array|null
      */

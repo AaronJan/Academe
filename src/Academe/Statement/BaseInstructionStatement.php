@@ -12,7 +12,7 @@ use Academe\Contracts\Mapper\Instruction;
 use Academe\Contracts\Statement;
 use Academe\Contracts\InstructionStatement as InstructionStatementContract;
 
-class BaseInstructionStatement extends RelationSubStatement implements InstructionStatementContract
+class BaseInstructionStatement extends BaseStatement implements InstructionStatementContract
 {
     use ParseRelation;
 
@@ -20,21 +20,6 @@ class BaseInstructionStatement extends RelationSubStatement implements Instructi
      * @var array
      */
     protected $relations = [];
-
-    /**
-     * @param  Statement $statement
-     * @return $this
-     */
-    public function loadFrom(Statement $statement)
-    {
-        $this->conditions = $statement->getConditions();
-
-        if ($statement instanceof RelationSubStatement) {
-            $this->fields = $statement->getFields();
-        }
-
-        return $this;
-    }
 
     /**
      * @param \Academe\Contracts\Mapper\Instruction $instruction
