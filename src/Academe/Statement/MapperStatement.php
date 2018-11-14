@@ -4,6 +4,7 @@ namespace Academe\Statement;
 
 use Academe\Statement\Traits\Lockable;
 use Academe\Statement\Traits\Sortable;
+use Academe\Contracts\Statement;
 
 /**
  * Class MapperStatement
