@@ -23,7 +23,7 @@ Academe 是一个实用的 Data Mapper，有以下特性：
 
 ## 安装
 
-需要`mongodb`扩展支持(``>= 1.3`)。
+需要`mongodb`扩展支持(`>= 1.3`)。
 
 使用`Composer`安装：
 
@@ -205,9 +205,80 @@ class MyController {
     }
 
 }
-
 ```
 
+### Group By (TODO)
+
+Academe 同样支持 `group by` 查询（MongoDB 同样支持），使用方式如下：
+
+```php
+<?php
+
+use Academe\Contracts\Academe;
+use Academe\Contracts\Writer;
+use App\Academe\Blueprints\Post;
+
+class MyController {
+
+    // Writer 实例可以通过依赖注入的方式获取，或者调用 `$academe->getWriter()`
+    public function index(Academe $academe, Writer $writer) {
+        $postMapper = $academe->getMapper(Post::class);
+
+        $postMapper->query()
+            // 依然支持条件过滤
+            ->greaterThan('level', 10)
+            ->groupBy(
+                // 聚合条件字段
+                [
+                    'channel_id',
+                ],
+                // 值
+                [
+                    // `count()` 方法得到的值默认是整数，其他方法默认是保留2位小数的浮点数（`BigDecimal` 对象）
+                    'post_count' => $writer->aggregation()->count(),
+                    // 你可以让其他方法也返回整数：
+                    'like_total' => $writer->aggregation()->sum('like_total')->asInteger(),
+                    // 你也可以调整浮点数的精度：
+                    'avg_like' => $writer->aggregation()->avg('like_total')->asDecimal(4),
+                    'min_like' => $writer->aggregation()->min('like_total'),
+                    'max_like' => $writer->aggregation()->max('like_total'),
+                ]
+            );
+
+        // 如果你希望在查询 MySQL 的时候获取更大的灵活性，也可以使用 SQL 语句：
+        $postMapper->query()
+            // 依然支持条件过滤
+            ->greaterThan('level', 10)
+            ->groupBy(
+                // 聚合条件字段
+                [
+                    'channel_id',
+                    $writer->raw('UNIX_TIME(updated_at, "YYYY-mm-dd") AS update_date'),
+                ],
+                // 值
+                [
+                    'like_total' => $writer->raw('SUM(`like_total`)'),
+                ]
+            );
+
+        // MongoDB 同样也支持使用原生查询：
+        $postMapper->query()
+            // 依然支持条件过滤
+            ->greaterThan('level', 10)
+            ->groupBy(
+                // 聚合条件字段
+                $writer->raw([
+                    '$channel_id',
+                ]),
+                // 值
+                $writer->raw([
+                    'like_total' => ['$sum' => '$like_total']
+                ])
+            );
+    }
+
+}
+```
 
 ### 数据关系
 
