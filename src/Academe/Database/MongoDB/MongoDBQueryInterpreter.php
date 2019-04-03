@@ -18,6 +18,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
     static protected $operationToMethodMap = [
         'find'       => 'runFind',
         'aggregate'  => 'runAggregate',
+        'group'      => 'runGroup',
         'insertone'  => 'runInsertOne',
         'update'     => 'runUpdate',
         'updatemany' => 'runUpdateMany',
@@ -51,9 +52,10 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return mixed
      */
-    static protected function getQueryResult($method,
-                                             MongoDBConnection $connection,
-                                             MongoDBQueryContract $query
+    static protected function getQueryResult(
+        $method,
+        MongoDBConnection $connection,
+        MongoDBQueryContract $query
     ) {
         try {
             $result = static::performDatabaseQuery($method, $connection, $query);
@@ -77,13 +79,15 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
      * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
      * @return mixed
      */
-    static protected function performDatabaseQuery($method,
-                                                   MongoDBConnection $connection,
-                                                   MongoDBQueryContract $query
+    static protected function performDatabaseQuery(
+        $method,
+        MongoDBConnection $connection,
+        MongoDBQueryContract $query
     ) {
         return call_user_func(
             [__CLASS__, $method],
-            $connection, $query
+            $connection,
+            $query
         );
     }
 
@@ -113,7 +117,7 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
         $databaseHandler = $connection->getDatabaseHandler();
 
         $queryHint = $query->getHint();
-        if (! isset($queryHint['field'])) {
+        if (!isset($queryHint['field'])) {
             throw new LogicException('[Internal Error] Aggregate action must contain a `field` hint.');
         }
 
@@ -126,6 +130,24 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
         return [
             $queryHint['field'] => empty($result) ? null : $result[0]->value,
         ];
+    }
+
+    /**
+     * @param \Academe\Database\MongoDB\MongoDBConnection $connection
+     * @param \Academe\Database\MongoDB\Contracts\MongoDBQuery $query
+     * @return array
+     */
+    static public function runGroup(MongoDBConnection $connection, MongoDBQueryContract $query)
+    {
+        $databaseHandler = $connection->getDatabaseHandler();
+
+        $collection = $databaseHandler->selectCollection($query->getCollection());
+
+        $cursor = call_user_func_array([$collection, 'aggregate'], $query->getParameters());
+
+        $result = $cursor->toArray();
+
+        return $result;
     }
 
     /**
@@ -191,5 +213,5 @@ class MongoDBQueryInterpreter extends BaseQueryInterpreter
 
         return $deleteResult->getDeletedCount();
     }
-
 }
+

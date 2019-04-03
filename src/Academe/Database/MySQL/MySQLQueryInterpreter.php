@@ -20,6 +20,7 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
         'update'    => 'runUpdate',
         'delete'    => 'runDelete',
         'aggregate' => 'runAggregate',
+        'group'     => 'runGroup',
     ];
 
     /**
@@ -176,6 +177,21 @@ class MySQLQueryInterpreter extends BaseQueryInterpreter
             ->fetch();
 
         return [$queryHint['field'] => $result['aggregation']];
+    }
+
+    /**
+     * @param \Academe\Database\MySQL\MySQLConnection $connection
+     * @param \Academe\Database\MySQL\Contracts\MySQLQuery $query
+     * @return array
+     */
+    static public function runGroup(MySQLConnection $connection, MySQLQueryContract $query) {
+        $DBALConnection = $connection->getDBALConnection();
+
+        $records = $DBALConnection
+            ->executeQuery($query->getSQL(), $query->getParameters())
+            -> fetchAll();
+
+        return $records;
     }
 
     /**

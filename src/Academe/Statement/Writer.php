@@ -7,6 +7,7 @@ use Academe\Contracts\Writer as WriterContract;
 use Academe\Raw;
 use Academe\Transaction;
 use Academe\MongoDB\Statement\InstructionStatement as MongoDBInstructionStatement;
+use Academe\Accumulations\AccumulationMaker;
 
 class Writer implements WriterContract
 {
@@ -247,5 +248,13 @@ class Writer implements WriterContract
     public function raw($raw)
     {
         return new Raw($raw);
+    }
+
+    /**
+     * @return AccumulationMaker
+     */
+    public function accumulation()
+    {
+        return new AccumulationMaker();
     }
 }

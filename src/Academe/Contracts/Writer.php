@@ -149,4 +149,9 @@ interface Writer
      * @return \Academe\Contracts\Raw
      */
     public function raw($rawQuery);
+
+    /**
+     * @return \Academe\Accumulations\AccumulationMaker
+     */
+    public function accumulation();
 }

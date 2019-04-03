@@ -161,4 +161,16 @@ abstract class BaseMapperStatement extends BaseInstructionStatement
 
         return $this->getMapper()->execute($executable);
     }
+
+    /**
+     * @param array $aggregation
+     * @param array $values
+     * @return mixed
+     */
+    public function group($aggregation, $values)
+    {
+        $executable = parent::group($aggregation, $values);
+
+        return $this->getMapper()->execute($executable);
+    }
 }
