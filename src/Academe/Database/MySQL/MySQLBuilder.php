@@ -3,6 +3,7 @@
 namespace Academe\Database\MySQL;
 
 use Academe\Actions\Aggregate;
+use Academe\Actions\Group;
 use Academe\Actions\Select;
 use Academe\Constant\ConnectionConstant;
 use Academe\Contracts\CastManager;
@@ -13,10 +14,15 @@ use Academe\Contracts\Connection\Action;
 use Academe\Contracts\Raw;
 use Academe\Database\BaseBuilder;
 use Academe\Traits\SQLValueWrapper;
+use Academe\Database\Traits\GroupParsingHelper;
+use Academe\Support\ArrayHelper;
+use Academe\Contracts\Accumulation;
+use Academe\Accumulations;
+use Academe\Exceptions\RuntimeException;
 
 class MySQLBuilder extends BaseBuilder implements BuilderContract
 {
-    use SQLValueWrapper;
+    use SQLValueWrapper, GroupParsingHelper;
 
     /**
      * @var string
@@ -135,7 +141,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         $SQL = '';
         $parameters = [];
 
-        if (! empty($orders)) {
+        if (!empty($orders)) {
             $SQL = 'ORDER BY ';
 
             $orderSQLs = [];
@@ -299,6 +305,121 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     }
 
     /**
+     * @param Action|Group $action
+     * @param $subject
+     * @param \Academe\Contracts\CastManager|null $castManager
+     * @return \Academe\Database\MySQL\MySQLQuery
+     */
+    protected function parseGroup(Action $action, $subject, CastManager $castManager = null)
+    {
+        list($aggregation, $values) = $action->getParameters();
+        $normalizedAggregation = $this->normalizeAggregationArray($aggregation);
+
+        $conditionGroup = $action->getConditionGroup();
+        list($conditionSQL, $parameters) = $this->analyseConditionClause($conditionGroup, $castManager);
+
+        $fromSQL = $this->compileFrom(($this->tablePrefix . $subject));
+        $lockSQL = $this->compileLockable($action);
+
+        $selectSQL = $this->resolveSelectSQLForGroup($normalizedAggregation, $values);
+        $groupBySQL = $this->resolveGroupBySQLForGroup($normalizedAggregation);
+
+        return new MySQLQuery(
+            'group',
+            "{$selectSQL} {$fromSQL}{$conditionSQL} {$groupBySQL}{$lockSQL}",
+            $parameters,
+            false
+        );
+    }
+
+    /**
+     * @param array $normalizedAggregation
+     * @param array $values
+     * @return string
+     */
+    protected function resolveSelectSQLForGroup($normalizedAggregation, $values) {
+        $SQL = 'SELECT ';
+
+        $aggregationFields = ArrayHelper::map($normalizedAggregation, function ($value, $field) {
+            if (is_array($value)) {
+                $expression = $value[0] instanceof Raw ?
+                    $value[0]->getRaw() : $value[0];
+
+                return "`{$expression}` AS `{$field}`";
+            }
+
+            return "`{$field}` AS `{$field}`";
+        });
+
+        $valueFields = ArrayHelper::map($values, function ($accumulation, $field) {
+            if ($accumulation instanceof Accumulation) {
+                return "{$this->resolveAccumulation($accumulation)} AS `{$field}`";
+            }
+
+            if (!is_array($accumulation)) {
+                throw new BadMethodCallException("Accumulation parameter is illegal");
+            }
+
+            $expression = $accumulation[0] instanceof Raw ?
+                $accumulation[0]->getRaw() : $this->resolveAccumulation($accumulation[0]);
+
+            return "{$expression} AS `{$field}`";
+        });
+
+        $SQL .= implode(', ', array_merge($aggregationFields, $valueFields));
+
+        return $SQL;
+    }
+
+    protected function resolveAccumulation(Accumulation $accumulation)
+    {
+        $class = get_class($accumulation);
+        switch ($class) {
+            case Accumulations\Count::class:
+                return "COUNT(*)";
+                break;
+            case Accumulations\Max::class:
+                return "MAX(`{$accumulation->getField()}`)";
+                break;
+            case Accumulations\Min::class:
+                return "MIN(`{$accumulation->getField()}`)";
+                break;
+            case Accumulations\Sum::class:
+                return "SUM(`{$accumulation->getField()}`)";
+                break;
+            case Accumulations\Avg::class:
+                return "AVG(`{$accumulation->getField()}`)";
+                break;
+            default:
+                throw new RuntimeException("undefined Accumulation class: \"{$class}\"");
+                break;
+        }
+    }
+
+    /**
+     * @param array $normalizedAggregation
+     * @return string
+     */
+    protected function resolveGroupBySQLForGroup($normalizedAggregation) {
+        $SQL = 'GROUP BY ';
+
+        $aggregationFields = ArrayHelper::map($normalizedAggregation, function ($value, $field) {
+            if (is_array($value)) {
+                $expression = $value[0] instanceof Raw ?
+                    $value[0]->getRaw() : $value[0];
+
+                return $expression;
+            }
+
+            return $field;
+        });
+
+        $SQL .= implode(', ', $aggregationFields);
+
+        return $SQL;
+    }   
+
+    /**
      * @param \Academe\Actions\Traits\BeLockable|Action $action
      * @return string
      */
@@ -337,8 +458,9 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
-    protected function analyseConditionClause(ConditionGroup $conditionGroup = null,
-                                              CastManager $castManager = null
+    protected function analyseConditionClause(
+        ConditionGroup $conditionGroup = null,
+        CastManager $castManager = null
     ) {
         // Every query have at least one ConditionGroup parameter, it's null at
         // default, should ignore it.
@@ -411,9 +533,10 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
      * @param \Academe\Contracts\CastManager|null $castManager
      * @return array
      */
-    public function resolveConditionGroup(ConditionGroup $conditionGroup,
-                                          $withParentheses = false,
-                                          CastManager $castManager = null
+    public function resolveConditionGroup(
+        ConditionGroup $conditionGroup,
+        $withParentheses = false,
+        CastManager $castManager = null
     ) {
         // Ignore ConditionGroup that have no Condition in it.
         if ($conditionGroup->getConditionCount() === 0) {
@@ -472,5 +595,4 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         return $return;
     }
-
 }

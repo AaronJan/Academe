@@ -20,9 +20,12 @@ use Academe\Contracts\Accumulation;
 use Academe\Accumulations;
 use Academe\Exceptions\RuntimeException;
 use Academe\Exceptions\BadMethodCallException;
+use Academe\Database\Traits\GroupParsingHelper;
 
 class MongoDBBuilder extends BaseBuilder implements BuilderContract
 {
+    use GroupParsingHelper;
+
     /**
      * @var string
      */
@@ -308,24 +311,6 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
                 throw new RuntimeException("undefined Accumulation class: \"{$class}\"");
                 break;
         }
-    }
-
-    /**
-     * @param array $aggregation
-     * @return array
-     */
-    protected function normalizeAggregationArray(array $aggregation)
-    {
-        return array_reduce(
-            array_keys($aggregation),
-            function ($carry, $key) use ($aggregation) {
-                $fieldName = is_numeric($key) ? $aggregation[$key] : $key;
-                $carry[$fieldName] = $aggregation[$key];
-
-                return $carry;
-            },
-            []
-        );
     }
 
     /**
