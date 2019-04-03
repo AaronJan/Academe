@@ -15,6 +15,11 @@ use Academe\Contracts\Raw;
 use Academe\Database\BaseBuilder;
 use Academe\MongoDB\Statement\MongoDBManualUpdate;
 use Academe\Support\ArrayHelper;
+use Illuminate\Database\Console\Migrations\InstallCommand;
+use Academe\Contracts\Accumulation;
+use Academe\Accumulations;
+use Academe\Exceptions\RuntimeException;
+use Academe\Exceptions\BadMethodCallException;
 
 class MongoDBBuilder extends BaseBuilder implements BuilderContract
 {
@@ -68,7 +73,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
         $options = $this->resolveFormation($formation);
 
-        if (! empty($projections)) {
+        if (!empty($projections)) {
             $options['projection'] = $projections;
         }
 
@@ -184,7 +189,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
         // Match State，filter result
         $matchStage = $this->conditionResolver->resolveConditionGroup($conditionGroup, $castManager);
-        if (! empty($matchStage)) {
+        if (!empty($matchStage)) {
             $pipeline[] = ['$match' => $matchStage];
         }
 
@@ -199,6 +204,149 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
                 'field' => $field,
             ]
         );
+    }
+
+    /**
+     * @param \Academe\Contracts\Connection\Action|Conditionable $action
+     * @param                                                    $subject
+     * @param \Academe\Contracts\CastManager|null $castManager
+     * @return \Academe\Contracts\Connection\Query|\Academe\Database\MongoDB\MongoDBQuery
+     */
+    protected function parseGroup(Action $action, $subject, CastManager $castManager = null)
+    {
+        list($aggregation, $values) = $action->getParameters();
+        $normalizedAggregation = $this->normalizeAggregationArray($aggregation);
+
+        $pipelines = [];
+
+        $conditionGroup = $action->getConditionGroup();
+        $operation = 'group';
+        $collection = $subject;
+
+        // $match stage
+        $matchStage = $this->conditionResolver->resolveConditionGroup($conditionGroup, $castManager);
+        if (!empty($matchStage)) {
+            $pipelines[] = ['$match' => $matchStage];
+        }
+
+        // $group stage
+        $groupStage = $this->makeGroupPipelineStage($normalizedAggregation, $values);
+        $pipelines[] = ['$group' => $groupStage];
+
+        // $project stage
+        $projectStage = $this->makeProjectPipelineStage($normalizedAggregation, $values);
+        $pipelines[] = ['$project' => $projectStage];
+
+        return new MongoDBQuery(
+            $operation,
+            $collection,
+            [$pipelines],
+            false
+        );
+    }
+
+    /**
+     * @param array $normalizedAggregation
+     * @param array $values
+     * @return array
+     */
+    protected function makeGroupPipelineStage($normalizedAggregation, $values)
+    {
+        $pipeline = [];
+
+        $id = ArrayHelper::mapWithKeys($normalizedAggregation, function ($value, $field) {
+            if (is_array($value)) {
+                $expression = $value[0] instanceof Raw ?
+                    $value[0]->getRaw() : "\${$value[0]}";
+
+                return [$field => $expression];
+            }
+
+            return [$field => "\${$field}"];
+        });
+        $pipeline['_id']  = $id;
+
+        $toBeMerged = ArrayHelper::mapWithKeys($values, function ($accumulation, $field) {
+            if ($accumulation instanceof Accumulation) {
+                return [$field => $this->resolveAccumulation($accumulation)];
+            }
+
+            if (!is_array($accumulation)) {
+                throw new BadMethodCallException("Accumulation parameter is illegal");
+            }
+
+            $expression = $accumulation[0] instanceof Raw ?
+                $accumulation[0]->getRaw() : $this->resolveAccumulation($accumulation[0]);
+
+            return [$field => $expression];
+        });
+        $pipeline = array_merge($toBeMerged, $pipeline);
+
+        return $pipeline;
+    }
+
+    protected function resolveAccumulation(Accumulation $accumulation)
+    {
+        $class = get_class($accumulation);
+        switch ($class) {
+            case Accumulations\Count::class:
+                return ['$count' => 1];
+                break;
+            case Accumulations\Max::class:
+                return ['$max' => "\${$accumulation->getField()}"];
+                break;
+            case Accumulations\Min::class:
+                return ['$max' => "\${$accumulation->getField()}"];
+                break;
+            case Accumulations\Sum::class:
+                return ['$max' => "\${$accumulation->getField()}"];
+                break;
+            case Accumulations\Avg::class:
+                return ['$max' => "\${$accumulation->getField()}"];
+                break;
+            default:
+                throw new RuntimeException("undefined Accumulation class: \"{$class}\"");
+                break;
+        }
+    }
+
+    /**
+     * @param array $aggregation
+     * @return array
+     */
+    protected function normalizeAggregationArray(array $aggregation)
+    {
+        return array_reduce(
+            array_keys($aggregation),
+            function ($carry, $key) use ($aggregation) {
+                $fieldName = is_numeric($key) ? $aggregation[$key] : $key;
+                $carry[$fieldName] = $aggregation[$key];
+
+                return $carry;
+            },
+            []
+        );
+    }
+
+    /**
+     * @param array $normalizedAggregation
+     * @param array $values
+     * @return array
+     */
+    protected function makeProjectPipelineStage($normalizedAggregation, $values)
+    {
+        $pipeline = [];
+
+        $pipeline['_id'] = 0;
+
+        $aggregations = ArrayHelper::mapWithKeys($normalizedAggregation, function ($aggregation, $field) {
+            return [$field => "\$_id.{$field}"];
+        });
+        $values = ArrayHelper::mapWithKeys($values, function ($aggregation, $field) {
+            return [$field => "\${$field}"];
+        });
+
+        return array_merge($aggregations, $values, $pipeline);
     }
 
     /**
@@ -243,8 +391,7 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $castedAttributes = [];
         foreach ($attributes as $field => $value) {
             $castedAttributes[$field] = $value instanceof Raw ?
-                $value->getRaw() :
-                $castManager->castIn($field, $value, ConnectionConstant::TYPE_MONGODB);
+                $value->getRaw() : $castManager->castIn($field, $value, ConnectionConstant::TYPE_MONGODB);
         }
 
         $operation = 'updatemany';
@@ -282,7 +429,6 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         $operation = 'update';
         $collection = $subject;
 
-        // 将条件解析为filters
         $filters = $this->conditionResolver->resolveConditionGroup($conditionGroup, $castManager);
 
         return new MongoDBQuery(
@@ -393,5 +539,4 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
 
         return $projections;
     }
-
 }

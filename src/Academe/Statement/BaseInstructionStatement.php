@@ -66,7 +66,7 @@ class BaseInstructionStatement extends BaseStatement implements InstructionState
         /**
          * @var $instruction WithRelation
          */
-        if (! empty($this->relations)) {
+        if (!empty($this->relations)) {
             $instruction->with($this->relations);
         }
     }
@@ -76,9 +76,10 @@ class BaseInstructionStatement extends BaseStatement implements InstructionState
      * @param array $instructionConstructParameters
      * @return \Academe\Statement\TerminatedStatement
      */
-    protected function makeTerminatedStatement($instructionClass,
-                                               array $instructionConstructParameters)
-    {
+    protected function makeTerminatedStatement(
+        $instructionClass,
+        array $instructionConstructParameters
+    ) {
         return new TerminatedStatement(
             $instructionClass,
             $instructionConstructParameters,
@@ -100,7 +101,7 @@ class BaseInstructionStatement extends BaseStatement implements InstructionState
      */
     protected function hadConditionAlready()
     {
-        return ! empty($this->conditions);
+        return !empty($this->conditions);
     }
 
     /**
@@ -234,6 +235,19 @@ class BaseInstructionStatement extends BaseStatement implements InstructionState
         return $this->makeTerminatedStatement(
             Instructions\Sum::class,
             [$field, $this->compileConditionGroup()]
+        );
+    }
+
+    /**
+     * @param array $aggregation
+     * @param array $values
+     * @return \Academe\Statement\TerminatedStatement
+     */
+    public function group($aggregation, $values)
+    {
+        return $this->makeTerminatedStatement(
+            Instructions\Group::class,
+            [$aggregation, $values, $this->compileConditionGroup()]
         );
     }
 }

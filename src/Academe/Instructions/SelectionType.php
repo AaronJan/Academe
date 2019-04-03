@@ -3,16 +3,14 @@
 namespace Academe\Instructions;
 
 use Academe\Actions\Select;
-use Academe\Contracts\CastManager;
 use Academe\Contracts\Connection;
 use Academe\Contracts\Mapper\Mapper;
 use Academe\Formation;
-use Academe\Instructions\Traits\Lockable;
-use Academe\Instructions\Traits\Sortable;
+use Academe\Instructions\Traits;
 
 abstract class SelectionType extends BaseExecutable
 {
-    use Lockable, Sortable;
+    use Traits\Lockable, Traits\Sortable, Traits\CastRecord;
 
     /**
      * @var array
@@ -117,20 +115,4 @@ abstract class SelectionType extends BaseExecutable
 
         return $mapper->convertRecords($castedRecords);
     }
-
-    /**
-     * @param array                            $records
-     * @param \Academe\Contracts\Mapper\Mapper $mapper
-     * @return array
-     */
-    protected function castRecords(array $records, Mapper $mapper)
-    {
-        $castManager    = $mapper->getCastManager();
-        $connectionType = $mapper->getConnection()->getType();
-
-        return array_map(function ($record) use ($castManager, $connectionType) {
-            return $castManager->castOutAttributes($record, $connectionType);
-        }, $records);
-    }
-
 }
