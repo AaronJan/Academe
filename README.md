@@ -207,9 +207,9 @@ class MyController {
 }
 ```
 
-### Group By (TODO)
+### Group
 
-Academe 同样支持 `group by` 查询（MongoDB 同样支持），使用方式如下：
+Academe 同样支持 `group by` 类统计查询（MongoDB 同样支持），使用方式如下：
 
 ```php
 <?php
@@ -252,7 +252,11 @@ class MyController {
             ->group(
                 // 聚合条件字段
                 [
-                    'channel_id',
+                    // 你还可以转换结果的格式
+                    'channel_id' => [
+                        'channel_id',
+                        CasterMaker::string(),
+                    ],
                     // 更换字段名并指定数据格式
                     'update_date' => [
                         $writer->raw('UNIX_TIME(updated_at, "YYYY-mm-dd")'),
@@ -268,20 +272,25 @@ class MyController {
                 ]
             );
 
-        // TODO: 暂未实现
         // MongoDB 同样也支持使用原生查询：
         $postMapper->query()
             // 依然支持条件过滤
             ->greaterThan('level', 10)
             ->group(
                 // 聚合条件字段
-                $writer->raw([
-                    '$channel_id',
-                ]),
+                [
+                    'channel_id' => [
+                        $writer->raw('$channel_id'),
+                        CasterMaker::string(),
+                    ],
+                ],
                 // 值
-                $writer->raw([
-                    'like_total' => ['$sum' => '$like_total']
-                ])
+                [
+                    'like_total' => [
+                        $writer->raw(['$sum' => '$like_total']),
+                        CasterMaker::integer(),
+                    ],
+                ]
             );
     }
 
