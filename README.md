@@ -227,7 +227,7 @@ class MyController {
         $postMapper->query()
             // 依然支持条件过滤
             ->greaterThan('level', 10)
-            ->groupBy(
+            ->group(
                 // 聚合条件字段
                 [
                     'channel_id',
@@ -235,13 +235,13 @@ class MyController {
                 // 值
                 [
                     // `count()` 方法得到的值默认是整数，其他方法默认是保留2位小数的浮点数（`BigDecimal` 对象）
-                    'post_count' => $writer->aggregation()->count(),
+                    'post_count' => $writer->accumulation()->count(),
                     // 你可以让其他方法也返回整数：
-                    'like_total' => $writer->aggregation()->sum('like_total')->asInteger(),
+                    'like_total' => $writer->accumulation()->sum('like_total')->asInteger(),
                     // 你也可以调整浮点数的精度：
-                    'avg_like' => $writer->aggregation()->avg('like_total')->asDecimal(4),
-                    'min_like' => $writer->aggregation()->min('like_total'),
-                    'max_like' => $writer->aggregation()->max('like_total'),
+                    'avg_like' => $writer->accumulation()->avg('like_total')->asDecimal(4),
+                    'min_like' => $writer->accumulation()->min('like_total'),
+                    'max_like' => $writer->accumulation()->max('like_total'),
                 ]
             );
 
@@ -249,23 +249,31 @@ class MyController {
         $postMapper->query()
             // 依然支持条件过滤
             ->greaterThan('level', 10)
-            ->groupBy(
+            ->group(
                 // 聚合条件字段
                 [
                     'channel_id',
-                    $writer->raw('UNIX_TIME(updated_at, "YYYY-mm-dd") AS update_date'),
+                    // 更换字段名并指定数据格式
+                    'update_date' => [
+                        $writer->raw('UNIX_TIME(updated_at, "YYYY-mm-dd")'),
+                        CasterMaker::string(),
+                    ],
                 ],
                 // 值
                 [
-                    'like_total' => $writer->raw('SUM(`like_total`)'),
+                    'like_total' => [
+                        $writer->raw('SUM(`like_total`)'),
+                        CasterMaker::integer(),
+                    ],
                 ]
             );
 
+        // TODO: 暂未实现
         // MongoDB 同样也支持使用原生查询：
         $postMapper->query()
             // 依然支持条件过滤
             ->greaterThan('level', 10)
-            ->groupBy(
+            ->group(
                 // 聚合条件字段
                 $writer->raw([
                     '$channel_id',
