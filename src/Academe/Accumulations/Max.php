@@ -1,6 +1,6 @@
 <?php
 
-namespace Acadmee\Accumulations;
+namespace Academe\Accumulations;
 
 use Academe\Casting\CasterMaker;
 use Academe\Contracts\Caster;
@@ -16,18 +16,5 @@ class Max extends BaseAccumulation
     {
         $this->field = $field;
         $this->caster = CasterMaker::decimal();
-    }
-
-    public function getField()
-    {
-        return $this->field;
-    }
-
-    /**
-     * @return Caster
-     */
-    public function getCaster()
-    {
-        return $this->caster;
     }
 }

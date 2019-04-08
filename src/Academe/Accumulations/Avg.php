@@ -1,6 +1,6 @@
 <?php
 
-namespace Acadmee\Accumulations;
+namespace Academe\Accumulations;
 
 use Academe\Casting\CasterMaker;
 use Academe\Contracts\Caster;
