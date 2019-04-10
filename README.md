@@ -381,7 +381,7 @@ class MyController {
                 // 添加关联查询条件
                 // 注意：这里如果要指定查询字段，一定要包含定义关系时所需要的字段，否则会导致数据无法关联
                 //   同样，用来聚合的根数据也需要包含定义关系的字段
-                $statement->eauql('state', 2)->fields(['id', 'user_id']);
+                $statement->equal('state', 2)->fields(['id', 'user_id']);
             },
         ])->all();
     }
