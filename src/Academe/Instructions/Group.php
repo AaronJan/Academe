@@ -12,10 +12,11 @@ use Academe\Support\ArrayHelper;
 use Academe\Contracts\Caster;
 use Academe\Contracts\Accumulation;
 use Academe\Casting\CastManager;
+use Academe\Formation;
 
 class Group extends BaseExecutable implements GroupContract
 {
-    use Traits\Lockable, Traits\CastRecord;
+    use Traits\Lockable, Traits\Sortable, Traits\CastRecord;
 
     /**
      * @var array
@@ -141,6 +142,9 @@ class Group extends BaseExecutable implements GroupContract
     {
         $action = new GroupAction($this->aggregation, $this->values);
         $action->setLock($this->lockLevel);
+
+        $formation = (new Formation())->setOrders($this->orders);
+        $action->setFormation($formation);
 
         $this->setLockIfNotBeenSet($action, $connection->getTransactionSelectLockLevel());
 

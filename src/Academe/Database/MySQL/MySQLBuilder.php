@@ -71,13 +71,12 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         list($conditionSQL, $conditionParameters) = $this->analyseConditionClause($conditionGroup, $castManager);
         list($formationSQL, $formationParameters) = $this->analyseFormationClause($formation);
-        $blankBetweenConditionAndFormation = (mb_strlen($conditionSQL) > 0 && mb_strlen($formationSQL) > 0) ? ' ' : '';
 
         $lockSQL = $this->compileLockable($action);
 
         return new MySQLQuery(
             'select',
-            "{$SQL}{$conditionSQL}{$blankBetweenConditionAndFormation}{$formationSQL}{$lockSQL}",
+            "{$SQL}{$conditionSQL}{$formationSQL}{$lockSQL}",
             array_merge($conditionParameters, $formationParameters),
             false
         );
@@ -101,6 +100,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         $SQL = implode(' ', [$orderSQL, $limitSQL]);
         $parameters = array_merge($parameters, $orderParameters, $limitParameters);
+        $SQL = mb_strlen($SQL) > 0 ? " {$SQL}" : $SQL;
 
         return [$SQL, $parameters];
     }
@@ -315,9 +315,11 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
     {
         list($aggregation, $values) = $action->getParameters();
         $normalizedAggregation = $this->normalizeAggregationArray($aggregation);
+        $formation = $action->getFormation();
 
         $conditionGroup = $action->getConditionGroup();
         list($conditionSQL, $parameters) = $this->analyseConditionClause($conditionGroup, $castManager);
+        list($formationSQL, $formationParameters) = $this->analyseFormationClause($formation);
 
         $fromSQL = $this->compileFrom(($this->tablePrefix . $subject));
         $lockSQL = $this->compileLockable($action);
@@ -327,8 +329,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         return new MySQLQuery(
             'group',
-            "{$selectSQL} {$fromSQL}{$conditionSQL} {$groupBySQL}{$lockSQL}",
-            $parameters,
+            "{$selectSQL} {$fromSQL}{$conditionSQL} {$groupBySQL}{$formationSQL}{$lockSQL}",
+            array_merge($parameters, $formationParameters),
             false
         );
     }
@@ -338,7 +340,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
      * @param array $values
      * @return string
      */
-    protected function resolveSelectSQLForGroup($normalizedAggregation, $values) {
+    protected function resolveSelectSQLForGroup($normalizedAggregation, $values)
+    {
         $SQL = 'SELECT ';
 
         $aggregationFields = ArrayHelper::map($normalizedAggregation, function ($value, $field) {
@@ -401,7 +404,8 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
      * @param array $normalizedAggregation
      * @return string
      */
-    protected function resolveGroupBySQLForGroup($normalizedAggregation) {
+    protected function resolveGroupBySQLForGroup($normalizedAggregation)
+    {
         $SQL = 'GROUP BY ';
 
         $aggregationFields = ArrayHelper::map($normalizedAggregation, function ($value, $field) {
@@ -412,13 +416,13 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
                 return $expression;
             }
 
-            return $field;
+            return "`{$field}`";
         });
 
         $SQL .= implode(', ', $aggregationFields);
 
         return $SQL;
-    }   
+    }
 
     /**
      * @param \Academe\Actions\Traits\BeLockable|Action $action

@@ -10,6 +10,9 @@ interface MySQLQuery extends Query
 
     public function getSQL();
 
+    /**
+     * @return array
+     */
     public function getParameters();
 
     /**

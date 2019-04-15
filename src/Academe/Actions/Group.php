@@ -6,10 +6,11 @@ use Academe\Contracts\Connection\Action;
 use Academe\Actions\Traits\BeCondtionable;
 use Academe\Actions\Traits\BeLockable;
 use Academe\Contracts\Action\Conditionable;
+use Academe\Actions\Traits\BeFormatted;
 
 class Group implements Action, Conditionable
 {
-    use BeCondtionable, BeLockable;
+    use BeCondtionable, BeFormatted, BeLockable;
 
     /**
      * @var array
