@@ -227,6 +227,8 @@ class MyController {
         $postMapper->query()
             // 依然支持条件过滤
             ->greaterThan('level', 10)
+            // 也支持排序
+            ->sort('channel_id', 'asc')
             ->group(
                 // 聚合条件字段
                 [
