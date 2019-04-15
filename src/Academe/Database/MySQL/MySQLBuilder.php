@@ -19,6 +19,7 @@ use Academe\Support\ArrayHelper;
 use Academe\Contracts\Accumulation;
 use Academe\Accumulations;
 use Academe\Exceptions\RuntimeException;
+use Academe\Exceptions\BadMethodCallException;
 
 class MySQLBuilder extends BaseBuilder implements BuilderContract
 {
