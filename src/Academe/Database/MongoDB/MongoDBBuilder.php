@@ -220,6 +220,8 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         list($aggregation, $values) = $action->getParameters();
         $normalizedAggregation = $this->normalizeAggregationArray($aggregation);
 
+        $formation = $action->getFormation();
+
         $pipelines = [];
 
         $conditionGroup = $action->getConditionGroup();
@@ -239,6 +241,18 @@ class MongoDBBuilder extends BaseBuilder implements BuilderContract
         // $project stage
         $projectStage = $this->makeProjectPipelineStage($normalizedAggregation, $values);
         $pipelines[] = ['$project' => $projectStage];
+
+        // Formation
+        $options = $this->resolveFormation($formation);
+        if (isset($options['sort'])) {
+            $pipelines[] = ['$sort' => $options['sort']];
+        }
+        if (isset($options['limit'])) {
+            $pipelines[] = ['$limit' => $options['limit']];
+        }
+        if (isset($options['skip'])) {
+            $pipelines[] = ['$skip' => $options['skip']];
+        }
 
         return new MongoDBQuery(
             $operation,
