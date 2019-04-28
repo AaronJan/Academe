@@ -27,7 +27,7 @@ abstract class BaseAccumulation implements Accumulation
 
     public function asDecimal()
     {
-        $this->caster = CasterMaker::decimal()();
+        $this->caster = CasterMaker::decimal();
 
         return $this;
     }
