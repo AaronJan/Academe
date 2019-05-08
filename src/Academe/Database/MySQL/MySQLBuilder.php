@@ -98,7 +98,7 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
         list($orderSQL, $orderParameters) = $this->resolveOrders($formation->getOrders());
         list($limitSQL, $limitParameters) = $this->resolveLimit($formation->getLimit());
 
-        $SQL = implode(' ', [$orderSQL, $limitSQL]);
+        $SQL = trim(implode(' ', [$orderSQL, $limitSQL]));
         $parameters = array_merge($parameters, $orderParameters, $limitParameters);
         $SQL = mb_strlen($SQL) > 0 ? " {$SQL}" : $SQL;
 
@@ -120,10 +120,16 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         list($limitation, $offset) = $limit;
 
-        if ($offset !== null) {
-            $SQL = 'LIMIT ' . ((int)$offset) . ', ' . ((int)$limitation);
+        if ($limitation === null) {
+            if ($offset !== null) {
+                $SQL = 'LIMIT ' . ((int)$offset) . ', 18446744073709551615';
+            }
         } else {
-            $SQL = 'LIMIT ' . ((int)$limitation);
+            if ($offset === null) {
+                $SQL = 'LIMIT ' . ((int)$limitation);
+            } else {
+                $SQL = 'LIMIT ' . ((int)$offset) . ', ' . ((int)$limitation);
+            }
         }
 
         return [$SQL, $parameters];

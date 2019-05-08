@@ -244,7 +244,12 @@ class MyController {
                     'avg_like' => $writer->accumulation()->avg('like_total')->asDecimal(4),
                     'min_like' => $writer->accumulation()->min('like_total'),
                     'max_like' => $writer->accumulation()->max('like_total'),
-                ]
+                ],
+                // 支持 limit 和 offset
+                // Limit：
+                10,
+                // Offset：
+                20
             );
 
         // 如果你希望在查询 MySQL 的时候获取更大的灵活性，也可以使用 SQL 语句：

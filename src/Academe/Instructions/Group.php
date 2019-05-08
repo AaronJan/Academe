@@ -34,17 +34,33 @@ class Group extends BaseExecutable implements GroupContract
     protected $conditionGroup = null;
 
     /**
+     * @var integer|null
+     */
+    protected $limit = null;
+
+    /**
+     * @var integer|null
+     */
+    protected $offset = null;
+
+    /**
      * @param array $aggregation
      * @param array $values
+     * @param integer|null $limit
+     * @param integer|null $offset
      * @param Connection\ConditionGroup|null $conditionGroup
      */
     public function __construct(
         $aggregation,
         $values,
+        $limit,
+        $offset,
         Connection\ConditionGroup $conditionGroup = null
     ) {
         $this->aggregation = $aggregation;
         $this->values = $values;
+        $this->limit = $limit;
+        $this->offset = $offset;
 
         if ($conditionGroup) {
             $this->setConditionGroup($conditionGroup);
@@ -102,7 +118,7 @@ class Group extends BaseExecutable implements GroupContract
             return [$field => $caster];
         });
 
-        return array_filter( $rules, function ($caster) {
+        return array_filter($rules, function ($caster) {
             return $caster !== null;
         });
     }
@@ -111,8 +127,9 @@ class Group extends BaseExecutable implements GroupContract
      * @param array $values
      * @return array
      */
-    protected function getCastRulesForValues(array $values) {
-        $rules = ArrayHelper::mapWithKeys( $values, function ($value, $field) {
+    protected function getCastRulesForValues(array $values)
+    {
+        $rules = ArrayHelper::mapWithKeys($values, function ($value, $field) {
             if ($value instanceof Accumulation) {
                 return [$field => $value->getCaster()];
             }
@@ -143,7 +160,8 @@ class Group extends BaseExecutable implements GroupContract
         $action = new GroupAction($this->aggregation, $this->values);
         $action->setLock($this->lockLevel);
 
-        $formation = (new Formation())->setOrders($this->orders);
+        $formation = (new Formation())->setOrders($this->orders)
+            ->setLimit($this->limit, $this->offset);
         $action->setFormation($formation);
 
         $this->setLockIfNotBeenSet($action, $connection->getTransactionSelectLockLevel());

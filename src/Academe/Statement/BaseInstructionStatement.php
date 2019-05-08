@@ -241,13 +241,15 @@ class BaseInstructionStatement extends BaseStatement implements InstructionState
     /**
      * @param array $aggregation
      * @param array $values
+     * @param integer|null $limit
+     * @param integer|null $offset
      * @return \Academe\Statement\TerminatedStatement
      */
-    public function group($aggregation, $values)
+    public function group($aggregation, $values, $limit = null, $offset = null)
     {
         return $this->makeTerminatedStatement(
             Instructions\Group::class,
-            [$aggregation, $values, $this->compileConditionGroup()]
+            [$aggregation, $values, $limit, $offset, $this->compileConditionGroup()]
         );
     }
 }
