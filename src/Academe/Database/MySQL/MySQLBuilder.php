@@ -352,10 +352,9 @@ class MySQLBuilder extends BaseBuilder implements BuilderContract
 
         $aggregationFields = ArrayHelper::map($normalizedAggregation, function ($value, $field) {
             if (is_array($value)) {
-                $expression = $value[0] instanceof Raw ?
-                    $value[0]->getRaw() : $value[0];
+                $expression = self::wrap($value[0]);
 
-                return "`{$expression}` AS `{$field}`";
+                return "{$expression} AS `{$field}`";
             }
 
             return "`{$field}` AS `{$field}`";
