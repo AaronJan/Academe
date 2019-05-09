@@ -31,7 +31,13 @@ class DateTimeCaster extends BaseCaster
      */
     protected function castInPDO($connectionType, $dateTime)
     {
-        return empty($dateTime) ? $dateTime : $dateTime->toDateTimeString();
+        return empty($dateTime) ?
+            $dateTime : 
+            (
+                $dateTime instanceof Carbon ?
+                $dateTime->toDateTimeString() : 
+                $dateTime
+            );
     }
 
     /**
