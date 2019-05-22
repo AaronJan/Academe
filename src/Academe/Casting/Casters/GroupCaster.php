@@ -56,7 +56,7 @@ class GroupCaster extends BaseCaster
     {
         $caster = $this->getCaster();
 
-        if (! $caster) {
+        if (!$caster) {
             return $records;
         }
 
@@ -71,11 +71,15 @@ class GroupCaster extends BaseCaster
 
     /**
      * @param       $connectionType
-     * @param array $records
+     * @param array|null $records
      * @return string
      */
-    protected function castInPDO($connectionType, array $records)
+    protected function castInPDO($connectionType, $records)
     {
+        if ($records === null) {
+            return $records;
+        }
+
         $castedRecords = $this->castRecords('castIn', $records, $connectionType);
 
         return json_encode($castedRecords);
@@ -84,10 +88,14 @@ class GroupCaster extends BaseCaster
     /**
      * @param string $connectionType
      * @param string $recordsJSON
-     * @return array
+     * @return array|null
      */
     protected function castOutPDO($connectionType, $recordsJSON)
     {
+        if ($recordsJSON === null) {
+            return null;
+        }
+
         $records = json_decode($recordsJSON, true);
 
         return $this->castRecords('castOut', $records, $connectionType);
@@ -95,22 +103,29 @@ class GroupCaster extends BaseCaster
 
     /**
      * @param array $connectionType
-     * @param array $records
+     * @param array|null $records
      * @return array
      */
-    protected function castInMongoDB($connectionType, array $records)
+    protected function castInMongoDB($connectionType, $records)
     {
+        if ($records === null) {
+            return null;
+        }
+
         return $this->castRecords('castIn', $records, $connectionType);
     }
 
     /**
      * @param $connectionType
      * @param $records
-     * @return array
+     * @return array|null
      */
     protected function castOutMongoDB($connectionType, $records)
     {
-        return $this->castRecords('castOut', (array) $records, $connectionType);
+        if ($records === null) {
+            return null;
+        }
+
+        return $this->castRecords('castOut', (array)$records, $connectionType);
     }
 }
-
